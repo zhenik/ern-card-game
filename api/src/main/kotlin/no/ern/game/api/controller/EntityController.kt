@@ -42,6 +42,7 @@ class EntityController{
             @ApiParam("The question and answer options")
             @RequestBody dto: EntityDto) : ResponseEntity<Long>{
 
+        //TODO: set child for GlobalSpan. Because without autoconfig, spans are separated and independent
         tracer.buildSpan("someWork").withTag("Logic", "Input-Validation").startActive()
                 .use({ activeSpan ->
 

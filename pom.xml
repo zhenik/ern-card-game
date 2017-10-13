@@ -20,7 +20,7 @@
         <java.version>1.8</java.version>
         <spring-fox-swagger2.version>2.6.1</spring-fox-swagger2.version>
         <kotlin.version>1.1.2</kotlin.version>
-        <spring.version>1.5.4.RELEASE</spring.version>
+        <spring.version>1.5.7.RELEASE</spring.version>
         <h2.version>1.4.196</h2.version>
     </properties>
     <dependencyManagement>
@@ -102,11 +102,11 @@
 
             <!--TRACING-->
             <!-- https://mvnrepository.com/artifact/io.opentracing.contrib/opentracing-spring-web-autoconfigure -->
-            <dependency>
-                <groupId>io.opentracing.contrib</groupId>
-                <artifactId>opentracing-spring-web-autoconfigure</artifactId>
-                <version>0.0.10</version>
-            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>io.opentracing.contrib</groupId>-->
+                <!--<artifactId>opentracing-spring-web-autoconfigure</artifactId>-->
+                <!--<version>0.0.10</version>-->
+            <!--</dependency>-->
             <!-- https://mvnrepository.com/artifact/com.uber.jaeger/jaeger-core -->
             <dependency>
                 <groupId>com.uber.jaeger</groupId>
