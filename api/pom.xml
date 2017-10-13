@@ -14,11 +14,11 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -68,6 +68,18 @@
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <!--TRACING-->
+        <!-- https://mvnrepository.com/artifact/io.opentracing.contrib/opentracing-spring-web-autoconfigure -->
+        <dependency>
+            <groupId>io.opentracing.contrib</groupId>
+            <artifactId>opentracing-spring-web-autoconfigure</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.uber.jaeger/jaeger-core -->
+        <dependency>
+            <groupId>com.uber.jaeger</groupId>
+            <artifactId>jaeger-core</artifactId>
         </dependency>
     </dependencies>
 
