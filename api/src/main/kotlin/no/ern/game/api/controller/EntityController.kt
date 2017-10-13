@@ -24,6 +24,9 @@ import org.springframework.web.bind.annotation.*
 class EntityController{
 
     @Autowired
+    private lateinit var tracer: io.opentracing.Tracer
+
+    @Autowired
     private lateinit var crud: EntityRepository
 
     @ApiOperation("Retrieve all entities")
@@ -39,22 +42,33 @@ class EntityController{
             @ApiParam("The question and answer options")
             @RequestBody dto: EntityDto) : ResponseEntity<Long>{
 
-        if (dto.field1 == null || dto.field2 == null || dto.id != null)
-            return ResponseEntity.status(400).build()
+        tracer.buildSpan("someWork").withTag("Logic", "Input-Validation").startActive()
+                .use({ activeSpan ->
 
-        val id: Long?
-        try{
-            id = crud.createEntity(dto.field1!!, dto.field2!!)
-        }catch (e: Exception){
-            return ResponseEntity.status(400).build()
-        }
+                    // LOGIC
+                    if (dto.field1 == null || dto.field2 == null || dto.id != null)
+                        return ResponseEntity.status(400).build()
 
-        if (id==null){
-            // BUG !!!
-            return ResponseEntity.status(500).build()
-        }
+                })
 
-        return ResponseEntity.status(201).body(id)
+        tracer.buildSpan("someWork").withTag("Database", "Fetch data").startActive()
+                .use({ activeSpan ->
+
+                    // LOGIC
+                    val id: Long?
+                    try{
+                        id = crud.createEntity(dto.field1!!, dto.field2!!)
+                    }catch (e: Exception){
+                        return ResponseEntity.status(400).build()
+                    }
+
+                    if (id==null){
+                        // BUG !!!
+                        return ResponseEntity.status(500).build()
+                    }
+
+                    return ResponseEntity.status(201).body(id)
+                })
     }
 
 }

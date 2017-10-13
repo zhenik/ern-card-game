@@ -5,21 +5,20 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import org.springframework.boot.autoconfigure.domain.EntityScan
+import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
+import org.springframework.web.client.RestTemplate
 import springfox.documentation.builders.ApiInfoBuilder
 import springfox.documentation.builders.PathSelectors
 import springfox.documentation.service.ApiInfo
 import springfox.documentation.spi.DocumentationType
 import springfox.documentation.spring.web.plugins.Docket
 import springfox.documentation.swagger2.annotations.EnableSwagger2
+import com.uber.jaeger.samplers.ProbabilisticSampler
 
-/**
- * game
- * NIK on 13/10/2017
- */
 @Configuration
 @EnableSwagger2
 @EnableJpaRepositories(basePackages = arrayOf("no.ern.game.api"))
@@ -56,13 +55,24 @@ class ApplicationConfig {
                     2001-01-05T13:15:30Z
                  */
                 .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS) //ISODate
-                //make sure we can use Java 8 dates
                 .modules(JavaTimeModule())
                 .build()
     }
 
-    /*
-    If you run this directly, you can then check the Swagger documentation at:
-    http://localhost:8080/newsrest/api/swagger-ui.html
-    */
+    @Bean
+    fun restTemplate(restTemplateBuilder: RestTemplateBuilder): RestTemplate {
+        return restTemplateBuilder.build()
+    }
+
+    /**
+     * TRACING bean
+     * */
+    @Bean
+    fun tracer(): io.opentracing.Tracer {
+        return com.uber.jaeger.Configuration(
+                "api-module",
+                com.uber.jaeger.Configuration.SamplerConfiguration(ProbabilisticSampler.TYPE, 1),
+                com.uber.jaeger.Configuration.ReporterConfiguration()
+        ).getTracer()
+    }
 }
