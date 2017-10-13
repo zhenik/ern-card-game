@@ -22,6 +22,11 @@
         <kotlin.version>1.1.2</kotlin.version>
         <spring.version>1.5.7.RELEASE</spring.version>
         <h2.version>1.4.196</h2.version>
+        <google-code-json.version>2.8.1</google-code-json.version>
+        <jackson-datatype-jsr310.version>2.8.9</jackson-datatype-jsr310.version>
+        <rest-assured.version>3.0.1</rest-assured.version>
+        <resteasy-client.version>3.1.3.Final</resteasy-client.version>
+        <jaeger-core.version>0.20.0</jaeger-core.version>
     </properties>
     <dependencyManagement>
 
@@ -79,39 +84,32 @@
             <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
-                <version>2.8.1</version>
+                <version>${google-code-json.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jsr310</artifactId>
-                <version>2.8.9</version>
+                <version>${jackson-datatype-jsr310.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>io.rest-assured</groupId>
                 <artifactId>rest-assured</artifactId>
-                <version>3.0.1</version>
+                <version>${rest-assured.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-client</artifactId>
-                <version>3.1.3.Final</version>
+                <version>${resteasy-client.version}</version>
                 <scope>test</scope>
             </dependency>
 
             <!--TRACING-->
-            <!-- https://mvnrepository.com/artifact/io.opentracing.contrib/opentracing-spring-web-autoconfigure -->
-            <!--<dependency>-->
-                <!--<groupId>io.opentracing.contrib</groupId>-->
-                <!--<artifactId>opentracing-spring-web-autoconfigure</artifactId>-->
-                <!--<version>0.0.10</version>-->
-            <!--</dependency>-->
-            <!-- https://mvnrepository.com/artifact/com.uber.jaeger/jaeger-core -->
             <dependency>
                 <groupId>com.uber.jaeger</groupId>
                 <artifactId>jaeger-core</artifactId>
-                <version>0.20.0</version>
+                <version>${jaeger-core.version}</version>
             </dependency>
 
 

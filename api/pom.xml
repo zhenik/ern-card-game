@@ -76,11 +76,6 @@
             <groupId>com.uber.jaeger</groupId>
             <artifactId>jaeger-core</artifactId>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>io.opentracing.contrib</groupId>-->
-            <!--<artifactId>opentracing-spring-web</artifactId>-->
-            <!--<version>0.0.10</version>-->
-        <!--</dependency>-->
     </dependencies>
 
 
