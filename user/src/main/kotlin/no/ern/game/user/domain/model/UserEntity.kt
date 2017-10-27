@@ -2,16 +2,16 @@ package no.ern.game.user.domain.model
 
 import org.hibernate.validator.constraints.NotBlank
 import java.sql.Blob
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import javax.persistence.*
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
 @Entity
 data class UserEntity(
 
-        @get:NotBlank @get:Size(max = 50)
+        @get:NotBlank
+        @get:Size(max = 50)
+        @get:Column(unique = true)
         var username: String,
 
         @get:NotBlank
@@ -39,7 +39,7 @@ data class UserEntity(
         @get:Size(min = 0)
         var level: Int = 1,
 
-        @get:NotNull
+        @get:NotNull @get:ElementCollection
         var equipment: Collection<ItemMock> = listOf(),
 
         @get:Id @get:GeneratedValue
