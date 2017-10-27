@@ -40,7 +40,7 @@ class UserController {
         }
 
         try {
-            val savedId = repo.saveUser(
+            val savedId = repo.createUser(
                     username = userDto.username!!,
                     password = userDto.password!!,
                     salt = userDto.salt!!,

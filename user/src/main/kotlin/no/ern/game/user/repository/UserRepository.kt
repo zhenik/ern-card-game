@@ -14,16 +14,16 @@ interface UserRepository : CrudRepository<UserEntity,Long>, UserRepositoryCustom
 
 @Transactional
 interface UserRepositoryCustom {
-    fun saveUser(username: String,
-                 password: String,
-                 salt: String,
-                 health: Int,
-                 damage: Int,
-                 avatar: Blob,
-                 currency: Int,
-                 experience: Int,
-                 level: Int,
-                 equipment: Collection<ItemEntity>): Long
+    fun createUser(username: String,
+                   password: String,
+                   salt: String,
+                   health: Int,
+                   damage: Int,
+                   avatar: Blob?,
+                   currency: Int,
+                   experience: Int,
+                   level: Int,
+                   equipment: Collection<ItemEntity>): Long
 }
 
 open class UserRepositoryImpl : UserRepositoryCustom {
@@ -31,16 +31,16 @@ open class UserRepositoryImpl : UserRepositoryCustom {
     @PersistenceContext
     private lateinit var em: EntityManager
 
-    override fun saveUser(username: String,
-                          password: String,
-                          salt: String,
-                          health: Int,
-                          damage: Int,
-                          avatar: Blob,
-                          currency: Int,
-                          experience: Int,
-                          level: Int,
-                          equipment: Collection<ItemEntity>
+    override fun createUser(username: String,
+                            password: String,
+                            salt: String,
+                            health: Int,
+                            damage: Int,
+                            avatar: Blob?,
+                            currency: Int,
+                            experience: Int,
+                            level: Int,
+                            equipment: Collection<ItemEntity>
     ): Long {
 
         val userEntity = UserEntity(

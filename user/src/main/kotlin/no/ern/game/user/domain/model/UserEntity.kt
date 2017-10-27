@@ -1,6 +1,7 @@
 package no.ern.game.user.domain.model
 
 import org.hibernate.validator.constraints.NotBlank
+import org.hibernate.validator.constraints.Range
 import java.sql.Blob
 import javax.persistence.*
 import javax.validation.constraints.NotNull
@@ -19,24 +20,24 @@ data class UserEntity(
 
         var salt: String = "",
 
-        @get:NotBlank
+        @get:NotNull
         var health: Int = 100,
 
-        @get:NotBlank
+        @get:NotNull
         var damage: Int = 100,
 
         var avatar: Blob? = null,
 
-        @get:NotBlank
-        @get:Size(min = 0)
+        @get:NotNull
+        @get:Range(min = 0)
         var currency: Int = 0,
 
-        @get:NotBlank
-        @get:Size(min = 0)
+        @get:NotNull
+        @get:Range(min = 0)
         var experience: Int = 0,
 
-        @get:NotBlank
-        @get:Size(min = 0)
+        @get:NotNull
+        @get:Range(min = 0)
         var level: Int = 1,
 
         @get:NotNull @get:ElementCollection
