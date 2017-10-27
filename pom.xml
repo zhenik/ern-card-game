@@ -11,6 +11,7 @@
     <modules>
         <module>api</module>
         <module>match</module>
+        <module>user</module>
     </modules>
 
     <contributors>
