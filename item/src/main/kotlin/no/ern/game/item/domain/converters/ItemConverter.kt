@@ -11,7 +11,10 @@ class ItemConverter{
             return ItemDto(
                     id=item.id?.toString(),
                     name = item.name,
-                    description = item.description
+                    description = item.description,
+                    type = item.type,
+                    damageBonus = item.damageBonus,
+                    healthBonus = item.healthBonus
             )
         }
 

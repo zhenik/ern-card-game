@@ -10,24 +10,23 @@ import javax.validation.constraints.Size
 @Entity
 data class Item(
 
-        @get:Id @get:GeneratedValue
-        var id: Long? = null,
-
         @get: NotBlank @get:Size(max=32)
         var name: String,
-
         @get: NotBlank @get:Size(max=64)
         var description: String,
-        @get: NotBlank @get:Size(max=32)
+        @get: NotBlank @get:Size(max=8)
         var type: String,
-        @get:Size(max=32)
+        @get: NotBlank @get:Size(max=32)
         var damageBonus: Long?= null,
-        @get:Size(max=32)
-        var healthBonus: Long?= null
+        @get: NotBlank @get:Size(max=32)
+        var healthBonus: Long?= null,
+
+        @get:Id @get:GeneratedValue
+        var id: Long? = null
 
 
 
 ){
-//    //need empty constructor for jpa and JSON -parsing
-//    constructor():this("","", "", "")
+    //need empty constructor for jpa and JSON -parsing
+    constructor():this("","", "", 0, 0)
 }
