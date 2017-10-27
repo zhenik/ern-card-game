@@ -35,7 +35,7 @@ class ApplicationConfig {
     private fun apiInfo(): ApiInfo {
         return ApiInfoBuilder()
                 .title("API for user entities")
-                .description("Contains user entity repository")
+                .description("MicroService that Contains user entity repository")
                 .version("1.0")
                 .build()
     }
@@ -43,16 +43,7 @@ class ApplicationConfig {
     @Bean(name = arrayOf("OBJECT_MAPPER_BEAN"))
     fun jsonObjectMapper(): ObjectMapper {
         return Jackson2ObjectMapperBuilder.json()
-                .serializationInclusion(JsonInclude.Include.NON_NULL) // Don’t include null values
-                /*
-                    JSON does not specify how dates should be represented, whereas JavaScript does.
-                    And in JavaScript it is ISO 8601.
-                    So, to represent dates to send over a network consumed by different clients,
-                    it is reasonable to send them in ISO 8601 instead of a numeric timestamp.
-                    Here we make sure timestamps are not used in marshalling of JSON data.
-                    Example:
-                    2001-01-05T13:15:30Z
-                 */
+                .serializationInclusion(JsonInclude.Include.NON_NULL)
                 .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS) //ISODate
                 .modules(JavaTimeModule())
                 .build()

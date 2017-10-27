@@ -2,7 +2,7 @@ package no.ern.game.user.domain.dto
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
-import no.ern.game.user.domain.model.ItemMock
+import no.ern.game.user.domain.model.ItemEntity
 import java.sql.Blob
 
 @ApiModel("DTO representing UserEntity")
@@ -38,6 +38,6 @@ data class UserDto(
         var level: Int? = 1,
 
         @ApiModelProperty("The items the user has")
-        var equipment: Collection<ItemMock>? = null
+        var equipment: Collection<ItemEntity>? = null
 )
 

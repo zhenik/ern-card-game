@@ -1,6 +1,6 @@
 package no.ern.game.user.repository
 
-import no.ern.game.user.domain.model.ItemMock
+import no.ern.game.user.domain.model.ItemEntity
 import no.ern.game.user.domain.model.UserEntity
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
@@ -23,7 +23,7 @@ interface UserRepositoryCustom {
                  currency: Int,
                  experience: Int,
                  level: Int,
-                 equipment: Collection<ItemMock>): Long
+                 equipment: Collection<ItemEntity>): Long
 }
 
 open class UserRepositoryImpl : UserRepositoryCustom {
@@ -40,7 +40,8 @@ open class UserRepositoryImpl : UserRepositoryCustom {
                           currency: Int,
                           experience: Int,
                           level: Int,
-                          equipment: Collection<ItemMock>): Long {
+                          equipment: Collection<ItemEntity>
+    ): Long {
 
         val userEntity = UserEntity(
                 username,

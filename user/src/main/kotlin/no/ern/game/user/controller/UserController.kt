@@ -36,7 +36,7 @@ class UserController {
             userDto: UserDto): ResponseEntity<Long> {
 
         if (!userDto.id.isNullOrEmpty()) {
-            return ResponseEntity.status(400).build();
+            return ResponseEntity.status(400).build()
         }
 
         try {

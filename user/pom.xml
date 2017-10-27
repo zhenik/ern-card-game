@@ -71,21 +71,17 @@
             <scope>test</scope>
         </dependency>
 
-        <!--TRACING-->
-        <!-- https://mvnrepository.com/artifact/com.uber.jaeger/jaeger-core -->
-        <dependency>
-            <groupId>com.uber.jaeger</groupId>
-            <artifactId>jaeger-core</artifactId>
-        </dependency>
     </dependencies>
 
     <build>
+        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <finalName>api</finalName>
+                    <finalName>user</finalName>
                 </configuration>
             </plugin>
         </plugins>

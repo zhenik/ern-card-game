@@ -40,8 +40,10 @@ data class UserEntity(
         var level: Int = 1,
 
         @get:NotNull @get:ElementCollection
-        var equipment: Collection<ItemMock> = listOf(),
+        var equipment: Collection<ItemEntity> = listOf(),
 
         @get:Id @get:GeneratedValue
         var id: Long? = null
-)
+) {
+        constructor():this("", "", "", 0, 0, null, 0, 0, 1)
+}
