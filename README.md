@@ -3,6 +3,15 @@ DEVELOP
 [![Build Status](https://travis-ci.com/NikitaZhevnitskiy/ern-card-game.svg?token=6FYqXrfAk2ZHo34Tq8Gp&branch=develop)](https://travis-ci.com/NikitaZhevnitskiy/ern-card-game)  
 MASTER  
 [![Build Status](https://travis-ci.com/NikitaZhevnitskiy/ern-card-game.svg?token=6FYqXrfAk2ZHo34Tq8Gp&branch=master)](https://travis-ci.com/NikitaZhevnitskiy/ern-card-game)  
+
+
+
+
+
+
+### SWAGER
+HOST:PORT/${path}/swagger-ui.html
+
 ### Gateway
 GET & POST  
 `localhost:8080/game/api/entities`  
