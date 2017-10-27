@@ -9,6 +9,7 @@ import javax.validation.constraints.Size
 
 @Entity
 data class Match(
+
         @get: NotBlank @get:Size(max = 32)
         var username1: String,
 
@@ -29,4 +30,7 @@ data class Match(
 
         @get:Id @get:GeneratedValue
         var id: Long? = null
-) {}
+) {
+    //need empty constructor for jpa and JSON -parsing
+    constructor():this("","",0,0,0,0,"")
+}

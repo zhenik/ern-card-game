@@ -16,7 +16,7 @@ interface MatchRepository : CrudRepository<Match, Long>, MatchRepositoryCustom {
 
 @Transactional
 interface MatchRepositoryCustom {
-    fun createMatch1(
+    fun createMatch(
             userName1: String,
             userName2: String,
             totalDamage1: Long,
@@ -33,7 +33,7 @@ open class MatchRepositoryImpl : MatchRepositoryCustom {
     @PersistenceContext
     private lateinit var em: EntityManager
 
-    override fun createMatch1(
+    override fun createMatch(
             userName1: String,
             userName2: String,
             totalDamage1: Long,
