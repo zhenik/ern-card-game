@@ -39,8 +39,8 @@ data class UserEntity(
         @get:Size(min = 0)
         var level: Int = 1,
 
-        //@get:NotNull
-        //var equipment: Collection<Item> = listOf(),
+        @get:NotNull
+        var equipment: Collection<ItemMock> = listOf(),
 
         @get:Id @get:GeneratedValue
         var id: Long? = null
