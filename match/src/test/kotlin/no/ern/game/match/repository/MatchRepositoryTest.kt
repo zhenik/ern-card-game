@@ -23,7 +23,7 @@ class MatchRepositoryTestImpl {
     }
 
     private fun createMatchDefault() : Long {
-        return crud.createMatch1(
+        return crud.createMatch(
                 "u4321",
                 "u123",
                 25,
@@ -33,7 +33,7 @@ class MatchRepositoryTestImpl {
                 "u123")
     }
     private fun createMatchForUsername(username: String) : Long {
-        return crud.createMatch1(
+        return crud.createMatch(
                 username,
                 "u2",
                 25,
@@ -51,7 +51,7 @@ class MatchRepositoryTestImpl {
     fun testCreateValid() {
 
         //Act
-        val id = crud.createMatch1(
+        val id = crud.createMatch(
                 "u1",
                 "u2",
                 25,
@@ -85,7 +85,7 @@ class MatchRepositoryTestImpl {
 
         //Act
         try{
-            crud.createMatch1(
+            crud.createMatch(
                     "u1",
                     "u2",
                     25,
@@ -98,7 +98,7 @@ class MatchRepositoryTestImpl {
         catch (e : ConstraintViolationException){}
 
         try{
-            crud.createMatch1(
+            crud.createMatch(
                     "u1",
                     "u2",
                     25,
@@ -116,7 +116,7 @@ class MatchRepositoryTestImpl {
 
         //Act
         try{
-            crud.createMatch1(
+            crud.createMatch(
                     "u1",
                     "u2",
                     25,

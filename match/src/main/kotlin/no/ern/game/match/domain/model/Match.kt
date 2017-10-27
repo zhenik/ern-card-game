@@ -30,4 +30,7 @@ data class Match(
 
         @get:Id @get:GeneratedValue
         var id: Long? = null
-) {}
+) {
+    //need empty constructor for jpa and JSON -parsing
+    constructor():this("","",0,0,0,0,"")
+}
