@@ -45,17 +45,3 @@ data class UserEntity(
         @get:Id @get:GeneratedValue
         var id: Long? = null
 )
-
-/*
-- password
-- salt (Ask ANDREA)
-- health
-- damage
-______________
-- matches [Collection<Match> -> Match_State)]
-- avatar (binary || URL)
-- currency
-- experience
-- level
-- equipment [Collection<Item>]
- */
