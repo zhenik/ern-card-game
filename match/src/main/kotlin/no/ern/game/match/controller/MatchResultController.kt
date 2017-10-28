@@ -111,14 +111,14 @@ class MatchResultController {
     fun validDto(resultDto: MatchResultDto): Boolean{
 
         if (
-        resultDto.attackerUsername!=null &&
-                resultDto.defenderUsername!=null &&
-                resultDto.attackerHealth!=null &&
-                resultDto.defenderHealth!=null &&
-                resultDto.attackerTotalDamage!=null &&
-                resultDto.defenderTotalDamage!= null &&
-                resultDto.attackerRemainingHealth!= null &&
-                resultDto.defenderRemainingHealth!= null &&
+        resultDto.attacker?.username!=null &&
+                resultDto.defender?.username!=null &&
+                resultDto.attacker?.health!=null &&
+                resultDto.defender?.health!=null &&
+                resultDto.attacker?.damage!=null &&
+                resultDto.defender?.damage!= null &&
+                resultDto.attacker?.remainingHealth!= null &&
+                resultDto.defender?.remainingHealth!= null &&
                 resultDto.winnerName!=null &&
                 // check if id is present than false
                 resultDto.id==null)
@@ -128,14 +128,14 @@ class MatchResultController {
 
     fun registerMatch(resultDto: MatchResultDto): Long{
         return crud.createMatchResult(
-                resultDto.attackerUsername!!,
-                resultDto.defenderUsername!!,
-                resultDto.attackerHealth!!,
-                resultDto.defenderHealth!!,
-                resultDto.attackerTotalDamage!!,
-                resultDto.defenderTotalDamage!!,
-                resultDto.attackerRemainingHealth!!,
-                resultDto.defenderRemainingHealth!!,
+                resultDto.attacker!!.username!!,
+                resultDto.defender!!.username!!,
+                resultDto.attacker!!.health!!,
+                resultDto.defender!!.health!!,
+                resultDto.attacker!!.damage!!,
+                resultDto.defender!!.damage!!,
+                resultDto.attacker!!.remainingHealth!!,
+                resultDto.defender!!.remainingHealth!!,
                 resultDto.winnerName!!)
     }
 }

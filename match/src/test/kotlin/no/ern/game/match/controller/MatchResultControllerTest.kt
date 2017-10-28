@@ -2,7 +2,9 @@ package no.ern.game.match.controller
 
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
+import io.restassured.path.json.JsonPath.from
 import org.hamcrest.CoreMatchers
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class MatchResultControllerTest : ControllerTestBase(){
@@ -22,7 +24,6 @@ class MatchResultControllerTest : ControllerTestBase(){
         // Arrange
         val dto = getValidMatchResultDto()
 
-
         RestAssured.given()
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
@@ -39,11 +40,13 @@ class MatchResultControllerTest : ControllerTestBase(){
         RestAssured.given().get().then().statusCode(200).body("size()", CoreMatchers.equalTo(1))
 
         // get :id
-        RestAssured.given().pathParam("id", id)
+        val json = RestAssured.given().pathParam("id", id)
                 .get("/{id}")
-                .then()
-                .statusCode(200)
-                .body("id", CoreMatchers.equalTo(id))
-                .body("attackerUsername", CoreMatchers.equalTo(dto.attackerUsername))
+                .andReturn()
+                .asString()
+
+        assertEquals(from(json).getLong("attacker.health"), dto.attacker!!.health!!)
+        assertEquals(from(json).getLong("attacker.remainingHealth"), dto.attacker!!.remainingHealth!!)
+
     }
 }

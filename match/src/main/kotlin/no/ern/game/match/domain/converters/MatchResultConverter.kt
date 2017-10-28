@@ -1,6 +1,7 @@
 package no.ern.game.match.domain.converters
 
 import no.ern.game.match.domain.dto.MatchResultDto
+import no.ern.game.match.domain.dto.PlayerDto
 import no.ern.game.match.domain.model.MatchResult
 
 class MatchResultConverter {
@@ -8,19 +9,16 @@ class MatchResultConverter {
         fun transform(entity: MatchResult) : MatchResultDto {
             return MatchResultDto(
                     id=entity.id?.toString(),
-
-                    attackerUsername = entity.attackerUsername,
-                    defenderUsername = entity.defenderUsername,
-
-                    attackerTotalDamage = entity.attackerTotalDamage,
-                    defenderTotalDamage = entity.defenderTotalDamage,
-
-                    attackerHealth = entity.attackerHealth,
-                    defenderHealth = entity.defenderHealth,
-
-                    attackerRemainingHealth = entity.attackerRemainingHealth,
-                    defenderRemainingHealth = entity.defenderRemainingHealth,
-
+                    attacker = PlayerDto(
+                            entity.attackerUsername,
+                            entity.attackerHealth,
+                            entity.attackerTotalDamage,
+                            entity.attackerRemainingHealth),
+                    defender = PlayerDto(
+                            entity.defenderUsername,
+                            entity.defenderHealth,
+                            entity.defenderTotalDamage,
+                            entity.defenderRemainingHealth),
                     winnerName = entity.winnerName
             )
         }
