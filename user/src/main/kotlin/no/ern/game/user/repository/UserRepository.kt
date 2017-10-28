@@ -12,7 +12,7 @@ import javax.persistence.PersistenceContext
 @Repository
 interface UserRepository : CrudRepository<User,Long>, UserRepositoryCustom {
     fun findFirstByUsername(username: String): User
-
+    fun findAllByLevel(level: Int): Iterable<User>
 }
 
 @Transactional

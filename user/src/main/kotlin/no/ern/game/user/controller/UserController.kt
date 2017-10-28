@@ -25,10 +25,22 @@ class UserController {
     @Autowired
     private lateinit var repo: UserRepository
 
-    @ApiOperation("Get all users")
+    @ApiOperation("Get all users by level")
     @GetMapping
-    fun getAllUsers(): ResponseEntity<Iterable<UserDto>> {
-        return ResponseEntity.ok(UserConverter.transform(repo.findAll()))
+    fun getAllUsersByLevel(
+            @ApiParam("Level to find")
+            @RequestParam(name = "level", required = false)
+            level: Int?
+    ): ResponseEntity<Iterable<UserDto>> {
+        if (level == null) {
+            return ResponseEntity.ok(UserConverter.transform(repo.findAll()))
+        }
+
+        if(level < 1) {
+            return ResponseEntity.status(400).build()
+        }
+
+        return ResponseEntity.ok(UserConverter.transform(repo.findAllByLevel(level)))
     }
 
     @ApiOperation("Create new user")
