@@ -12,7 +12,7 @@ import javax.validation.ConstraintViolationException
 
 @RunWith(SpringRunner::class)
 @DataJpaTest
-class MatchResultRepositoryTestImpl {
+class MatchResultRepositoryTest {
 
     @Autowired
     private lateinit var crud: MatchResultRepository
@@ -22,25 +22,29 @@ class MatchResultRepositoryTestImpl {
         assertEquals(0, crud.count())
     }
 
-    private fun createMatchDefault() : Long {
-        return crud.createMatch(
-                "u4321",
-                "u123",
+    private fun createMatchResultValid() : Long {
+        return crud.createMatchResult(
+                "u1",
+                "u2",
                 25,
-                30,
-                0,
+                20,
+                20,
+                15,
                 5,
-                "u123")
+                0,
+                "u1")
     }
     private fun createMatchForUsername(username: String) : Long {
-        return crud.createMatch(
+        return return crud.createMatchResult(
                 username,
                 "u2",
                 25,
-                30,
-                0,
+                20,
+                20,
+                15,
                 5,
-                "u2")
+                0,
+                "u1")
     }
     private fun createMatch(match: MatchResult): MatchResult? {
         return crud.save(match)
@@ -48,29 +52,22 @@ class MatchResultRepositoryTestImpl {
 
 
     @Test
-    fun testCreateValid() {
+    fun testCreateMatchresult_Valid() {
 
         //Act
-        val id = crud.createMatch(
-                "u1",
-                "u2",
-                25,
-                30,
-                0,
-                5,
-                "u2")
+        val id = createMatchResultValid()
         //Assert
         assertNotNull(id)
-        assertTrue(!id.equals(-1L))
+        assertTrue(id!=(-1L))
     }
 
     @Test
-    fun testCreate3Valid() {
+    fun testCreate3MatchResults_Valid() {
 
         //Act
-        val id1 = createMatchDefault();
-        val id2 = createMatchDefault();
-        val id3 = createMatchDefault();
+        val id1 = createMatchResultValid()
+        val id2 = createMatchResultValid()
+        val id3 = createMatchResultValid()
 
         //Assert
         assertNotNull(id1)
@@ -80,50 +77,75 @@ class MatchResultRepositoryTestImpl {
     }
 
     @Test
-    fun testCreateNotValid_TotalDamageNegative() {
+    fun testCreateMatchResult_TotalDamageNotValid() {
 
 
         //Act
         try{
-            crud.createMatch(
+            crud.createMatchResult(
                     "u1",
                     "u2",
                     25,
-                    -4,
-                    0,
+                    20,
+                    -20,
+                    15,
                     5,
-                    "u2")
+                    0,
+                    "u1")
             fail()
         }
         catch (e : ConstraintViolationException){}
 
         try{
-            crud.createMatch(
+            crud.createMatchResult(
                     "u1",
                     "u2",
                     25,
+                    20,
+                    20,
+                    -15,
+                    5,
                     0,
-                    0,
-                    -5,
-                    "u2")
+                    "u1")
             fail()
         }
         catch (e : ConstraintViolationException){}
     }
 
     @Test
-    fun testCreateNotValid_RemainingHealthNegative() {
+    fun testCreateResultMatch_UsernameNotValid() {
 
         //Act
+        // 1 Blank
         try{
-            crud.createMatch(
-                    "u1",
+            crud.createMatchResult(
+                    "",
                     "u2",
                     25,
-                    -4,
-                    0,
+                    20,
+                    20,
+                    -15,
                     5,
-                    "u2")
+                    0,
+                    "u1")
+            fail()
+        }
+        catch (e : ConstraintViolationException){}
+
+        // 2 longer than 32
+        val longName = "s".repeat(33)
+        assertTrue(longName.length>32)
+        try{
+            crud.createMatchResult(
+                    longName,
+                    "u2",
+                    25,
+                    20,
+                    20,
+                    -15,
+                    5,
+                    0,
+                    "u1")
             fail()
         }
         catch (e : ConstraintViolationException){}
@@ -141,7 +163,7 @@ class MatchResultRepositoryTestImpl {
 
         //Act
         // auto-generated
-        val list1 : List<MatchResult> = crud.findAllByUsername1OrUsername2(username, username) as List<MatchResult>
+        val list1 : List<MatchResult> = crud.findAllByAttackerUsernameOrDefenderUsername(username, username) as List<MatchResult>
         // custom
         val list2 : List<MatchResult> = crud.getMatchesByUserName(username) as List<MatchResult>
 
@@ -153,17 +175,34 @@ class MatchResultRepositoryTestImpl {
     }
 
     @Test
-    fun testAllByWinnerName(){
+    fun testFindAllByWinnerName(){
 
         //Arrange
-        val winnerName = "u2"
-        val match1= MatchResult("u1", winnerName, 25, 5, 0, 5, winnerName)
-        val match2= MatchResult("u1", winnerName, 25, 5, 0, 5, winnerName)
-
+        val winnerName = "yohohoho"
+        val match1= MatchResult(
+                winnerName,
+                "u1",
+                25,
+                20,
+                20,
+                15,
+                5,
+                0,
+                winnerName)
+        val match2= MatchResult(
+                "u1",
+                winnerName,
+                25,
+                20,
+                20,
+                15,
+                5,
+                0,
+                winnerName)
         crud.save(match1)
         crud.save(match2)
-        createMatchDefault()
-        createMatchDefault()
+        createMatchResultValid()
+        createMatchResultValid()
 
         //Act
         val list: List<MatchResult> = crud.findAllByWinnerName(winnerName) as List<MatchResult>

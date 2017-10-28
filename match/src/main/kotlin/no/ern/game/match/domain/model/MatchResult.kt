@@ -9,7 +9,6 @@ import javax.validation.constraints.Size
 
 @Entity
 data class MatchResult(
-        //TODO: test case for constraint
 
         @get: NotBlank @get:Size(max = 32)
         var attackerUsername: String,

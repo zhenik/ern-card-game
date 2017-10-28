@@ -10,19 +10,21 @@ import javax.persistence.PersistenceContext
 
 @Repository
 interface MatchResultRepository : CrudRepository<MatchResult, Long>, MatchResultRepositoryCustom {
-    fun findAllByUsername1OrUsername2(username1: String, username2: String): Iterable<MatchResult>
+    fun findAllByAttackerUsernameOrDefenderUsername(attackerUsername: String, defenderUsername: String): Iterable<MatchResult>
     fun findAllByWinnerName(winnerName: String): Iterable<MatchResult>
 }
 
 @Transactional
 interface MatchResultRepositoryCustom {
-    fun createMatch(
-            userName1: String,
-            userName2: String,
-            totalDamage1: Long,
-            totalDamage2: Long,
-            remainingHealth1: Long,
-            remainingHealth2: Long,
+    fun createMatchResult(
+            attackerUsername: String,
+            defenderUsername: String,
+            attackerHealth: Long,
+            defenderHealth: Long,
+            attackerTotalDamage: Long,
+            defenderTotalDamage: Long,
+            attackerRemainingHealth: Long,
+            defenderRemainingHealth: Long,
             winnerName: String
     ): Long
 
@@ -33,23 +35,27 @@ open class MatchResultRepositoryImpl : MatchResultRepositoryCustom {
     @PersistenceContext
     private lateinit var em: EntityManager
 
-    override fun createMatch(
-            userName1: String,
-            userName2: String,
-            totalDamage1: Long,
-            totalDamage2: Long,
-            remainingHealth1: Long,
-            remainingHealth2: Long,
+    override fun createMatchResult(
+            attackerUsername: String,
+            defenderUsername: String,
+            attackerHealth: Long,
+            defenderHealth: Long,
+            attackerTotalDamage: Long,
+            defenderTotalDamage: Long,
+            attackerRemainingHealth: Long,
+            defenderRemainingHealth: Long,
             winnerName: String): Long {
 
         var id = -1L
         val match = MatchResult(
-                userName1,
-                userName2,
-                totalDamage1,
-                totalDamage2,
-                remainingHealth1,
-                remainingHealth2,
+                attackerUsername,
+                defenderUsername,
+                attackerHealth,
+                defenderHealth,
+                attackerTotalDamage,
+                defenderTotalDamage,
+                attackerRemainingHealth,
+                defenderRemainingHealth,
                 winnerName
         )
         em.persist(match)
@@ -60,7 +66,7 @@ open class MatchResultRepositoryImpl : MatchResultRepositoryCustom {
     }
 
     override fun getMatchesByUserName(username: String): Iterable<MatchResult> {
-        val query = em.createQuery("select m from MatchResult m where m.username1 = ?1 OR m.username2=?2", MatchResult::class.java)
+        val query = em.createQuery("select m from MatchResult m where m.attackerUsername = ?1 OR m.defenderUsername=?2", MatchResult::class.java)
         query.setParameter(1, username)
         query.setParameter(2, username)
         return query.resultList.toList()
