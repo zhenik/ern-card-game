@@ -7,22 +7,26 @@ import io.swagger.annotations.ApiModelProperty
 data class MatchResultDto(
 
         @ApiModelProperty("Username 1")
-        var username1: String?=null,
-
+        var attackerUsername: String?=null,
         @ApiModelProperty("Username 2")
-        var username2: String?=null,
+        var defenderUsername: String?=null,
 
-        @ApiModelProperty("Total damage that user with username1 made for enemy")
-        var totalDamage1: Long?=null,
+        @ApiModelProperty("Total health of attacker")
+        var attackerHealth: Long?=null,
+        @ApiModelProperty("Total health of defender")
+        var defenderHealth: Long?=null,
 
-        @ApiModelProperty("Total damage that user with username2 made for enemy")
-        var totalDamage2: Long?=null,
 
-        @ApiModelProperty("Remaining health of user with username1, when match is finished")
-        var remainingHealth1: Long?=null,
+        @ApiModelProperty("Total damage that attacker made for defender")
+        var attackerTotalDamage: Long?=null,
+        @ApiModelProperty("Total damage that defender made for attacker")
+        var defenderTotalDamage: Long?=null,
 
-        @ApiModelProperty("Remaining health of user with username2, when match is finished")
-        var remainingHealth2: Long?=null,
+        @ApiModelProperty("Remaining health of attacker, when match is finished")
+        var attackerRemainingHealth: Long?=null,
+        @ApiModelProperty("Remaining health of defender, when match is finished")
+        var defenderRemainingHealth: Long?=null,
+
 
         @ApiModelProperty("Winner name of the match")
         var winnerName: String?= null,

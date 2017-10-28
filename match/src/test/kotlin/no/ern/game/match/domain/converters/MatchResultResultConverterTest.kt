@@ -1,5 +1,6 @@
 package no.ern.game.match.domain.converters
 
+import no.ern.game.match.domain.dto.MatchResultDto
 import no.ern.game.match.domain.model.MatchResult
 import org.junit.Assert.*
 import org.junit.Test
@@ -13,19 +14,39 @@ class MatchResultResultConverterTest {
     fun testTransform(){
 
         //Arrange
-        val match1= MatchResult("u1", "u2", 25, 5, 0, 5, "u2")
-        val match2= MatchResult("u1", "u2", 25, 5, 0, 5, "u2", 123L)
+        val match1= MatchResult(
+                "u1",
+                "u2",
+                25,
+                20,
+                20,
+                15,
+                5,
+                0,
+                "u1")
+        val match2= MatchResult(
+                "u22",
+                "u11",
+                25,
+                20,
+                20,
+                15,
+                5,
+                0,
+                "u22")
+
+
 
         //Act
         val entDto = MatchResultConverter.transform(match1)
-        val list = MatchResultConverter.transform(listOf(match1,match2))
+        val list : List<MatchResultDto> = MatchResultConverter.transform(listOf(match1,match2)).toList()
 
         //Assert
-        assertEquals(match1.remainingHealth1,entDto.remainingHealth1)
+        assertEquals(match1.attackerRemainingHealth,entDto.attackerRemainingHealth)
         assertNull(entDto.id)
 
         //YoDa style
-        assertTrue(list.stream().anyMatch { match1.remainingHealth1.equals(it.remainingHealth1)})
-        assertTrue(list.stream().anyMatch { match2.username1.equals(it.username1)})
+        assertTrue(list.stream().anyMatch { match1.attackerRemainingHealth==(it.attackerRemainingHealth)})
+        assertTrue(list.stream().anyMatch { match2.attackerUsername==(it.attackerUsername)})
     }
 }
