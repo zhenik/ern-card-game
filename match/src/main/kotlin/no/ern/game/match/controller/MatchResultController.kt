@@ -14,9 +14,8 @@ import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import javax.validation.ConstraintViolationException
 
-/**
-    TODO: check status code
- */
+const val ID_PARAM = "The numeric id of the match result"
+
 @Api(value = "/", description = "API for match results.")
 @RequestMapping(
         path = arrayOf("/"),
@@ -38,6 +37,44 @@ class MatchResultController {
         if(username==null)
             return ResponseEntity.ok(MatchResultConverter.transform(crud.findAll()) as List<MatchResultDto>)
         return ResponseEntity.ok(MatchResultConverter.transform(crud.getMatchesByUserName(username)) as List<MatchResultDto>)
+    }
+
+    @ApiOperation("Get a single match result specified by id")
+    @GetMapping(path = arrayOf("/{id}"))
+    fun getMatchResult(@ApiParam(ID_PARAM)
+                @PathVariable("id")
+                pathId: String?)
+            : ResponseEntity<MatchResultDto> {
+
+        val id: Long
+        try {
+            id = pathId!!.toLong()
+        } catch (e: Exception) {
+            return ResponseEntity.status(404).build()
+        }
+
+        val dto = crud.findOne(id) ?: return ResponseEntity.status(404).build()
+        return ResponseEntity.ok(MatchResultConverter.transform(dto))
+    }
+
+    @ApiOperation("Delete a match result entity with the given id")
+    @DeleteMapping(path = arrayOf("/{id}"))
+    fun delete(@ApiParam(ID_PARAM)
+               @PathVariable("id")
+               pathId: String?): ResponseEntity<Any> {
+
+        val id: Long
+        try {
+            id = pathId!!.toLong()
+        } catch (e: Exception) {
+            return ResponseEntity.status(400).build()
+        }
+
+        if (!crud.exists(id)) {
+            return ResponseEntity.status(404).build()
+        }
+        crud.delete(id)
+        return ResponseEntity.status(204).build()
     }
 
 
