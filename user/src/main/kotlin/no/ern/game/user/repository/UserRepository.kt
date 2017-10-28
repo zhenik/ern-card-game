@@ -1,7 +1,7 @@
 package no.ern.game.user.repository
 
 import no.ern.game.user.domain.model.ItemEntity
-import no.ern.game.user.domain.model.UserEntity
+import no.ern.game.user.domain.model.User
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -10,7 +10,10 @@ import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
 @Repository
-interface UserRepository : CrudRepository<UserEntity,Long>, UserRepositoryCustom
+interface UserRepository : CrudRepository<User,Long>, UserRepositoryCustom {
+    fun findFirstByUsername(username: String): User
+
+}
 
 @Transactional
 interface UserRepositoryCustom {
@@ -43,7 +46,7 @@ open class UserRepositoryImpl : UserRepositoryCustom {
                             equipment: Collection<ItemEntity>
     ): Long {
 
-        val userEntity = UserEntity(
+        val userEntity = User(
                 username,
                 password,
                 salt,

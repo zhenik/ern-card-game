@@ -1,5 +1,6 @@
 package no.ern.game.user.controller
 
+import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
 import no.ern.game.user.domain.converters.UserConverter
@@ -9,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import javax.validation.ConstraintViolationException
 
+@Api(value = "/", description = "API for user entities")
+@RequestMapping(
+        path = arrayOf("/"),
+        produces = arrayOf(MediaType.APPLICATION_JSON_VALUE)
+)
 @RestController
 @Validated
 class UserController {
@@ -24,7 +27,7 @@ class UserController {
 
     @ApiOperation("Get all users")
     @GetMapping
-    fun getAllUsers(): ResponseEntity<List<UserDto>> {
+    fun getAllUsers(): ResponseEntity<Iterable<UserDto>> {
         return ResponseEntity.ok(UserConverter.transform(repo.findAll()))
     }
 

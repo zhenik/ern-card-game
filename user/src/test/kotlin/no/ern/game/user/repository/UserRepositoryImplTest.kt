@@ -1,6 +1,6 @@
 package no.ern.game.user.repository
 
-import no.ern.game.user.domain.model.UserEntity
+import no.ern.game.user.domain.model.User
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -28,7 +28,7 @@ class EntityRepositoryImplTest {
 
     @Test
     fun testCreateUser() {
-        val user = getValidTestUser()
+        val user = getValidTestUsers()[0]
         val savedUser = repo.save(user)
 
         assertNotNull(savedUser)
@@ -37,11 +37,11 @@ class EntityRepositoryImplTest {
 
     @Test
     fun testCreatingDuplicateUsername() {
-        val user1 = getValidTestUser()
-        val user2 = getValidTestUser()
+        val user1 = getValidTestUsers()[0]
+        val user2 = getValidTestUsers()[0]
 
-        var savedUser1: UserEntity? = null
-        var savedUser2: UserEntity? = null
+        var savedUser1: User? = null
+        var savedUser2: User? = null
 
         try {
             savedUser1 = repo.save(user1)
@@ -57,21 +57,64 @@ class EntityRepositoryImplTest {
 
     }
 
-    private fun getValidTestUser(): UserEntity {
-        return UserEntity(
-                "Ruby",
-                "ThisIsAHash",
-                "ThisIsSomeSalt",
-                120,
-                44,
-                null,
-                40,
-                1,
-                1
+    @Test
+    fun testFindFirstByUsername() {
+        val user1 = getValidTestUsers()[0]
+        val user2 = getValidTestUsers()[1]
+        val savedUser1Id = createUser(user1)
+        val savedUser2Id = createUser(user2)
+
+        // Needs to be persisted, to avoid reading from cache.
+        val savedUser1 = repo.findFirstByUsername(user1.username)
+        val savedUser2 = repo.findFirstByUsername(user2.username)
+
+        assertNotNull(savedUser1Id)
+        assertNotNull(savedUser2Id)
+
+        assertEquals(user1.username, savedUser1.username)
+        assertEquals(user1.password, savedUser1.password)
+
+        assertEquals(user2.username, savedUser2.username)
+        assertEquals(user2.password, savedUser2.password)
+
+        assertEquals(savedUser1Id, savedUser1.id)
+        assertEquals(savedUser2Id, savedUser2.id)
+    }
+
+    @Test
+    fun testRangeAnnotation() {
+
+    }
+
+
+    private fun getValidTestUsers(): List<User> {
+        return listOf(
+                User(
+                        "Ruby",
+                        "ThisIsAHash",
+                        "ThisIsSomeSalt",
+                        120,
+                        44,
+                        null,
+                        40,
+                        1,
+                        1
+                ),
+                User(
+                        "Kotlin",
+                        "Spicy language..",
+                        "Thisshouldalsobesalted",
+                        122,
+                        46,
+                        null,
+                        47,
+                        1,
+                        1
+                )
         )
     }
 
-    fun createUser(user: UserEntity): Long {
+    fun createUser(user: User): Long {
         return repo.createUser(
                 username = user.username,
                 password = user.password,

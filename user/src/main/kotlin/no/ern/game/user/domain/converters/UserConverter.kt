@@ -1,13 +1,13 @@
 package no.ern.game.user.domain.converters
 
 import no.ern.game.user.domain.dto.UserDto
-import no.ern.game.user.domain.model.UserEntity
+import no.ern.game.user.domain.model.User
 
 class UserConverter {
 
     companion object {
 
-        fun transform(entity: UserEntity): UserDto {
+        fun transform(entity: User): UserDto {
             return UserDto(
                     id = entity.id.toString(),
                     username = entity.username,
@@ -23,7 +23,7 @@ class UserConverter {
             )
         }
 
-        fun transform(entities: Iterable<UserEntity>): List<UserDto> {
+        fun transform(entities: Iterable<User>): Iterable<UserDto> {
             return entities.map { transform(it) }
         }
     }

@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty
 import no.ern.game.user.domain.model.ItemEntity
 import java.sql.Blob
 
-@ApiModel("DTO representing UserEntity")
+@ApiModel("DTO representing User")
 data class UserDto(
 
         @ApiModelProperty("The id of the User")
