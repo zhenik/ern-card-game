@@ -3,7 +3,10 @@ package no.ern.game.item.domain.dto
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 
-@ApiModel("DTO for items")
+//TODO: Go through swagger comments
+//TODO: Change DTO to represent model
+
+@ApiModel("DTO for items represent match entity")
 data class ItemDto(
 
         @ApiModelProperty("The name of the item")

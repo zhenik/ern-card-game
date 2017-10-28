@@ -19,12 +19,20 @@ import javax.validation.ConstraintViolationException
 @Validated
 class ItemController {
 
+
+
+    //TODO getAllItems (return a collection of all items)
+    //TODO createItem (POST a new Item)
+    //TODO getItems (minLevel, maxLevel, type)
+    //TODO deleteItems
+    //TODO updateItem
+    //TODO replaceItem
     @Autowired
     private lateinit var repo: ItemRepository
 
     @ApiOperation("Get all items")
     @GetMapping
-    fun getAllUsers(): ResponseEntity<List<ItemDto>> {
+    fun getAllItems(): ResponseEntity<List<ItemDto>> {
         return ResponseEntity.ok(ItemConverter.transform(repo.findAll()))
     }
 

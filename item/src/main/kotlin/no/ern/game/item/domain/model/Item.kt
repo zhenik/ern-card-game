@@ -12,14 +12,15 @@ data class Item(
 
         @get: NotBlank @get:Size(max=32)
         var name: String,
-        @get: NotBlank @get:Size(max=64)
+        @get: NotBlank @get:Size(max=200)
         var description: String,
+        //TODO: Change type to enum
         @get: NotBlank @get:Size(max=8)
         var type: String,
-        @get: NotBlank @get:Size(max=32)
         var damageBonus: Long?= null,
-        @get: NotBlank @get:Size(max=32)
         var healthBonus: Long?= null,
+        var price: Int,
+        var levelRequirement: Int,
 
         @get:Id @get:GeneratedValue
         var id: Long? = null
@@ -28,5 +29,5 @@ data class Item(
 
 ){
     //need empty constructor for jpa and JSON -parsing
-    constructor():this("","", "", 0, 0)
+    constructor():this("","", "", 0, 0, 0, 0)
 }

@@ -4,9 +4,10 @@ import no.ern.game.item.domain.model.Item
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
-import java.sql.Blob
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
+
+//TODO: Update to reflect DTO and Item
 
 @Repository
 interface ItemRepository : CrudRepository<Item,Long>, ItemRepositoryCustom
@@ -17,7 +18,10 @@ interface ItemRepositoryCustom {
                    description: String,
                    type: String,
                    bonusDamage: Long,
-                   bonusHealth: Long): Long
+                   bonusHealth: Long,
+                   price: Int,
+                   levelRequirement: Int
+    ): Long
 }
 
 open class ItemRepositoryImpl : ItemRepositoryCustom {
@@ -29,7 +33,9 @@ open class ItemRepositoryImpl : ItemRepositoryCustom {
                             description: String,
                             type: String,
                             bonusDamage: Long,
-                            bonusHealth: Long
+                            bonusHealth: Long,
+                            price:Int,
+                            levelRequirement: Int
     ): Long {
 
         val item = Item(
@@ -37,7 +43,9 @@ open class ItemRepositoryImpl : ItemRepositoryCustom {
                 description,
                 type,
                 bonusDamage,
-                bonusHealth
+                bonusHealth,
+                price,
+                levelRequirement
         )
         em.persist(item)
         return item.id!!

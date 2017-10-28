@@ -84,7 +84,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <finalName>api</finalName>
+                    <finalName>item</finalName>
                 </configuration>
             </plugin>
         </plugins>
