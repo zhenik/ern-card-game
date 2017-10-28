@@ -56,7 +56,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <spring-fox-swagger2.version>2.6.1</spring-fox-swagger2.version>
-        <kotlin.version>1.1.2</kotlin.version>
+        <kotlin.version>1.1.51</kotlin.version>
         <spring.version>1.5.7.RELEASE</spring.version>
         <h2.version>1.4.196</h2.version>
         <google-code-json.version>2.8.1</google-code-json.version>
@@ -116,6 +116,12 @@
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-spring-web</artifactId>
                 <version>${spring-fox-swagger2.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-noarg</artifactId>
+                <version>${kotlin.version}</version>
             </dependency>
 
             <dependency>
