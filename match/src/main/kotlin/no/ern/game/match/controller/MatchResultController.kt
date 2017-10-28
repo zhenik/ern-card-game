@@ -16,10 +16,12 @@ import javax.validation.ConstraintViolationException
 
 const val ID_PARAM = "The numeric id of the match result"
 
-@Api(value = "/", description = "API for match results.")
+//TODO: PUT, PATCH
+
+@Api(value = "/matches", description = "API for match results.")
 @RequestMapping(
-        path = arrayOf("/"),
-        produces = arrayOf(MediaType.APPLICATION_JSON_VALUE)
+        path = arrayOf("/matches"),
+        produces = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE)
 )
 @RestController
 @Validated
@@ -30,13 +32,42 @@ class MatchResultController {
 
     @ApiOperation("Retrieve all match results. Fetch all match results by default. Fetch all match results for specific user if username provided in request parameters")
     @GetMapping
-    fun getMatchesResults(
-            @ApiParam("The specific username as parameter")
-            @RequestParam("username", required = false) username: String?
-    ) : ResponseEntity<List<MatchResultDto>> {
-        if(username==null)
-            return ResponseEntity.ok(MatchResultConverter.transform(crud.findAll()) as List<MatchResultDto>)
-        return ResponseEntity.ok(MatchResultConverter.transform(crud.getMatchesByUserName(username)) as List<MatchResultDto>)
+    fun getMatchesResults(@ApiParam("The specific username as parameter")
+                          @RequestParam("username", required = false)
+                          username: String?
+    ): ResponseEntity<List<MatchResultDto>> {
+
+        when(username.isNullOrBlank()){
+            true ->
+                return ResponseEntity.ok(MatchResultConverter.transform(crud.findAll()) as List<MatchResultDto>)
+            false ->
+                return ResponseEntity.ok(MatchResultConverter.transform(crud.getMatchesByUserName(username!!)) as List<MatchResultDto>)
+        }
+    }
+
+
+    @ApiOperation("Create a match result")
+    @PostMapping(consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
+    @ApiResponse(code = 201, message = "The id of newly match result")
+    fun createMatchResult(
+            @ApiParam("The match result model")
+            @RequestBody resultDto: MatchResultDto) : ResponseEntity<Long>{
+
+        if (!validDto(resultDto)){
+            return ResponseEntity.status(400).build()
+        }
+
+        try{
+            val id = registerMatch(resultDto)
+            return ResponseEntity.status(201).body(id)
+        }catch (e: ConstraintViolationException){
+            // 422 Unprocessable Entity
+            // 409 Conflict (for duplication id)
+            return ResponseEntity.status(422).build()
+        }catch (e: Exception){
+            return ResponseEntity.status(500).build()
+        }
+
     }
 
     @ApiOperation("Get a single match result specified by id")
@@ -77,32 +108,8 @@ class MatchResultController {
         return ResponseEntity.status(204).build()
     }
 
-
-    @ApiOperation("Create a match result")
-    @PostMapping(consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(code = 201, message = "The id of newly match result")
-    fun createMatchResult(
-            @ApiParam("The match result model")
-            @RequestBody resultDto: MatchResultDto) : ResponseEntity<Long>{
-
-        if (!validDto(resultDto)){
-            return ResponseEntity.status(400).build()
-        }
-
-        try{
-            val id = registerMatch(resultDto)
-            return ResponseEntity.status(201).body(id)
-        }catch (e: ConstraintViolationException){
-            // 422 Unprocessable Entity
-            // 409 Conflict (for duplication id)
-            return ResponseEntity.status(422).build()
-        }catch (e: Exception){
-            return ResponseEntity.status(500).build()
-        }
-
-    }
-
     fun validDto(resultDto: MatchResultDto): Boolean{
+
         if (
         resultDto.attackerUsername!=null &&
                 resultDto.defenderUsername!=null &&
@@ -112,7 +119,9 @@ class MatchResultController {
                 resultDto.defenderTotalDamage!= null &&
                 resultDto.attackerRemainingHealth!= null &&
                 resultDto.defenderRemainingHealth!= null &&
-                resultDto.winnerName!=null)
+                resultDto.winnerName!=null &&
+                // check if id is present than false
+                resultDto.id==null)
             return true
         return false
     }
