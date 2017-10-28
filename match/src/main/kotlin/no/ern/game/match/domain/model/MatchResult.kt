@@ -33,8 +33,4 @@ data class MatchResult(
 
         @get:Id @get:GeneratedValue
         var id: Long? = null
-) {
-    //TODO: no args (dependency kotlin-maven-noarg)
-    //need empty constructor for jpa and JSON -parsing
-    constructor():this("","",0,0,0,0,0,0,"")
-}
+)
