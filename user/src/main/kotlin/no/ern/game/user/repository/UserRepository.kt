@@ -12,7 +12,10 @@ import javax.persistence.PersistenceContext
 @Repository
 interface UserRepository : CrudRepository<User,Long>, UserRepositoryCustom {
     fun findFirstByUsername(username: String): User
+    fun findAllByLevel(level: Int): Iterable<User>
 
+    @Transactional
+    fun deleteByUsername(username: String): Long
 }
 
 @Transactional
@@ -22,7 +25,6 @@ interface UserRepositoryCustom {
                    salt: String,
                    health: Int,
                    damage: Int,
-                   avatar: Blob?,
                    currency: Int,
                    experience: Int,
                    level: Int,
@@ -39,7 +41,6 @@ open class UserRepositoryImpl : UserRepositoryCustom {
                             salt: String,
                             health: Int,
                             damage: Int,
-                            avatar: Blob?,
                             currency: Int,
                             experience: Int,
                             level: Int,
@@ -52,7 +53,6 @@ open class UserRepositoryImpl : UserRepositoryCustom {
                 salt,
                 health,
                 damage,
-                avatar,
                 currency,
                 experience,
                 level,

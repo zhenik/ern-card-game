@@ -25,8 +25,8 @@ data class UserDto(
         @ApiModelProperty("User's damage")
         var damage: Int? = 1,
 
-        @ApiModelProperty("Image in a Binary format, if exists")
-        var avatar: Blob? = null,
+//        @ApiModelProperty("Image in a Binary format, if exists")
+//        var avatar: Blob? = null,
 
         @ApiModelProperty("Amount of money the user has")
         var currency: Int? = null,

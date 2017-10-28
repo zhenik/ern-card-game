@@ -8,6 +8,7 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.junit4.SpringRunner
+import javax.validation.ConstraintViolationException
 
 @RunWith(SpringRunner::class)
 @DataJpaTest
@@ -29,10 +30,10 @@ class EntityRepositoryImplTest {
     @Test
     fun testCreateUser() {
         val user = getValidTestUsers()[0]
-        val savedUser = repo.save(user)
+        val savedId = createUser(user)
 
-        assertNotNull(savedUser)
-        assertNotNull(savedUser.id)
+        assertTrue(repo.exists(savedId))
+        assertEquals(1, repo.count())
     }
 
     @Test
@@ -82,12 +83,78 @@ class EntityRepositoryImplTest {
     }
 
     @Test
-    fun testRangeAnnotation() {
+    fun testFindUserByLevel() {
+        val user1 = getValidTestUsers()[0]
+        val user2 = getValidTestUsers()[0]
+        user2.username = "asdasjdoasjdioasoidj"
+        val user3 = getValidTestUsers()[1]
 
+        createUser(user1)
+        createUser(user2)
+        createUser(user3)
+        val usersFound1 = repo.findAllByLevel(user1.level)
+        val usersFound2 = repo.findAllByLevel(user3.level)
+
+        assertEquals(2,usersFound1.count())
+        assertTrue(usersFound1.any({e -> e.username == user1.username}))
+        assertTrue(usersFound1.any({e -> e.username == user2.username}))
+
+        assertEquals(1,usersFound2.count())
+        assertTrue(usersFound2.any({e -> e.username == user3.username}))
     }
 
 
-    private fun getValidTestUsers(): List<User> {
+
+    // Constraints
+    @Test
+    fun testPositiveIntegerConstraint() {
+        val user = getValidTestUsers()[0]
+
+        user.level = 500
+
+        assertThatSavingUserFails(user)
+    }
+
+    @Test
+    fun testNegativeIntegerConstraint() {
+        val user = getValidTestUsers()[0]
+
+        user.damage = -23
+
+        assertThatSavingUserFails(user)
+    }
+
+    @Test
+    fun testTooLongUsernameConstraint() {
+        val user = getValidTestUsers()[1]
+
+        user.username = getTooLongUsername()
+        assertThatSavingUserFails(user)
+    }
+
+    @Test
+    fun testBlankConstraint() {
+        val user = getValidTestUsers()[1]
+
+        user.username = "    "
+        assertThatSavingUserFails(user)
+    }
+
+    private fun getTooLongUsername() =
+            "somethingLongerThan50Characters_aoisdjasiojdaoisjdoaisdjisdijasdoiasdjaosidjaoisjdoaisjdaoisjdoiajsdiojasidojaosijdaoisjdoaisjdoaijsdiojasdiojasdoijaisodjaoisjdaoisjdoiasjdoiajsdoiajsdiojadoijdgapi nasdfasdioufhasdifasidfuhasdifhasodfihasduifhaisuodfhasidfh aohguidsfhuidhgsdfiuhsdiuofhgsdoifughsdioufhiusdfiusdfhgsidfhgsidofhgsdf"
+
+    private fun assertThatSavingUserFails(user: User) {
+        try {
+            repo.save(user)
+            fail()
+        } catch (e: ConstraintViolationException) {
+
+        }
+        assertEquals(null, user.id)
+    }
+
+
+    fun getValidTestUsers(): List<User> {
         return listOf(
                 User(
                         "Ruby",
@@ -95,7 +162,6 @@ class EntityRepositoryImplTest {
                         "ThisIsSomeSalt",
                         120,
                         44,
-                        null,
                         40,
                         1,
                         1
@@ -106,10 +172,9 @@ class EntityRepositoryImplTest {
                         "Thisshouldalsobesalted",
                         122,
                         46,
-                        null,
                         47,
-                        1,
-                        1
+                        23,
+                        4
                 )
         )
     }
@@ -121,7 +186,6 @@ class EntityRepositoryImplTest {
                 salt = user.salt,
                 health = user.health,
                 damage = user.damage,
-                avatar = user.avatar,
                 currency = user.currency,
                 experience = user.experience,
                 level = user.level,
