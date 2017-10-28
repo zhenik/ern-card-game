@@ -25,7 +25,7 @@ data class User(
         @get:Min(1)
         var damage: Int = 10,
 
-        var avatar: Blob? = null,
+        //var avatar: Blob? = null,
 
         @get:Min(0)
         var currency: Int = 0,
@@ -44,5 +44,5 @@ data class User(
         @get:GeneratedValue
         var id: Long? = null
 ) {
-    constructor() : this("", "", "", 0, 0, null, 0, 0, 1)
+    constructor() : this("", "", "", 0, 0, 0, 0, 1)
 }

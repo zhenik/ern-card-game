@@ -154,7 +154,7 @@ class EntityRepositoryImplTest {
     }
 
 
-    private fun getValidTestUsers(): List<User> {
+    fun getValidTestUsers(): List<User> {
         return listOf(
                 User(
                         "Ruby",
@@ -162,7 +162,6 @@ class EntityRepositoryImplTest {
                         "ThisIsSomeSalt",
                         120,
                         44,
-                        null,
                         40,
                         1,
                         1
@@ -173,7 +172,6 @@ class EntityRepositoryImplTest {
                         "Thisshouldalsobesalted",
                         122,
                         46,
-                        null,
                         47,
                         23,
                         4
@@ -188,7 +186,6 @@ class EntityRepositoryImplTest {
                 salt = user.salt,
                 health = user.health,
                 damage = user.damage,
-                avatar = user.avatar,
                 currency = user.currency,
                 experience = user.experience,
                 level = user.level,

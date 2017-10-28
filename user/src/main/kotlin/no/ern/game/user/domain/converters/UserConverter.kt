@@ -15,7 +15,6 @@ class UserConverter {
                     salt = entity.salt,
                     health = entity.health,
                     damage = entity.damage,
-                    avatar = entity.avatar,
                     currency = entity.currency,
                     experience = entity.experience,
                     level = entity.level,
