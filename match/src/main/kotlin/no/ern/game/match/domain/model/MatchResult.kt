@@ -8,7 +8,7 @@ import javax.validation.constraints.Min
 import javax.validation.constraints.Size
 
 @Entity
-data class Match(
+data class MatchResult(
 
         @get: NotBlank @get:Size(max = 32)
         var username1: String,

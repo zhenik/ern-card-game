@@ -1,6 +1,6 @@
 package no.ern.game.match.repository
 
-import no.ern.game.match.domain.model.Match
+import no.ern.game.match.domain.model.MatchResult
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -9,13 +9,13 @@ import javax.persistence.PersistenceContext
 
 
 @Repository
-interface MatchRepository : CrudRepository<Match, Long>, MatchRepositoryCustom {
-    fun findAllByUsername1OrUsername2(username1: String, username2: String): Iterable<Match>
-    fun findAllByWinnerName(winnerName: String): Iterable<Match>
+interface MatchResultRepository : CrudRepository<MatchResult, Long>, MatchResultRepositoryCustom {
+    fun findAllByUsername1OrUsername2(username1: String, username2: String): Iterable<MatchResult>
+    fun findAllByWinnerName(winnerName: String): Iterable<MatchResult>
 }
 
 @Transactional
-interface MatchRepositoryCustom {
+interface MatchResultRepositoryCustom {
     fun createMatch(
             userName1: String,
             userName2: String,
@@ -26,10 +26,10 @@ interface MatchRepositoryCustom {
             winnerName: String
     ): Long
 
-    fun getMatchesByUserName(username: String): Iterable<Match>
+    fun getMatchesByUserName(username: String): Iterable<MatchResult>
 }
 
-open class MatchRepositoryImpl : MatchRepositoryCustom {
+open class MatchResultRepositoryImpl : MatchResultRepositoryCustom {
     @PersistenceContext
     private lateinit var em: EntityManager
 
@@ -43,7 +43,7 @@ open class MatchRepositoryImpl : MatchRepositoryCustom {
             winnerName: String): Long {
 
         var id = -1L
-        val match = Match(
+        val match = MatchResult(
                 userName1,
                 userName2,
                 totalDamage1,
@@ -59,8 +59,8 @@ open class MatchRepositoryImpl : MatchRepositoryCustom {
         return id
     }
 
-    override fun getMatchesByUserName(username: String): Iterable<Match> {
-        val query = em.createQuery("select m from Match m where m.username1 = ?1 OR m.username2=?2", Match::class.java)
+    override fun getMatchesByUserName(username: String): Iterable<MatchResult> {
+        val query = em.createQuery("select m from MatchResult m where m.username1 = ?1 OR m.username2=?2", MatchResult::class.java)
         query.setParameter(1, username)
         query.setParameter(2, username)
         return query.resultList.toList()

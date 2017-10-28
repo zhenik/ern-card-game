@@ -3,8 +3,8 @@ package no.ern.game.match.domain.dto
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 
-@ApiModel("Match representation. Data transfer object represents match result")
-data class MatchDto(
+@ApiModel("MatchResult representation. Data transfer object represents match result")
+data class MatchResultDto(
 
         @ApiModelProperty("Username 1")
         var username1: String?=null,
@@ -27,6 +27,6 @@ data class MatchDto(
         @ApiModelProperty("Winner name of the match")
         var winnerName: String?= null,
 
-        @ApiModelProperty("Match id")
+        @ApiModelProperty("MatchResult id")
         var id: String?=null
 )

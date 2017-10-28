@@ -1,12 +1,12 @@
 package no.ern.game.match.domain.converters
 
-import no.ern.game.match.domain.dto.MatchDto
-import no.ern.game.match.domain.model.Match
+import no.ern.game.match.domain.dto.MatchResultDto
+import no.ern.game.match.domain.model.MatchResult
 
-class MatchConverter{
+class MatchResultConverter {
     companion object {
-        fun transform(entity: Match) : MatchDto {
-            return MatchDto(
+        fun transform(entity: MatchResult) : MatchResultDto {
+            return MatchResultDto(
                     id=entity.id?.toString(),
                     username1 = entity.username1,
                     username2 = entity.username2,
@@ -17,7 +17,7 @@ class MatchConverter{
                     winnerName = entity.winnerName
             )
         }
-        fun transform(entities: Iterable<Match>) : List<MatchDto>{
+        fun transform(entities: Iterable<MatchResult>) : List<MatchResultDto>{
             return entities.map { transform(it) }
         }
     }

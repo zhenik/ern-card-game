@@ -1,6 +1,6 @@
 package no.ern.game.match.repository
 
-import no.ern.game.match.domain.model.Match
+import no.ern.game.match.domain.model.MatchResult
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -12,10 +12,10 @@ import javax.validation.ConstraintViolationException
 
 @RunWith(SpringRunner::class)
 @DataJpaTest
-class MatchRepositoryTestImpl {
+class MatchResultRepositoryTestImpl {
 
     @Autowired
-    private lateinit var crud: MatchRepository
+    private lateinit var crud: MatchResultRepository
 
     @Before
     fun setup(){
@@ -42,7 +42,7 @@ class MatchRepositoryTestImpl {
                 5,
                 "u2")
     }
-    private fun createMatch(match: Match): Match? {
+    private fun createMatch(match: MatchResult): MatchResult? {
         return crud.save(match)
     }
 
@@ -141,9 +141,9 @@ class MatchRepositoryTestImpl {
 
         //Act
         // auto-generated
-        val list1 : List<Match> = crud.findAllByUsername1OrUsername2(username, username) as List<Match>
+        val list1 : List<MatchResult> = crud.findAllByUsername1OrUsername2(username, username) as List<MatchResult>
         // custom
-        val list2 : List<Match> = crud.getMatchesByUserName(username) as List<Match>
+        val list2 : List<MatchResult> = crud.getMatchesByUserName(username) as List<MatchResult>
 
         //Assert
         assertEquals(3, list1.size)
@@ -157,8 +157,8 @@ class MatchRepositoryTestImpl {
 
         //Arrange
         val winnerName = "u2"
-        val match1= Match("u1", winnerName, 25, 5, 0, 5, winnerName)
-        val match2= Match("u1", winnerName, 25, 5, 0, 5, winnerName)
+        val match1= MatchResult("u1", winnerName, 25, 5, 0, 5, winnerName)
+        val match2= MatchResult("u1", winnerName, 25, 5, 0, 5, winnerName)
 
         crud.save(match1)
         crud.save(match2)
@@ -166,7 +166,7 @@ class MatchRepositoryTestImpl {
         createMatchDefault()
 
         //Act
-        val list: List<Match> = crud.findAllByWinnerName(winnerName) as List<Match>
+        val list: List<MatchResult> = crud.findAllByWinnerName(winnerName) as List<MatchResult>
 
         //Assert
         assertEquals(4, crud.count())
