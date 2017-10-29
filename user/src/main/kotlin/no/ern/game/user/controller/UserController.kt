@@ -26,39 +26,6 @@ class UserController {
     @Autowired
     private lateinit var repo: UserRepository
 
-    @ApiOperation("Get all users by level")
-    @GetMapping
-    fun getAllUsersByLevel(
-            @ApiParam("Level to find")
-            @RequestParam(name = "level", required = false)
-            level: Int?
-    ): ResponseEntity<Iterable<UserDto>> {
-        if (level == null) {
-            return ResponseEntity.ok(UserConverter.transform(repo.findAll()))
-        }
-
-        if (level < 1) {
-            return ResponseEntity.status(400).build()
-        }
-
-        return ResponseEntity.ok(UserConverter.transform(repo.findAllByLevel(level)))
-    }
-
-    @ApiOperation("Get user by username")
-    @GetMapping(path = arrayOf("/{username}"))
-    fun getUserByUsername(
-            @ApiParam("Username to search by")
-            @PathVariable("username")
-            username: String?
-    ): ResponseEntity<UserDto> {
-        return if (username.isNullOrBlank()) {
-            ResponseEntity.status(404).build()
-        } else {
-            // username cannot be null because we already checked.
-            ResponseEntity.ok(UserConverter.transform(repo.findFirstByUsername(username!!)))
-        }
-    }
-
     @ApiOperation("Create new user")
     @PostMapping(consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(code = 201, message = "Id of created user")
@@ -95,6 +62,84 @@ class UserController {
 
             return ResponseEntity.status(201).body(savedId)
 
+        } catch (e: ConstraintViolationException) {
+            return ResponseEntity.status(400).build()
+        }
+    }
+
+    @ApiOperation("Get all users by level")
+    @GetMapping
+    fun getAllUsersByLevel(
+            @ApiParam("Level to find")
+            @RequestParam(name = "level", required = false)
+            level: Int?
+    ): ResponseEntity<Iterable<UserDto>> {
+        if (level == null) {
+            return ResponseEntity.ok(UserConverter.transform(repo.findAll()))
+        }
+
+        if (level < 1) {
+            return ResponseEntity.status(400).build()
+        }
+
+        return ResponseEntity.ok(UserConverter.transform(repo.findAllByLevel(level)))
+    }
+
+    @ApiOperation("Get user by username")
+    @GetMapping(path = arrayOf("/{username}"))
+    fun getUserByUsername(
+            @ApiParam("Username to search by")
+            @PathVariable("username")
+            username: String?
+    ): ResponseEntity<UserDto> {
+        return if (username.isNullOrBlank()) {
+            ResponseEntity.status(404).build()
+        } else {
+            // username cannot be null because we already checked.
+            ResponseEntity.ok(UserConverter.transform(repo.findFirstByUsername(username!!)))
+        }
+    }
+
+
+    @ApiOperation("Replace the data of a user")
+    @PutMapping(path = arrayOf("/{username}"), consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    fun updateUserByUsername(
+            @ApiParam("Username defining the user. Id or username cannot be changed")
+            @PathVariable("username")
+            username: String?,
+
+            @ApiParam("Data to replace old user")
+            @RequestBody
+            userDto: UserDto
+    ): ResponseEntity<Long> {
+        if (username.isNullOrBlank()) {
+            return ResponseEntity.status(400).build()
+        }
+        // Dont change ID or username.
+        if (username != userDto.username || userDto.id != null) {
+            return ResponseEntity.status(400).build()
+        }
+        if (!repo.existsByUsername(username!!)) {
+            return ResponseEntity.status(404).build()
+        }
+        if (!isDtoValid(userDto)) {
+            return ResponseEntity.status(400).build()
+        }
+
+        try {
+            val user = repo.findFirstByUsername(username)
+
+            user.password = userDto.password!!
+            user.salt =  userDto.salt!!
+            user.health =  userDto.health!!
+            user.damage =  userDto.damage!!
+            user.currency =  userDto.currency!!
+            user.experience =  userDto.experience!!
+            user.level =  userDto.level!!
+            user.equipment = userDto.equipment!!
+
+            repo.save(user)
+            return ResponseEntity.status(204).build()
         } catch (e: ConstraintViolationException) {
             return ResponseEntity.status(400).build()
         }

@@ -2,11 +2,13 @@
 
 package no.ern.game.user.repository
 
+import no.ern.game.user.domain.dto.UserDto
 import no.ern.game.user.domain.model.Item
 import no.ern.game.user.domain.model.User
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
+import java.time.ZonedDateTime
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
@@ -15,6 +17,7 @@ interface UserRepository : CrudRepository<User,Long>, UserRepositoryCustom {
     fun findFirstByUsername(username: String): User
     fun findAllByLevel(level: Int): Iterable<User>
     fun existsByUsername(username: String): Boolean
+
 
     @Transactional
     fun deleteByUsername(username: String): Long

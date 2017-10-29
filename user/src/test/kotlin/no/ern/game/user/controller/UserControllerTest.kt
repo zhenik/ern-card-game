@@ -104,6 +104,37 @@ class UserControllerTest : TestBase() {
     }
 
     @Test
+    fun updateUser() {
+        val userDto1 = getValidUserDtos()[0]
+        val userDto2 = getValidUserDtos()[1]
+        userDto2.username = userDto1.username
+
+        postUserDto(userDto1, 201)
+        given().get().then().statusCode(200).body("size()", equalTo(1))
+
+        // Change userDto1's fields to userDto2's fields.
+        given().pathParam("username", userDto1.username)
+                .contentType(ContentType.JSON)
+                .body(userDto2)
+                .put("/{username}")
+                .then()
+                .statusCode(204)
+
+        // Validate that it changed
+        given().pathParam("username", userDto1.username)
+                .get("/{username}")
+                .then()
+                .statusCode(200)
+                .body("username", equalTo(userDto1.username))
+                .body("password", equalTo(userDto2.password))
+                .body("health", equalTo(userDto2.health))
+                .body("experience", equalTo(userDto2.experience))
+                .body("salt", equalTo(userDto2.salt))
+
+        given().get().then().statusCode(200).body("size()", equalTo(1))
+    }
+
+    @Test
     fun deleteUserByUsername() {
         val userDto1 = getValidUserDtos()[0]
         val userDto2 = getValidUserDtos()[1]
