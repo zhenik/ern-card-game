@@ -31,7 +31,7 @@ abstract class TestBase {
         // RestAssured configs shared by all the tests
         RestAssured.baseURI = "http://localhost"
         RestAssured.port = port
-        RestAssured.basePath = "/api/users"
+        RestAssured.basePath = "/game/api/users"
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
 

@@ -1,7 +1,6 @@
 package no.ern.game.user.domain.model
 
 import org.hibernate.validator.constraints.NotBlank
-import java.sql.Blob
 import javax.persistence.*
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
@@ -38,11 +37,9 @@ data class User(
         var level: Int = 1,
 
         @get:ElementCollection
-        var equipment: Collection<ItemEntity> = listOf(),
+        var equipment: Collection<Item> = listOf(),
 
         @get:Id
         @get:GeneratedValue
         var id: Long? = null
-) {
-    constructor() : this("", "", "", 0, 0, 0, 0, 1)
-}
+)

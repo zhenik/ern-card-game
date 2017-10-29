@@ -1,11 +1,12 @@
+@file:Suppress("RedundantModalityModifier")
+
 package no.ern.game.user.repository
 
-import no.ern.game.user.domain.model.ItemEntity
+import no.ern.game.user.domain.model.Item
 import no.ern.game.user.domain.model.User
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
-import java.sql.Blob
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
@@ -28,7 +29,7 @@ interface UserRepositoryCustom {
                    currency: Int,
                    experience: Int,
                    level: Int,
-                   equipment: Collection<ItemEntity>): Long
+                   equipment: Collection<Item>): Long
 }
 
 open class UserRepositoryImpl : UserRepositoryCustom {
@@ -44,7 +45,7 @@ open class UserRepositoryImpl : UserRepositoryCustom {
                             currency: Int,
                             experience: Int,
                             level: Int,
-                            equipment: Collection<ItemEntity>
+                            equipment: Collection<Item>
     ): Long {
 
         val userEntity = User(
