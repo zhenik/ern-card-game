@@ -41,12 +41,7 @@ class UserControllerTest : TestBase() {
         val userDto = getValidUserDtos()[0]
         userDto.id = "12312312"
 
-        given().contentType(ContentType.JSON)
-                .body(userDto)
-                .post()
-                .then()
-                .statusCode(400)
-                .extract().asString()
+        postUserDto(userDto, 400)
 
         given().get().then().statusCode(200).body("size()", equalTo(0))
 
@@ -54,7 +49,53 @@ class UserControllerTest : TestBase() {
 
     @Test
     fun getAllUsersByLevel() {
+        given().get().then().statusCode(200).body("size()", equalTo(0))
 
+        val userDto1 = getValidUserDtos()[0]
+        val userDto2 = getValidUserDtos()[1]
+        val unusedLevel = getValidUserDtos()[2].level
+        postUserDto(userDto1, 201)
+        postUserDto(userDto2, 201)
+
+        given().get().then().statusCode(200).body("size()", equalTo(2))
+
+
+        given().param("level", userDto1.level)
+                .get()
+                .then()
+                .statusCode(200)
+                .body("size()", equalTo(1))
+
+        given().param("level", userDto2.level)
+                .get()
+                .then()
+                .statusCode(200)
+                .body("size()", equalTo(1))
+
+        given().param("level", unusedLevel)
+                .get()
+                .then()
+                .statusCode(200)
+                .body("size()", equalTo(0))
+
+        //Why does this get all fields as an "array" ??? [username] instead of username
+        /*given().contentType(ContentType.JSON)
+                .param("level", userDto1.level)
+                .get()
+                .then()
+                .statusCode(200)
+                .body("username", equalTo(userDto1.username))
+                .body("password", equalTo(userDto1.password))
+                .body("experience", equalTo(userDto1.experience))*/
+    }
+
+    private fun postUserDto(userDto2: UserDto, expectedStatusCode: Int): String {
+        return given().contentType(ContentType.JSON)
+                .body(userDto2)
+                .post()
+                .then()
+                .statusCode(expectedStatusCode)
+                .extract().asString()
     }
 
     private fun getValidUserDtos(): List<UserDto> {
@@ -81,6 +122,18 @@ class UserControllerTest : TestBase() {
                         33,
                         47,
                         23,
+                        listOf()
+                ),
+                UserDto(
+                        null,
+                        "Another language",
+                        "Its actually PHP...",
+                        "yes, there should be salt here",
+                        132,
+                        56,
+                        38,
+                        68,
+                        68,
                         listOf()
                 )
         )

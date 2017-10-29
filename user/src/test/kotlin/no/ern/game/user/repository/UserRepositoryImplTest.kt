@@ -103,6 +103,40 @@ class EntityRepositoryImplTest {
         assertTrue(usersFound2.any({e -> e.username == user3.username}))
     }
 
+    @Test
+    fun testDeleteUser() {
+        val user1 = getValidTestUsers()[0]
+        val user2 = getValidTestUsers()[1]
+        createUser(user1)
+        createUser(user2)
+
+        assertEquals(2, repo.count())
+        repo.deleteByUsername(user2.username)
+
+        assertEquals(1, repo.count())
+
+        repo.deleteByUsername(user1.username)
+        assertEquals(0, repo.count())
+    }
+
+    @Test
+    fun testDeleteUserWithWrongUsername() {
+        val user1 = getValidTestUsers()[0]
+        createUser(user1)
+
+        assertEquals(1, repo.count())
+        repo.deleteByUsername(getTooLongUsername())
+
+        assertEquals(1, repo.count())
+    }
+
+    @Test
+    fun testDeleteWhenNoUserExists() {
+        assertEquals(0, repo.count())
+        repo.deleteByUsername(getTooLongUsername())
+        assertEquals(0, repo.count())
+    }
+
 
 
     // Constraints
