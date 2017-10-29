@@ -75,6 +75,11 @@ class UserController {
             return ResponseEntity.status(400).build()
         }
 
+        // Checks for null i isDtoValid method.
+        if(repo.existsByUsername(userDto.username!!)) {
+            return ResponseEntity.status(400).build()
+        }
+
         try {
             val savedId = repo.createUser(
                     username = userDto.username!!,
@@ -97,19 +102,20 @@ class UserController {
 
     @ApiOperation("Delete a user by username")
     @DeleteMapping(path = arrayOf("/{username}"))
-    fun deleteUser(
+    fun deleteUserByUsername(
             @ApiParam("Username of user to delete")
             @PathVariable("username")
             username: String?
     ) : ResponseEntity<Any>{
 
-        return if (username.isNullOrBlank()) {
-            ResponseEntity.status(404).build()
+        if (username.isNullOrBlank()) {
+            return ResponseEntity.status(400).build()
         }
-        else {
-            repo.deleteByUsername(username!!)
-            ResponseEntity.status(204).build()
+        if (!repo.existsByUsername(username!!)) {
+            return ResponseEntity.status(404).build()
         }
+        repo.deleteByUsername(username)
+        return ResponseEntity.status(204).build()
     }
 
     private fun isDtoValid(userDto: UserDto): Boolean {

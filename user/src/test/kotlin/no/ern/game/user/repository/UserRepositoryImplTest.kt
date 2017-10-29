@@ -120,6 +120,18 @@ class EntityRepositoryImplTest {
     }
 
     @Test
+    fun testExistsByUsername() {
+        val user1 = getValidTestUsers()[0]
+        val user2 = getValidTestUsers()[1]
+        assertEquals(false, repo.existsByUsername(user1.username))
+
+        createUser(user1)
+        assertEquals(true, repo.existsByUsername(user1.username))
+
+        assertEquals(false, repo.existsByUsername(user2.username))
+    }
+
+    @Test
     fun testDeleteUserWithWrongUsername() {
         val user1 = getValidTestUsers()[0]
         createUser(user1)
