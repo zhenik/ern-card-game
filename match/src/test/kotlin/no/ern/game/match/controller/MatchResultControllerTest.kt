@@ -2,7 +2,9 @@ package no.ern.game.match.controller
 
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
+import no.ern.game.match.domain.converters.MatchResultConverter
 import no.ern.game.match.domain.dto.MatchResultDto
+import no.ern.game.match.domain.dto.PlayerDto
 import org.hamcrest.CoreMatchers
 import org.junit.Test
 import org.junit.Assert.*
@@ -106,11 +108,11 @@ class MatchResultControllerTest : ControllerTestBase(){
 
         // not found in db
         //GET /matchers/555
-        val notExistUserId = 555
+        val notExistMatchId = 555
         RestAssured.given()
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
-                .pathParam("id",notExistUserId)
+                .pathParam("id",notExistMatchId)
                 .get("{id}")
                 .then()
                 .statusCode(404)
@@ -141,13 +143,47 @@ class MatchResultControllerTest : ControllerTestBase(){
                 .statusCode(400)
 
         //DELETE /matchers/555
-        val notExistUserId = 555
+        val notExistMatchId = 555
         RestAssured.given()
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
-                .pathParam("id",notExistUserId)
+                .pathParam("id",notExistMatchId)
                 .delete("{id}")
                 .then()
                 .statusCode(404)
     }
+
+    @Test
+    fun testUpdateMatchResult_Success(){
+        // Arrange
+        val id = postNewMatchResultValid(getValidMatchResultDto())
+        val dto2 = MatchResultDto(
+                PlayerDto("superman",30,28,5),
+                PlayerDto("batman",25,25,-3),
+                "superman",
+                id.toString())
+
+
+        //PUT matches/:id
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .pathParam("id", id)
+                .body(dto2)
+                .put("/{id}")
+                .then()
+                .statusCode(204)
+
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .pathParam("id", id)
+                .get("/{id}")
+                .then()
+                .statusCode(200)
+                .body("attacker.username", CoreMatchers.equalTo("superman"))
+                .body("defender.username", CoreMatchers.equalTo("batman"))
+    }
+
+    //TODO: test update with 4 different errors @see MatchResultController
 }
