@@ -211,7 +211,43 @@ class MatchResultRepositoryTest {
         assertEquals(4, crud.count())
         assertEquals(2, list.size)
         assertTrue(list.stream().allMatch { it.winnerName.equals(winnerName) })
+    }
 
+    @Test
+    fun testUpdateMatchResult(){
+        //Arrange
+        val winnerName = "yohohoho"
+        val match1= MatchResult(
+                winnerName,
+                "u1",
+                25,
+                20,
+                20,
+                15,
+                5,
+                0,
+                winnerName)
+        crud.save(match1)
+        val id = match1.id!!
+
+        //Act
+        val updated = crud.update(
+                "superman",
+                "batman",
+                25,
+                20,
+                20,
+                15,
+                5,
+                0,
+                "superman",
+                id)
+
+        //Assert
+        assertTrue(updated)
+        assertTrue(crud.findAll().toList().stream().allMatch { "superman"==it.attackerUsername})
+        assertTrue(crud.findAll().toList().stream().allMatch { "batman"==it.defenderUsername})
+        assertEquals(1,crud.count())
     }
 
 

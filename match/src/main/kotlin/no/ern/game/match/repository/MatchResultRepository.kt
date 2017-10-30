@@ -28,10 +28,38 @@ interface MatchResultRepositoryCustom {
             winnerName: String
     ): Long
 
+    fun update(
+            attackerUsername: String,
+            defenderUsername: String,
+            attackerHealth: Long,
+            defenderHealth: Long,
+            attackerTotalDamage: Long,
+            defenderTotalDamage: Long,
+            attackerRemainingHealth: Long,
+            defenderRemainingHealth: Long,
+            winnerName: String,
+            id: Long
+    ): Boolean
+
     fun getMatchesByUserName(username: String): Iterable<MatchResult>
 }
 
 open class MatchResultRepositoryImpl : MatchResultRepositoryCustom {
+    override fun update(attackerUsername: String, defenderUsername: String, attackerHealth: Long, defenderHealth: Long, attackerTotalDamage: Long, defenderTotalDamage: Long, attackerRemainingHealth: Long, defenderRemainingHealth: Long, winnerName: String, id: Long): Boolean {
+
+        val matchResult = em.find(MatchResult::class.java, id) ?: return false
+        matchResult.attackerUsername = attackerUsername
+        matchResult.defenderUsername = defenderUsername
+        matchResult.attackerHealth = attackerHealth
+        matchResult.defenderHealth = defenderHealth
+        matchResult.attackerTotalDamage = attackerTotalDamage
+        matchResult.defenderTotalDamage = defenderTotalDamage
+        matchResult.attackerRemainingHealth = attackerRemainingHealth
+        matchResult.defenderRemainingHealth = defenderRemainingHealth
+        matchResult.winnerName = winnerName
+        return true
+    }
+
     @PersistenceContext
     private lateinit var em: EntityManager
 
