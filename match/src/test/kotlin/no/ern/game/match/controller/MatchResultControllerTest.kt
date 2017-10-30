@@ -3,9 +3,13 @@ package no.ern.game.match.controller
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import io.restassured.path.json.JsonPath.from
+import no.ern.game.match.domain.dto.MatchResultDto
 import org.hamcrest.CoreMatchers
-import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.junit.Assert.*
+import javax.smartcardio.Card
+
+
 
 class MatchResultControllerTest : ControllerTestBase(){
 
@@ -37,16 +41,16 @@ class MatchResultControllerTest : ControllerTestBase(){
                 .statusCode(201)
                 .extract().asString()
         // get
-        RestAssured.given().get().then().statusCode(200).body("size()", CoreMatchers.equalTo(1))
+        val listDtos = RestAssured.given().get().then().statusCode(200)
+                .body("size()", CoreMatchers.equalTo(1))
+                .extract()
+                .`as`(Array<MatchResultDto>::class.java)
+                .toList()
 
-        // get :id
-        val json = RestAssured.given().pathParam("id", id)
-                .get("/{id}")
-                .andReturn()
-                .asString()
+        assertEquals(1, listDtos.size)
 
-        assertEquals(from(json).getLong("attacker.health"), dto.attacker!!.health!!)
-        assertEquals(from(json).getLong("attacker.remainingHealth"), dto.attacker!!.remainingHealth!!)
+        assertTrue(listDtos.stream().anyMatch{dto.attacker!!.username!! == (it.attacker!!.username!!)})
+
 
     }
 }
