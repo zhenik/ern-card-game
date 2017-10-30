@@ -81,7 +81,7 @@ class MatchResultController {
         try {
             id = pathId!!.toLong()
         } catch (e: Exception) {
-            return ResponseEntity.status(404).build()
+            return ResponseEntity.status(400).build()
         }
 
         val dto = crud.findOne(id) ?: return ResponseEntity.status(404).build()

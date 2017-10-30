@@ -81,4 +81,13 @@ abstract class ControllerTestBase{
         val defender  = PlayerDto("u2",25,25,-3)
         return MatchResultDto(attackerWinner, defender, attackerWinner.username)
     }
+
+    fun postNewMatchResultValid(dto: MatchResultDto) : Long{
+        return RestAssured.given().contentType(ContentType.JSON)
+                .body(dto)
+                .post()
+                .then()
+                .statusCode(201)
+                .extract().`as`(Long::class.java)
+    }
 }
