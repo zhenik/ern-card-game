@@ -141,12 +141,40 @@ class MatchResultController {
 //        if (dto.text == null || dto.authorId == null || dto.country == null || dto.creationTime == null) {
 //            return ResponseEntity.status(400).build()
 //        }
-
         if(!updateMatch(dto))
             return ResponseEntity.status(400).build()
 
 
         return ResponseEntity.status(204).build()
+    }
+
+    @ApiOperation("Modify the winnername of given matchResult ID")
+    @PatchMapping(path = arrayOf("/{id}"),
+            // could have had a custom type here, but then would need an unmarshaller for it
+            consumes = arrayOf(MediaType.TEXT_PLAIN_VALUE))
+    fun updateWinnerName(@ApiParam("The unique id of the MatchResult")
+              @PathVariable("id")
+              id: Long,
+            //
+              @ApiParam("""
+                  The instructions on how to modify the winnername.
+                  In this specific matchResult, it should be a single string value
+              """)
+              @RequestBody
+              winnerName: String)
+            : ResponseEntity<Void> {
+
+        // not exist
+        if (!crud.exists(id)) {
+            return ResponseEntity.status(404).build()
+        }
+
+        // not valid winnerName
+        if(!crud.updateWinnerName(id,winnerName)){
+            return ResponseEntity.status(400).build()
+        } else {
+            return ResponseEntity.status(204).build()
+        }
     }
 
     fun validDto(resultDto: MatchResultDto): Boolean{

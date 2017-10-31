@@ -2,7 +2,6 @@ package no.ern.game.match.controller
 
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
-import no.ern.game.match.domain.converters.MatchResultConverter
 import no.ern.game.match.domain.dto.MatchResultDto
 import no.ern.game.match.domain.dto.PlayerDto
 import org.hamcrest.CoreMatchers
@@ -185,8 +184,6 @@ class MatchResultControllerTest : ControllerTestBase(){
                 .body("defender.username", CoreMatchers.equalTo("batman"))
     }
 
-    //TODO: test update with 4 different errors @see MatchResultController
-
     @Test
     fun testUpdateMatchResult_Failed(){
         // Arrange
@@ -244,6 +241,63 @@ class MatchResultControllerTest : ControllerTestBase(){
                 .put("/{id}")
                 .then()
                 .statusCode(400)
+    }
+
+    @Test
+    fun testUpdateWinnerName(){
+        // Arrange
+        val dto = getValidMatchResultDto()
+        val id = postNewMatchResultValid(dto)
+        val newWinnerName = "just a guy"
+
+        assertNotEquals(dto.winnerName, newWinnerName)
+
+        // Act
+            // not valid -> wrong paramValue
+        RestAssured.given()
+                .pathParam("id", "abrakadabra")
+                .body(newWinnerName)
+                .patch("/{id}")
+                .then()
+                .statusCode(400)
+
+            // not valid -> non-existing matchResult with given id
+        RestAssured.given()
+                .pathParam("id", 123123123)
+                .body(newWinnerName)
+                .patch("/{id}")
+                .then()
+                .statusCode(404)
+
+            // not valid -> empty newWinnerName
+        RestAssured.given()
+                .pathParam("id", id)
+                .body("")
+                .patch("/{id}")
+                .then()
+                .statusCode(400)
+
+            // valid
+        RestAssured.given()
+                .pathParam("id", id)
+                .body(newWinnerName)
+                .patch("/{id}")
+                .then()
+                .statusCode(204)
+
+        // Assert
+        val dtoResponse = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .pathParam("id",id)
+                .get("/{id}")
+                .then()
+                .statusCode(200)
+                .extract()
+                .`as`(MatchResultDto::class.java)
+
+        assertEquals(newWinnerName,dtoResponse.winnerName)
+
     }
 
 }
