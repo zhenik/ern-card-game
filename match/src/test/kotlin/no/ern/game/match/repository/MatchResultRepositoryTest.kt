@@ -250,5 +250,45 @@ class MatchResultRepositoryTest {
         assertEquals(1,crud.count())
     }
 
+    @Test
+    fun testUpdateMatchResult_InvalidInput(){
+        //Arrange
+        val winnerName = "yohohoho"
+        val match1= MatchResult(
+                winnerName,
+                "u1",
+                25,
+                20,
+                20,
+                15,
+                5,
+                0,
+                winnerName)
+        crud.save(match1)
+        val id = match1.id!!
+
+        //Act
+
+
+
+        val updated =crud.update(
+                "",
+                "batman",
+                5,
+                20,
+                20,
+                15,
+                5,
+                0,
+                "superman",
+                id)
+
+        //Assert
+        assertFalse(updated)
+        assertTrue(crud.findAll().toList().stream().allMatch { "yohohoho"==it.attackerUsername})
+        assertTrue(crud.findAll().toList().stream().allMatch { "u1"==it.defenderUsername})
+        assertEquals(1,crud.count())
+    }
+
 
 }
