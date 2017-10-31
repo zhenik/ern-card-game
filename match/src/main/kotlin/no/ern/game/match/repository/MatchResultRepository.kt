@@ -41,10 +41,21 @@ interface MatchResultRepositoryCustom {
             id: Long
     ): Boolean
 
+    fun updateWinnerName(id: Long, newWinnerName: String):Boolean
+
     fun getMatchesByUserName(username: String): Iterable<MatchResult>
 }
 
 open class MatchResultRepositoryImpl : MatchResultRepositoryCustom {
+
+    override fun updateWinnerName(id: Long, newWinnerName: String): Boolean {
+        val matchResult = em.find(MatchResult::class.java, id) ?: return false
+        if (newWinnerName.isNullOrBlank())return false
+        matchResult.winnerName=newWinnerName
+        return true
+
+    }
+
     override fun update(attackerUsername: String, defenderUsername: String, attackerHealth: Long, defenderHealth: Long, attackerTotalDamage: Long, defenderTotalDamage: Long, attackerRemainingHealth: Long, defenderRemainingHealth: Long, winnerName: String, id: Long): Boolean {
 
         val matchResult = em.find(MatchResult::class.java, id) ?: return false
