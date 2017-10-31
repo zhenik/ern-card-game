@@ -186,4 +186,64 @@ class MatchResultControllerTest : ControllerTestBase(){
     }
 
     //TODO: test update with 4 different errors @see MatchResultController
+
+    @Test
+    fun testUpdateMatchResult_Failed(){
+        // Arrange
+        val id = postNewMatchResultValid(getValidMatchResultDto())
+        val dto = MatchResultDto(
+                PlayerDto("superman",30,28,5),
+                PlayerDto("batman",25,25,-3),
+                "superman",
+                id.toString())
+
+
+
+        // dto id=null
+        dto.id=null
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .pathParam("id", id)
+                .body(dto)
+                .put("/{id}")
+                .then()
+                .statusCode(404)
+
+
+        // dto.id != pathParam
+        dto.id= 123123123.toString()
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .pathParam("id", id)
+                .body(dto)
+                .put("/{id}")
+                .then()
+                .statusCode(409)
+
+        // nonexisting entity
+        dto.id= 123123123.toString()
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .pathParam("id", dto.id)
+                .body(dto)
+                .put("/{id}")
+                .then()
+                .statusCode(404)
+
+        // entity constraint (total health negative)
+        dto.id=id.toString()
+        dto.attacker!!.username=""
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .pathParam("id", id)
+                .body(dto)
+                .put("/{id}")
+                .then()
+                .statusCode(400)
+    }
+
 }

@@ -73,8 +73,8 @@ class MatchResultController {
     @ApiOperation("Get a single match result specified by id")
     @GetMapping(path = arrayOf("/{id}"))
     fun getMatchResult(@ApiParam(ID_PARAM)
-                @PathVariable("id")
-                pathId: String?)
+                       @PathVariable("id")
+                       pathId: String?)
             : ResponseEntity<MatchResultDto> {
 
         val id: Long
@@ -142,11 +142,9 @@ class MatchResultController {
 //            return ResponseEntity.status(400).build()
 //        }
 
-        try {
-            updateMatch(dto)
-        } catch (e: ConstraintViolationException) {
+        if(!updateMatch(dto))
             return ResponseEntity.status(400).build()
-        }
+
 
         return ResponseEntity.status(204).build()
     }
