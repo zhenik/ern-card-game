@@ -14,14 +14,16 @@ class ItemConverter{
                     id=item.id?.toString(),
                     name = item.name,
                     description = item.description,
-                    type = item.type,
+                    type = item.type.toString(),
                     damageBonus = item.damageBonus,
-                    healthBonus = item.healthBonus
+                    healthBonus = item.healthBonus,
+                    price = item.price,
+                    levelRequirement = item.levelRequirement
             )
         }
 
         //TODO: return iterable
-        fun transform(items: Iterable<Item>) : List<ItemDto>{
+        fun transform(items: Iterable<Item>) : Iterable<ItemDto>{
             return items.map { transform(it) }
         }
     }

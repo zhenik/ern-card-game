@@ -1,20 +1,25 @@
 package no.ern.game.item.controller
 
+import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
 import no.ern.game.item.domain.converters.ItemConverter
 import no.ern.game.item.domain.dto.ItemDto
+import no.ern.game.item.domain.enum.Type
 import no.ern.game.item.repository.ItemRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import java.util.*
 import javax.validation.ConstraintViolationException
 
+@Api(value = "/items", description = "API for items.")
+@RequestMapping(
+        path = arrayOf("/items"),
+        produces = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE)
+)
 @RestController
 @Validated
 class ItemController {
@@ -30,41 +35,72 @@ class ItemController {
     @Autowired
     private lateinit var repo: ItemRepository
 
+
     @ApiOperation("Get all items")
     @GetMapping
-    fun getAllItems(): ResponseEntity<List<ItemDto>> {
-        return ResponseEntity.ok(ItemConverter.transform(repo.findAll()))
+    fun getItems(@ApiParam("The type of the item")
+                 @RequestParam("type", required = false)
+                 type: Type?): ResponseEntity<Iterable<ItemDto>> {
+
+        return if (type != null)
+            ResponseEntity.ok(ItemConverter.transform(repo.getItemsByType(type)))
+        else
+            ResponseEntity.ok(ItemConverter.transform(repo.findAll()))
+
     }
 
-//    @ApiOperation("Create new user")
-//    @PostMapping(consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE))
-//    fun createUser(
-//            @ApiParam("User to save")
-//            @RequestBody
-//            userDto: UserDto): ResponseEntity<Long> {
-//
-//        if (!userDto.id.isNullOrEmpty()) {
-//            return ResponseEntity.status(400).build()
-//        }
-//
-//        try {
-//            val savedId = repo.createUser(
-//                    username = userDto.username!!,
-//                    password = userDto.password!!,
-//                    salt = userDto.salt!!,
-//                    health = userDto.health!!,
-//                    damage = userDto.damage!!,
-//                    avatar = userDto.avatar!!,
-//                    currency = userDto.currency!!,
-//                    experience = userDto.experience!!,
-//                    level = userDto.level!!,
-//                    equipment = userDto.equipment!!
-//            )
-//
-//            return ResponseEntity.status(201).body(savedId)
-//
-//        } catch (e: ConstraintViolationException) {
-//            return ResponseEntity.status(400).build()
-//        }
-//    }
+    @ApiOperation("Create a new item")
+    @PostMapping
+    fun createNewItem(
+            @ApiParam("Item to create")
+            @RequestBody
+            itemDto: ItemDto): ResponseEntity<Long> {
+
+        try{
+            val id = createItem(itemDto)
+            return ResponseEntity.status(201).body(id)
+        }catch (e: ConstraintViolationException){
+            // 422 Unprocessable Entity
+            // 409 Conflict (for duplication id)
+            return ResponseEntity.status(422).build()
+        }catch (e: Exception){
+            return ResponseEntity.status(500).build()
+        }
+
+    }
+
+    @ApiOperation("Create a new item")
+    @DeleteMapping(path = arrayOf("/{id}"))
+    fun deleteItemById(
+            @ApiParam("The ID of the item")
+            @PathVariable("id")
+            pathId: String?): ResponseEntity<Any> {
+
+        val id: Long
+        try {
+            id = pathId!!.toLong()
+        } catch (e: Exception) {
+            return ResponseEntity.status(400).build()
+        }
+
+        if (!repo.exists(id)) {
+            return ResponseEntity.status(404).build()
+        }
+        repo.delete(id)
+        return ResponseEntity.status(204).build()
+    }
+
+
+
+    fun createItem(resultDto: ItemDto): Long{
+            return repo.createItem(
+                    resultDto.name!!,
+                    resultDto.description!!,
+                    resultDto.type!!,
+                    resultDto.damageBonus!!,
+                    resultDto.healthBonus!!,
+                    resultDto.price!!,
+                    resultDto.levelRequirement!!)
+    }
+
 }

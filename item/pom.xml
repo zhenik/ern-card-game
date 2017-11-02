@@ -69,7 +69,6 @@
             <artifactId>resteasy-client</artifactId>
             <scope>test</scope>
         </dependency>
-
         <!--&lt;!&ndash;TRACING&ndash;&gt;-->
         <!--&lt;!&ndash; https://mvnrepository.com/artifact/com.uber.jaeger/jaeger-core &ndash;&gt;-->
         <!--<dependency>-->
