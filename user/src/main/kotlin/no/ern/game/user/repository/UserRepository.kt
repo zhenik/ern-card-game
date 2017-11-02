@@ -1,16 +1,27 @@
+@file:Suppress("RedundantModalityModifier")
+
 package no.ern.game.user.repository
 
-import no.ern.game.user.domain.model.ItemEntity
-import no.ern.game.user.domain.model.UserEntity
+import no.ern.game.user.domain.dto.UserDto
+import no.ern.game.user.domain.model.Item
+import no.ern.game.user.domain.model.User
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
-import java.sql.Blob
+import java.time.ZonedDateTime
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
 @Repository
-interface UserRepository : CrudRepository<UserEntity,Long>, UserRepositoryCustom
+interface UserRepository : CrudRepository<User,Long>, UserRepositoryCustom {
+    fun findFirstByUsername(username: String): User
+    fun findAllByLevel(level: Int): Iterable<User>
+    fun existsByUsername(username: String): Boolean
+
+
+    @Transactional
+    fun deleteByUsername(username: String): Long
+}
 
 @Transactional
 interface UserRepositoryCustom {
@@ -19,11 +30,10 @@ interface UserRepositoryCustom {
                    salt: String,
                    health: Int,
                    damage: Int,
-                   avatar: Blob?,
                    currency: Int,
                    experience: Int,
                    level: Int,
-                   equipment: Collection<ItemEntity>): Long
+                   equipment: Collection<Item>): Long
 }
 
 open class UserRepositoryImpl : UserRepositoryCustom {
@@ -36,20 +46,18 @@ open class UserRepositoryImpl : UserRepositoryCustom {
                             salt: String,
                             health: Int,
                             damage: Int,
-                            avatar: Blob?,
                             currency: Int,
                             experience: Int,
                             level: Int,
-                            equipment: Collection<ItemEntity>
+                            equipment: Collection<Item>
     ): Long {
 
-        val userEntity = UserEntity(
+        val userEntity = User(
                 username,
                 password,
                 salt,
                 health,
                 damage,
-                avatar,
                 currency,
                 experience,
                 level,

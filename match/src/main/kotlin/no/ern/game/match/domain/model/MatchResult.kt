@@ -8,29 +8,29 @@ import javax.validation.constraints.Min
 import javax.validation.constraints.Size
 
 @Entity
-data class Match(
+data class MatchResult(
 
         @get: NotBlank @get:Size(max = 32)
-        var username1: String,
-
+        var attackerUsername: String,
         @get: NotBlank @get:Size(max = 32)
-        var username2: String,
+        var defenderUsername: String,
 
         @get:Min(0)
-        var totalDamage1: Long,
+        var attackerHealth: Long,
         @get:Min(0)
-        var totalDamage2: Long,
+        var defenderHealth: Long,
 
         @get:Min(0)
-        var remainingHealth1: Long,
+        var attackerTotalDamage: Long,
         @get:Min(0)
-        var remainingHealth2: Long,
+        var defenderTotalDamage: Long,
+
+        // can be negative
+        var attackerRemainingHealth: Long,
+        var defenderRemainingHealth: Long,
 
         var winnerName: String? = null,
 
         @get:Id @get:GeneratedValue
         var id: Long? = null
-) {
-    //need empty constructor for jpa and JSON -parsing
-    constructor():this("","",0,0,0,0,"")
-}
+)

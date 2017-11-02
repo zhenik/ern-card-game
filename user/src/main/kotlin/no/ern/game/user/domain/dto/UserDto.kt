@@ -2,10 +2,9 @@ package no.ern.game.user.domain.dto
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
-import no.ern.game.user.domain.model.ItemEntity
-import java.sql.Blob
+import no.ern.game.user.domain.model.Item
 
-@ApiModel("DTO representing UserEntity")
+@ApiModel("DTO representing User")
 data class UserDto(
 
         @ApiModelProperty("The id of the User")
@@ -25,8 +24,8 @@ data class UserDto(
         @ApiModelProperty("User's damage")
         var damage: Int? = 1,
 
-        @ApiModelProperty("Image in a Binary format, if exists")
-        var avatar: Blob? = null,
+//        @ApiModelProperty("Image in a Binary format, if exists")
+//        var avatar: Blob? = null,
 
         @ApiModelProperty("Amount of money the user has")
         var currency: Int? = null,
@@ -38,6 +37,6 @@ data class UserDto(
         var level: Int? = 1,
 
         @ApiModelProperty("The items the user has")
-        var equipment: Collection<ItemEntity>? = null
+        var equipment: Collection<Item>? = null
 )
 

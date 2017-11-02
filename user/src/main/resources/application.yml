@@ -1,0 +1,3 @@
+server:
+  context-path: /game/api
+  port: 8081

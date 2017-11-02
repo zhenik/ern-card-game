@@ -1,6 +1,6 @@
 package no.ern.game.user.repository
 
-import no.ern.game.user.domain.model.UserEntity
+import no.ern.game.user.domain.model.User
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -8,6 +8,7 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.junit4.SpringRunner
+import javax.validation.ConstraintViolationException
 
 @RunWith(SpringRunner::class)
 @DataJpaTest
@@ -28,20 +29,20 @@ class EntityRepositoryImplTest {
 
     @Test
     fun testCreateUser() {
-        val user = getValidTestUser()
-        val savedUser = repo.save(user)
+        val user = getValidTestUsers()[0]
+        val savedId = createUser(user)
 
-        assertNotNull(savedUser)
-        assertNotNull(savedUser.id)
+        assertTrue(repo.exists(savedId))
+        assertEquals(1, repo.count())
     }
 
     @Test
     fun testCreatingDuplicateUsername() {
-        val user1 = getValidTestUser()
-        val user2 = getValidTestUser()
+        val user1 = getValidTestUsers()[0]
+        val user2 = getValidTestUsers()[0]
 
-        var savedUser1: UserEntity? = null
-        var savedUser2: UserEntity? = null
+        var savedUser1: User? = null
+        var savedUser2: User? = null
 
         try {
             savedUser1 = repo.save(user1)
@@ -57,28 +58,180 @@ class EntityRepositoryImplTest {
 
     }
 
-    private fun getValidTestUser(): UserEntity {
-        return UserEntity(
-                "Ruby",
-                "ThisIsAHash",
-                "ThisIsSomeSalt",
-                120,
-                44,
-                null,
-                40,
-                1,
-                1
+    @Test
+    fun testFindFirstByUsername() {
+        val user1 = getValidTestUsers()[0]
+        val user2 = getValidTestUsers()[1]
+        val savedUser1Id = createUser(user1)
+        val savedUser2Id = createUser(user2)
+
+        // Needs to be persisted, to avoid reading from cache.
+        val savedUser1 = repo.findFirstByUsername(user1.username)
+        val savedUser2 = repo.findFirstByUsername(user2.username)
+
+        assertNotNull(savedUser1Id)
+        assertNotNull(savedUser2Id)
+
+        assertEquals(user1.username, savedUser1.username)
+        assertEquals(user1.password, savedUser1.password)
+
+        assertEquals(user2.username, savedUser2.username)
+        assertEquals(user2.password, savedUser2.password)
+
+        assertEquals(savedUser1Id, savedUser1.id)
+        assertEquals(savedUser2Id, savedUser2.id)
+    }
+
+    @Test
+    fun testFindUserByLevel() {
+        val user1 = getValidTestUsers()[0]
+        val user2 = getValidTestUsers()[0]
+        user2.username = "asdasjdoasjdioasoidj"
+        val user3 = getValidTestUsers()[1]
+
+        createUser(user1)
+        createUser(user2)
+        createUser(user3)
+        val usersFound1 = repo.findAllByLevel(user1.level)
+        val usersFound2 = repo.findAllByLevel(user3.level)
+
+        assertEquals(2,usersFound1.count())
+        assertTrue(usersFound1.any({e -> e.username == user1.username}))
+        assertTrue(usersFound1.any({e -> e.username == user2.username}))
+
+        assertEquals(1,usersFound2.count())
+        assertTrue(usersFound2.any({e -> e.username == user3.username}))
+    }
+
+    @Test
+    fun testDeleteUser() {
+        val user1 = getValidTestUsers()[0]
+        val user2 = getValidTestUsers()[1]
+        createUser(user1)
+        createUser(user2)
+
+        assertEquals(2, repo.count())
+        repo.deleteByUsername(user2.username)
+
+        assertEquals(1, repo.count())
+
+        repo.deleteByUsername(user1.username)
+        assertEquals(0, repo.count())
+    }
+
+    @Test
+    fun testExistsByUsername() {
+        val user1 = getValidTestUsers()[0]
+        val user2 = getValidTestUsers()[1]
+        assertEquals(false, repo.existsByUsername(user1.username))
+
+        createUser(user1)
+        assertEquals(true, repo.existsByUsername(user1.username))
+
+        assertEquals(false, repo.existsByUsername(user2.username))
+    }
+
+    @Test
+    fun testDeleteUserWithWrongUsername() {
+        val user1 = getValidTestUsers()[0]
+        createUser(user1)
+
+        assertEquals(1, repo.count())
+        repo.deleteByUsername(getTooLongUsername())
+
+        assertEquals(1, repo.count())
+    }
+
+    @Test
+    fun testDeleteWhenNoUserExists() {
+        assertEquals(0, repo.count())
+        repo.deleteByUsername(getTooLongUsername())
+        assertEquals(0, repo.count())
+    }
+
+
+
+    // Constraints
+    @Test
+    fun testPositiveIntegerConstraint() {
+        val user = getValidTestUsers()[0]
+
+        user.level = 500
+
+        assertThatSavingUserFails(user)
+    }
+
+    @Test
+    fun testNegativeIntegerConstraint() {
+        val user = getValidTestUsers()[0]
+
+        user.damage = -23
+
+        assertThatSavingUserFails(user)
+    }
+
+    @Test
+    fun testTooLongUsernameConstraint() {
+        val user = getValidTestUsers()[1]
+
+        user.username = getTooLongUsername()
+        assertThatSavingUserFails(user)
+    }
+
+    @Test
+    fun testBlankConstraint() {
+        val user = getValidTestUsers()[1]
+
+        user.username = "    "
+        assertThatSavingUserFails(user)
+    }
+
+    private fun getTooLongUsername() =
+            "somethingLongerThan50Characters_aoisdjasiojdaoisjdoaisdjisdijasdoiasdjaosidjaoisjdoaisjdaoisjdoiajsdiojasidojaosijdaoisjdoaisjdoaijsdiojasdiojasdoijaisodjaoisjdaoisjdoiasjdoiajsdoiajsdiojadoijdgapi nasdfasdioufhasdifasidfuhasdifhasodfihasduifhaisuodfhasidfh aohguidsfhuidhgsdfiuhsdiuofhgsdoifughsdioufhiusdfiusdfhgsidfhgsidofhgsdf"
+
+    private fun assertThatSavingUserFails(user: User) {
+        try {
+            repo.save(user)
+            fail()
+        } catch (e: ConstraintViolationException) {
+
+        }
+        assertEquals(null, user.id)
+    }
+
+
+    fun getValidTestUsers(): List<User> {
+        return listOf(
+                User(
+                        "Ruby",
+                        "ThisIsAHash",
+                        "ThisIsSomeSalt",
+                        120,
+                        44,
+                        40,
+                        1,
+                        1
+                ),
+                User(
+                        "Kotlin",
+                        "Spicy language..",
+                        "Thisshouldalsobesalted",
+                        122,
+                        46,
+                        47,
+                        23,
+                        4
+                )
         )
     }
 
-    fun createUser(user: UserEntity): Long {
+    fun createUser(user: User): Long {
         return repo.createUser(
                 username = user.username,
                 password = user.password,
                 salt = user.salt,
                 health = user.health,
                 damage = user.damage,
-                avatar = user.avatar,
                 currency = user.currency,
                 experience = user.experience,
                 level = user.level,

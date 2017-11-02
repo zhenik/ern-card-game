@@ -25,3 +25,7 @@ Jaeger UI
 0. `mvn package`
 1. run tracing docker img
 2. run spring app
+
+
+### Test coverage
+`mvn clean install -Pcov-cobertura`

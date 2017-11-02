@@ -36,7 +36,7 @@ class ApplicationConfig {
     private fun apiInfo(): ApiInfo {
         return ApiInfoBuilder()
                 .title("API for entity match")
-                .description("Micro-service for Match entity. This entity represents match result.")
+                .description("Micro-service for MatchResult entity. This entity represents match result.")
                 .version("1.0")
                 .build()
     }
