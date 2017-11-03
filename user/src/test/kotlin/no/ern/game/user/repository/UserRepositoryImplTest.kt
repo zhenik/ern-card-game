@@ -95,12 +95,59 @@ class EntityRepositoryImplTest {
         val usersFound1 = repo.findAllByLevel(user1.level)
         val usersFound2 = repo.findAllByLevel(user3.level)
 
-        assertEquals(2,usersFound1.count())
-        assertTrue(usersFound1.any({e -> e.username == user1.username}))
-        assertTrue(usersFound1.any({e -> e.username == user2.username}))
+        assertEquals(2, usersFound1.count())
+        assertTrue(usersFound1.any({ e -> e.username == user1.username }))
+        assertTrue(usersFound1.any({ e -> e.username == user2.username }))
 
-        assertEquals(1,usersFound2.count())
-        assertTrue(usersFound2.any({e -> e.username == user3.username}))
+        assertEquals(1, usersFound2.count())
+        assertTrue(usersFound2.any({ e -> e.username == user3.username }))
+    }
+
+    @Test
+    fun testUpdateUser() {
+        val user1 = getValidTestUsers()[0]
+        val user2 = getValidTestUsers()[1]
+
+        val savedId = createUser(user1)
+        assertEquals(1, repo.count())
+
+        val wasSuccessful = updateUser(user2, savedId)
+        assertEquals(true, wasSuccessful)
+
+        val readUser = repo.findFirstByUsername(user2.username)
+
+        assertEquals(readUser.username, user2.username)
+        assertEquals(readUser.id, savedId)
+        assertEquals(readUser.password, user2.password)
+
+        assertEquals(1, repo.count())
+    }
+
+    @Test
+    fun testUpdateUserIdChange() {
+        val user1 = getValidTestUsers()[0]
+        val user2 = getValidTestUsers()[1]
+
+        val savedId = createUser(user1)
+
+        val wasSuccessful = updateUser(user2, savedId * 2)
+        assertEquals(false, wasSuccessful)
+
+        val userFound = repo.findFirstByUsername(user2.username)
+        assertNull(userFound)
+        assertEquals(1, repo.count())
+    }
+
+    @Test
+    fun testUpdateUserWithTooLongUsername() {
+        val user1 = getValidTestUsers()[0]
+        val savedId = createUser(user1)
+
+        user1.username = getTooLongUsername()
+        val wasSuccessful = updateUser(user1, savedId)
+
+        assertEquals(false, wasSuccessful)
+        assertEquals(1, repo.count())
     }
 
     @Test
@@ -148,7 +195,6 @@ class EntityRepositoryImplTest {
         repo.deleteByUsername(getTooLongUsername())
         assertEquals(0, repo.count())
     }
-
 
 
     // Constraints
@@ -236,6 +282,20 @@ class EntityRepositoryImplTest {
                 experience = user.experience,
                 level = user.level,
                 equipment = user.equipment
+        )
+    }
+
+    fun updateUser(user: User, id: Long): Boolean {
+        return repo.updateUser(
+                username = user.username,
+                password = user.password,
+                health = user.health,
+                damage = user.damage,
+                currency = user.currency,
+                experience = user.experience,
+                level = user.level,
+                equipment = user.equipment,
+                id = id
         )
     }
 }
