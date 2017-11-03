@@ -72,14 +72,14 @@ class EntityRepositoryImplTest {
         assertNotNull(savedUser1Id)
         assertNotNull(savedUser2Id)
 
-        assertEquals(user1.username, savedUser1.username)
-        assertEquals(user1.password, savedUser1.password)
+        assertEquals(user1.username, savedUser1?.username)
+        assertEquals(user1.password, savedUser1?.password)
 
-        assertEquals(user2.username, savedUser2.username)
-        assertEquals(user2.password, savedUser2.password)
+        assertEquals(user2.username, savedUser2?.username)
+        assertEquals(user2.password, savedUser2?.password)
 
-        assertEquals(savedUser1Id, savedUser1.id)
-        assertEquals(savedUser2Id, savedUser2.id)
+        assertEquals(savedUser1Id, savedUser1?.id)
+        assertEquals(savedUser2Id, savedUser2?.id)
     }
 
     @Test
@@ -88,6 +88,8 @@ class EntityRepositoryImplTest {
         val user2 = getValidTestUsers()[0]
         user2.username = "asdasjdoasjdioasoidj"
         val user3 = getValidTestUsers()[1]
+
+        assertEquals(0, repo.findAllByLevel(user1.level).count())
 
         createUser(user1)
         createUser(user2)
@@ -116,9 +118,9 @@ class EntityRepositoryImplTest {
 
         val readUser = repo.findFirstByUsername(user2.username)
 
-        assertEquals(readUser.username, user2.username)
-        assertEquals(readUser.id, savedId)
-        assertEquals(readUser.password, user2.password)
+        assertEquals(readUser?.username, user2.username)
+        assertEquals(readUser?.id, savedId)
+        assertEquals(readUser?.password, user2.password)
 
         assertEquals(1, repo.count())
     }

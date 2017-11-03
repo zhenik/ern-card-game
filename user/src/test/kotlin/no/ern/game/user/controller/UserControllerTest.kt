@@ -2,6 +2,7 @@ package no.ern.game.user.controller
 
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
+import junit.framework.TestCase.assertNotNull
 import no.ern.game.user.domain.dto.UserDto
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Assert.assertEquals
@@ -114,6 +115,7 @@ class UserControllerTest : TestBase() {
         val postedId = postUserDto(userDto1, 201)
 
         given().get().then().statusCode(200).body("size()", equalTo(1))
+        assertNotNull(postedId)
         userDto2.id = postedId.toString()
 
         // Update data to be like userDto2
@@ -136,6 +138,39 @@ class UserControllerTest : TestBase() {
                 .body("id", equalTo(postedId.toString()))
 
         given().get().then().statusCode(200).body("size()", equalTo(1))
+    }
+
+    @Test
+    fun updateUserChangedId() {
+        val userDto1 = getValidUserDtos()[0]
+        val userDto2 = getValidUserDtos()[1]
+
+        val postedId = postUserDto(userDto1, 201)
+        assertNotNull(postedId)
+
+        // Change ID in dto, but not path.
+        userDto2.id = (postedId?.times(2)).toString()
+
+        given().pathParam("id", postedId)
+                .contentType(ContentType.JSON)
+                .body(userDto2)
+                .put("/{id}")
+                .then()
+                .statusCode(409)
+
+        given().pathParam("username", userDto1.username)
+                .get("/{username}")
+                .then()
+                .statusCode(200)
+                .body("username", equalTo(userDto1.username))
+                .body("password", equalTo(userDto1.password))
+                .body("health", equalTo(userDto1.health))
+                .body("experience", equalTo(userDto1.experience))
+
+        given().pathParam("username", userDto2.username)
+                .get("/{username}")
+                .then()
+                .statusCode(404)
     }
 
     @Test

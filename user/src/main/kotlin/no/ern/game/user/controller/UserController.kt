@@ -92,11 +92,15 @@ class UserController {
             @PathVariable("username")
             username: String?
     ): ResponseEntity<UserDto> {
-        return if (username.isNullOrBlank()) {
-            ResponseEntity.status(404).build()
+        if (username.isNullOrBlank()) {
+            return ResponseEntity.status(404).build()
         } else {
             // username cannot be null because we already checked.
-            ResponseEntity.ok(UserConverter.transform(repo.findFirstByUsername(username!!)))
+            val entity = repo.findFirstByUsername(username!!)
+            if (entity == null) {
+                return ResponseEntity.status(404).build()
+            }
+            return ResponseEntity.ok(UserConverter.transform(entity))
         }
     }
 
@@ -121,7 +125,7 @@ class UserController {
 
         // Don't change ID
         if (userDto.id != id) {
-            return ResponseEntity.status(400).build()
+            return ResponseEntity.status(409).build()
         }
         if (!repo.exists(dtoId)) {
             return ResponseEntity.status(404).build()
