@@ -3,7 +3,7 @@ package no.ern.game.item.domain.converters
 import no.ern.game.item.domain.dto.ItemDto
 import no.ern.game.item.domain.model.Item
 
-//TODO: Update converter to reflect DTO and Item
+//TODO: Update converters to reflect DTO and Item
 
 class ItemConverter{
 

@@ -12,7 +12,6 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import java.util.*
 import javax.validation.ConstraintViolationException
 
 @Api(value = "/items", description = "API for items.")
@@ -26,12 +25,12 @@ class ItemController {
 
 
 
-    //TODO getAllItems (return a collection of all items)
-    //TODO createItem (POST a new Item)
-    //TODO getItems (minLevel, maxLevel, type)
-    //TODO deleteItems
-    //TODO updateItem
-    //TODO replaceItem
+    //TODO getAllItems (return a collection of all items) DONE
+    //TODO createItem (POST a new Item) DONE
+    //TODO getItems (minLevel, maxLevel, type) DONE
+    //TODO deleteItems DONE
+    //TODO updateItem DONE
+    //TODO replaceItem DONE
     @Autowired
     private lateinit var repo: ItemRepository
 
@@ -39,14 +38,61 @@ class ItemController {
     @ApiOperation("Get all items")
     @GetMapping
     fun getItems(@ApiParam("The type of the item")
-                 @RequestParam("type", required = false)
-                 type: Type?): ResponseEntity<Iterable<ItemDto>> {
+                 @RequestParam
+                 requestParams: Map<String, String>?
+                    ): ResponseEntity<Iterable<ItemDto>> {
 
-        return if (type != null)
-            ResponseEntity.ok(ItemConverter.transform(repo.getItemsByType(type)))
+
+
+        // GET ../items?type=passedType
+        return if (requestParams?.get("type") != null) {
+            if(!validEnum(requestParams.get("type")!!)) return ResponseEntity.status(400).build()
+            val type = requestParams.get("type")!!
+            val convertedType = Type.valueOf(type)
+            ResponseEntity.ok(ItemConverter.transform(repo.getItemsByType(convertedType)))
+        }
+
+        // GET ../items?minLevel=passedMinLevel&maxLevel=passedMaxLevel
+        else if(requestParams?.get("minLevel") != null && requestParams?.get("maxLevel") != null)
+        {
+            val minLevel = Integer.parseInt(requestParams.get("minLevel"))
+            val maxLevel = Integer.parseInt(requestParams.get("maxLevel"))
+            ResponseEntity.ok(ItemConverter.transform(repo.getItemsByLevel(minLevel, maxLevel)))
+        }
+
+        // GET ../items?minLevel=passedMinLevel&maxLevel=passedMaxLevel&type=passedType
+        else if (requestParams?.get("minLevel") != null && requestParams?.get("maxLevel") != null && requestParams?.get("type") != null)
+        {
+            val minLevel = Integer.parseInt(requestParams.get("minLevel"))
+            val maxLevel = Integer.parseInt(requestParams.get("maxLevel"))
+            val type = requestParams.get("type")!!
+            val convertedType = Type.valueOf(type)
+            ResponseEntity.ok(ItemConverter.transform(repo.getItemsByLevelAndType(minLevel, maxLevel, convertedType)))
+
+        }
+
+        // GET ../items
         else
             ResponseEntity.ok(ItemConverter.transform(repo.findAll()))
 
+    }
+
+    @ApiOperation("Get a single item specified by id")
+    @GetMapping(path = arrayOf("/{id}"))
+    fun getItem(@ApiParam("The ID of the item")
+                       @PathVariable("id")
+                       pathId: String?)
+            : ResponseEntity<ItemDto> {
+
+        val id: Long
+        try {
+            id = pathId!!.toLong()
+        } catch (e: Exception) {
+            return ResponseEntity.status(400).build()
+        }
+
+        val itemDto = repo.findOne(id) ?: return ResponseEntity.status(404).build()
+        return ResponseEntity.ok(ItemConverter.transform(itemDto))
     }
 
     @ApiOperation("Create a new item")
@@ -90,6 +136,66 @@ class ItemController {
         return ResponseEntity.status(204).build()
     }
 
+    @ApiOperation("Replace an existing item by ID")
+    @PutMapping(path = arrayOf("/{id}"), consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
+    fun replace(
+            @ApiParam("The ID of the item to replace")
+            @PathVariable("id")
+            pathId: String?,
+            //
+            @ApiParam("The item to replace the old one on the same ID")
+            @RequestBody
+            dto: ItemDto
+    ): ResponseEntity<Any> {
+        val dtoId: Long
+
+        try {
+            dtoId = dto.id!!.toLong()
+        } catch (e: Exception) {
+            return ResponseEntity.status(404).build()
+        }
+
+        if (dto.id!! != pathId) {
+            // In this case, 409 (Conflict) sounds more appropriate than the generic 400
+            return ResponseEntity.status(409).build()
+        }
+
+        if (!repo.exists(dtoId)) {
+            createItem(dto)
+            return ResponseEntity.status(201).build()
+        }
+
+        if(!replaceItem(dto))
+            return ResponseEntity.status(400).build()
+
+
+        return ResponseEntity.status(204).build()
+    }
+
+    @ApiOperation("Change the bonus attributes that the item gives")
+    @PatchMapping(path = arrayOf("/{id}"),
+            // could have had a custom type here, but then would need an unmarshaller for it
+            consumes = arrayOf(MediaType.TEXT_PLAIN_VALUE))
+    fun updateItemName(@ApiParam("The ID of the item to patch")
+                         @PathVariable("id")
+                         id: Long,
+                         @ApiParam("The damage the item should give")
+                         @RequestBody
+                         name: String)
+            : ResponseEntity<Void> {
+
+        if (!repo.exists(id)) {
+            return ResponseEntity.status(404).build()
+        }
+
+        // not valid winnerName
+        if(!repo.updateItemName(id, name)){
+            return ResponseEntity.status(400).build()
+        } else {
+            return ResponseEntity.status(204).build()
+        }
+    }
+
 
 
     fun createItem(resultDto: ItemDto): Long{
@@ -101,6 +207,28 @@ class ItemController {
                     resultDto.healthBonus!!,
                     resultDto.price!!,
                     resultDto.levelRequirement!!)
+    }
+
+    fun replaceItem (resultDto: ItemDto):Boolean{
+        return repo.replace(
+                resultDto.name!!,
+                resultDto.description!!,
+                resultDto.type!!,
+                resultDto.damageBonus!!,
+                resultDto.healthBonus!!,
+                resultDto.price!!,
+                resultDto.levelRequirement!!,
+                resultDto.id!!.toLong()
+        )
+    }
+
+    fun validEnum(enum: String): Boolean{
+
+        val type: String = enum
+
+        if (type == "Weapon" || type == "Armor" || type == "Undefined")
+            return true
+        return false
     }
 
 }
