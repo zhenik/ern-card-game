@@ -171,6 +171,46 @@ class UserControllerTest : TestBase() {
                 .get("/{username}")
                 .then()
                 .statusCode(404)
+
+        given().get().then().statusCode(200).body("size()", equalTo(1))
+    }
+
+    @Test
+    fun setUsername() {
+        val userDto1 = getValidUserDtos()[0]
+        val newUsername = "newUsername"
+
+        val postedId = postUserDto(userDto1, 201)
+
+        given().pathParam("username", userDto1.username)
+                .get("/{username}")
+                .then()
+                .statusCode(200)
+                .body("username", equalTo(userDto1.username))
+                .body("password", equalTo(userDto1.password))
+                .body("health", equalTo(userDto1.health))
+                .body("experience", equalTo(userDto1.experience))
+
+        given().pathParam("id", postedId)
+                .body(newUsername)
+                .patch("/{id}")
+                .then()
+                .statusCode(204)
+
+        given().pathParam("id", postedId)
+                .body(newUsername)
+                .patch("/{id}")
+                .then()
+
+        given().pathParam("username", newUsername)
+                .get("/{username}")
+                .then()
+                .statusCode(200)
+                .body("username", equalTo(newUsername))
+                .body("password", equalTo(userDto1.password))
+                .body("health", equalTo(userDto1.health))
+                .body("experience", equalTo(userDto1.experience))
+
     }
 
     @Test

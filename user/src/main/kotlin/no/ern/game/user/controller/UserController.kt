@@ -108,11 +108,11 @@ class UserController {
     @ApiOperation("Replace the data of a user")
     @PutMapping(path = arrayOf("/{id}"), consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE))
     fun updateUser(
-            @ApiParam("Id defining the user. Id cannot be changed, and must be the same in path and RequestBody")
+            @ApiParam("Id defining the user.")
             @PathVariable("id")
             id: String?,
 
-            @ApiParam("Data to replace old user")
+            @ApiParam("Data to replace old user. Id cannot be changed, and must be the same in path and RequestBody")
             @RequestBody
             userDto: UserDto
     ): ResponseEntity<Long> {
@@ -152,6 +152,30 @@ class UserController {
         } catch (e: ConstraintViolationException) {
             return ResponseEntity.status(400).build()
         }
+    }
+
+    @ApiOperation("Replace the username of a user")
+    @PatchMapping(path = arrayOf("/{id}"), consumes = arrayOf(MediaType.TEXT_PLAIN_VALUE))
+    fun updateUsername(
+            @ApiParam("Id defining the user.")
+            @PathVariable("id")
+            id: Long,
+
+            @ApiParam("New username for user. Username must be unique and must be a string.")
+            @RequestBody
+            username: String
+    ): ResponseEntity<Long> {
+        if (!repo.exists(id)) {
+            return ResponseEntity.status(404).build()
+        }
+
+        if (username.isNullOrEmpty() || username.length > 50) {
+            return ResponseEntity.status(400).build()
+        }
+        if (!repo.setUsername(username, id)) {
+            return ResponseEntity.status(400).build()
+        }
+        return ResponseEntity.status(204).build()
     }
 
     @ApiOperation("Delete a user by username")

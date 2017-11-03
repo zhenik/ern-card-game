@@ -1,4 +1,3 @@
-@file:Suppress("RedundantModalityModifier")
 
 package no.ern.game.user.repository
 
@@ -9,6 +8,9 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
+import org.springframework.data.jpa.repository.Modifying
+import org.springframework.data.jpa.repository.Query
+
 
 @Repository
 interface UserRepository : CrudRepository<User, Long>, UserRepositoryCustom {
@@ -18,6 +20,11 @@ interface UserRepository : CrudRepository<User, Long>, UserRepositoryCustom {
 
     @Transactional
     fun deleteByUsername(username: String): Long
+
+//                  Can only return int or void.
+//    @Modifying
+//    @Query("update User u set u.username = ?1 where u.id = ?2")
+//    fun setUsernameById(username: String, id: Long): Boolean
 }
 
 @Transactional
@@ -41,6 +48,8 @@ interface UserRepositoryCustom {
                    level: Int,
                    equipment: Collection<Item>,
                    id: Long): Boolean
+
+    fun setUsername(username: String, id: Long): Boolean
 }
 
 open class UserRepositoryImpl : UserRepositoryCustom {
@@ -92,7 +101,7 @@ open class UserRepositoryImpl : UserRepositoryCustom {
         user.equipment = equipment
 
         try {
-            em.persist(user)
+            em.flush()
         } catch (e: Exception) {
             return false
         }
@@ -103,5 +112,21 @@ open class UserRepositoryImpl : UserRepositoryCustom {
         val query = em.createQuery("SELECT u FROM User u WHERE u.username = ?1", User::class.java)
         query.setParameter(1, username)
         return query.resultList.toList()
+    }
+
+    override fun setUsername(username: String, id: Long): Boolean {
+        val user = em.find(User::class.java, id) ?: return false
+        if (username.isNullOrBlank() || username.length > 50) {
+            return false
+        }
+
+        user.username = username
+
+        try {
+            em.flush()
+        } catch (e: Exception) {
+            return false
+        }
+        return true
     }
 }
