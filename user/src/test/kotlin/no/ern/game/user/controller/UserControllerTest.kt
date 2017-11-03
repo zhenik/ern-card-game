@@ -110,29 +110,30 @@ class UserControllerTest : TestBase() {
     fun updateUser() {
         val userDto1 = getValidUserDtos()[0]
         val userDto2 = getValidUserDtos()[1]
-        userDto2.username = userDto1.username
 
-        postUserDto(userDto1, 201)
+        val postedId = postUserDto(userDto1, 201)
+
         given().get().then().statusCode(200).body("size()", equalTo(1))
+        userDto2.id = postedId.toString()
 
-        // Change userDto1's fields to userDto2's fields.
-        given().pathParam("username", userDto1.username)
+        // Update data to be like userDto2
+        given().pathParam("id", postedId)
                 .contentType(ContentType.JSON)
                 .body(userDto2)
-                .put("/{username}")
+                .put("/{id}")
                 .then()
                 .statusCode(204)
 
         // Validate that it changed
-        given().pathParam("username", userDto1.username)
+        given().pathParam("username", userDto2.username)
                 .get("/{username}")
                 .then()
                 .statusCode(200)
-                .body("username", equalTo(userDto1.username))
+                .body("username", equalTo(userDto2.username))
                 .body("password", equalTo(userDto2.password))
                 .body("health", equalTo(userDto2.health))
                 .body("experience", equalTo(userDto2.experience))
-                .body("salt", equalTo(userDto2.salt))
+                .body("id", equalTo(postedId.toString()))
 
         given().get().then().statusCode(200).body("size()", equalTo(1))
     }
@@ -191,13 +192,17 @@ class UserControllerTest : TestBase() {
         given().get().then().statusCode(200).body("size()", equalTo(1))
     }
 
-    private fun postUserDto(userDto2: UserDto, expectedStatusCode: Int): String {
-        return given().contentType(ContentType.JSON)
-                .body(userDto2)
-                .post()
-                .then()
-                .statusCode(expectedStatusCode)
-                .extract().asString()
+    private fun postUserDto(userDto2: UserDto, expectedStatusCode: Int): Long? {
+        return try {
+            given().contentType(ContentType.JSON)
+                    .body(userDto2)
+                    .post()
+                    .then()
+                    .statusCode(expectedStatusCode)
+                    .extract().`as`(Long::class.java)
+        } catch (e: IllegalStateException) {
+            null
+        }
     }
 
     private fun getValidUserDtos(): List<UserDto> {

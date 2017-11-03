@@ -38,11 +38,11 @@ class UserController {
             return ResponseEntity.status(400).build()
         }
 
-        if (!isDtoValid(userDto)) {
+        if (!isDtoFieldsNotNull(userDto)) {
             return ResponseEntity.status(400).build()
         }
 
-        // Checks for null i isDtoValid method.
+        // Checks for null i isDtoFieldsNotNull method.
         if(repo.existsByUsername(userDto.username!!)) {
             return ResponseEntity.status(400).build()
         }
@@ -102,43 +102,48 @@ class UserController {
 
 
     @ApiOperation("Replace the data of a user")
-    @PutMapping(path = arrayOf("/{username}"), consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE))
-    fun updateUserByUsername(
-            @ApiParam("Username defining the user. Id or username cannot be changed")
-            @PathVariable("username")
-            username: String?,
+    @PutMapping(path = arrayOf("/{id}"), consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    fun updateUser(
+            @ApiParam("Id defining the user. Id cannot be changed, and must be the same in path and RequestBody")
+            @PathVariable("id")
+            id: String?,
 
             @ApiParam("Data to replace old user")
             @RequestBody
             userDto: UserDto
     ): ResponseEntity<Long> {
-        if (username.isNullOrBlank()) {
-            return ResponseEntity.status(400).build()
-        }
-        // Dont change ID or username.
-        if (username != userDto.username || userDto.id != null) {
-            return ResponseEntity.status(400).build()
-        }
-        if (!repo.existsByUsername(username!!)) {
+        val dtoId: Long
+        try {
+            dtoId = userDto.id!!.toLong()
+        } catch (e: Exception) {
             return ResponseEntity.status(404).build()
         }
-        if (!isDtoValid(userDto)) {
+
+        // Don't change ID
+        if (userDto.id != id) {
+            return ResponseEntity.status(400).build()
+        }
+        if (!repo.exists(dtoId)) {
+            return ResponseEntity.status(404).build()
+        }
+        if (!isDtoFieldsNotNull(userDto)) {
             return ResponseEntity.status(400).build()
         }
 
         try {
-            val user = repo.findFirstByUsername(username)
-
-            user.password = userDto.password!!
-            user.salt =  userDto.salt!!
-            user.health =  userDto.health!!
-            user.damage =  userDto.damage!!
-            user.currency =  userDto.currency!!
-            user.experience =  userDto.experience!!
-            user.level =  userDto.level!!
-            user.equipment = userDto.equipment!!
-
-            repo.save(user)
+            val successful = repo.updateUser(userDto.username!!,
+                    userDto.password!!,
+                    userDto.health!!,
+                    userDto.damage!!,
+                    userDto.currency!!,
+                    userDto.experience!!,
+                    userDto.level!!,
+                    userDto.equipment!!,
+                    userDto.id!!.toLong()
+            )
+            if (!successful) {
+                return ResponseEntity.status(400).build()
+            }
             return ResponseEntity.status(204).build()
         } catch (e: ConstraintViolationException) {
             return ResponseEntity.status(400).build()
@@ -163,7 +168,7 @@ class UserController {
         return ResponseEntity.status(204).build()
     }
 
-    private fun isDtoValid(userDto: UserDto): Boolean {
+    private fun isDtoFieldsNotNull(userDto: UserDto): Boolean {
         if ((!userDto.username.isNullOrBlank()) &&
                 (!userDto.password.isNullOrBlank()) &&
                 userDto.salt != null &&
