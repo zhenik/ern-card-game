@@ -4,6 +4,7 @@ import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import no.ern.game.user.domain.dto.UserDto
 import org.hamcrest.CoreMatchers.equalTo
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
@@ -93,14 +94,16 @@ class UserControllerTest : TestBase() {
                 .body("size()", equalTo(0))
 
         //Why does this get all fields as an "array" ??? [username] instead of username
-        /*given().contentType(ContentType.JSON)
+        val foundUser = given().contentType(ContentType.JSON)
                 .param("level", userDto1.level)
                 .get()
                 .then()
                 .statusCode(200)
-                .body("username", equalTo(userDto1.username))
-                .body("password", equalTo(userDto1.password))
-                .body("experience", equalTo(userDto1.experience))*/
+                .extract()
+                .`as`(Array<UserDto>::class.java)
+        assertEquals(foundUser[0].username, userDto1.username)
+        assertEquals(foundUser[0].password, userDto1.password)
+        assertEquals(foundUser[0].experience, userDto1.experience)
     }
 
     @Test

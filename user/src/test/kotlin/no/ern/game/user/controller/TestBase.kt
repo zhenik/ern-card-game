@@ -12,6 +12,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.runner.RunWith
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.context.embedded.LocalServerPort
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit4.SpringRunner
@@ -24,6 +25,9 @@ abstract class TestBase {
     @LocalServerPort
     protected var port = 0
 
+    @Value("\${server.contextPath}")
+    private lateinit var contextPath : String
+
     @Before
     @After
     fun clean() {
@@ -31,7 +35,7 @@ abstract class TestBase {
         // RestAssured configs shared by all the tests
         RestAssured.baseURI = "http://localhost"
         RestAssured.port = port
-        RestAssured.basePath = "/game/api/users"
+        RestAssured.basePath = contextPath + "/users"
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
 
