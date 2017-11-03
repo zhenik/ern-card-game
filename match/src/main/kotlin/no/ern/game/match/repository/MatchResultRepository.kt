@@ -28,10 +28,57 @@ interface MatchResultRepositoryCustom {
             winnerName: String
     ): Long
 
+    fun update(
+            attackerUsername: String,
+            defenderUsername: String,
+            attackerHealth: Long,
+            defenderHealth: Long,
+            attackerTotalDamage: Long,
+            defenderTotalDamage: Long,
+            attackerRemainingHealth: Long,
+            defenderRemainingHealth: Long,
+            winnerName: String,
+            id: Long
+    ): Boolean
+
+    fun updateWinnerName(id: Long, newWinnerName: String):Boolean
+
     fun getMatchesByUserName(username: String): Iterable<MatchResult>
 }
 
 open class MatchResultRepositoryImpl : MatchResultRepositoryCustom {
+
+    override fun updateWinnerName(id: Long, newWinnerName: String): Boolean {
+        val matchResult = em.find(MatchResult::class.java, id) ?: return false
+        if (newWinnerName.isNullOrBlank())return false
+        matchResult.winnerName=newWinnerName
+        return true
+
+    }
+
+    override fun update(attackerUsername: String, defenderUsername: String, attackerHealth: Long, defenderHealth: Long, attackerTotalDamage: Long, defenderTotalDamage: Long, attackerRemainingHealth: Long, defenderRemainingHealth: Long, winnerName: String, id: Long): Boolean {
+
+        val matchResult = em.find(MatchResult::class.java, id) ?: return false
+        if (
+            attackerUsername.isNullOrBlank() ||
+            defenderUsername.isNullOrBlank() ||
+            attackerHealth<0 ||
+            defenderHealth<0 ||
+            attackerTotalDamage<0 ||
+            defenderTotalDamage<0) return false
+
+        matchResult.attackerUsername = attackerUsername
+        matchResult.defenderUsername = defenderUsername
+        matchResult.attackerHealth = attackerHealth
+        matchResult.defenderHealth = defenderHealth
+        matchResult.attackerTotalDamage = attackerTotalDamage
+        matchResult.defenderTotalDamage = defenderTotalDamage
+        matchResult.attackerRemainingHealth = attackerRemainingHealth
+        matchResult.defenderRemainingHealth = defenderRemainingHealth
+        matchResult.winnerName = winnerName
+        return true
+    }
+
     @PersistenceContext
     private lateinit var em: EntityManager
 

@@ -3,6 +3,8 @@ package no.ern.game.item.domain.converters
 import no.ern.game.item.domain.dto.ItemDto
 import no.ern.game.item.domain.model.Item
 
+//TODO: Update converters to reflect DTO and Item
+
 class ItemConverter{
 
     companion object {
@@ -12,13 +14,16 @@ class ItemConverter{
                     id=item.id?.toString(),
                     name = item.name,
                     description = item.description,
-                    type = item.type,
+                    type = item.type.toString(),
                     damageBonus = item.damageBonus,
-                    healthBonus = item.healthBonus
+                    healthBonus = item.healthBonus,
+                    price = item.price,
+                    levelRequirement = item.levelRequirement
             )
         }
 
-        fun transform(items: Iterable<Item>) : List<ItemDto>{
+        //TODO: return iterable
+        fun transform(items: Iterable<Item>) : Iterable<ItemDto>{
             return items.map { transform(it) }
         }
     }

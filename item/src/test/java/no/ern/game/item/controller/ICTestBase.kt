@@ -1,10 +1,13 @@
-package no.ern.game.match.controller
+package no.ern.game.item.controller
+
 
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
-import no.ern.game.match.Application
-import no.ern.game.match.domain.dto.MatchResultDto
-import no.ern.game.match.domain.dto.PlayerDto
+import no.ern.game.item.Application
+import no.ern.game.item.domain.dto.ItemDto
+import no.ern.game.item.domain.enum.Type
+import no.ern.game.item.domain.model.Item
+//import no.ern.game.item.domain.dto.PlayerDto
 import org.hamcrest.CoreMatchers
 import org.junit.After
 import org.junit.Before
@@ -19,9 +22,9 @@ import java.util.logging.Logger
 @RunWith(SpringRunner::class)
 @SpringBootTest(classes = arrayOf(Application::class),
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-abstract class ControllerTestBase{
+abstract class ICTestBase {
 
-    private val logger : Logger = Logger.getLogger(ControllerTestBase::class.java.canonicalName)
+    private val logger: Logger = Logger.getLogger(ICTestBase::class.java.canonicalName)
 
     @LocalServerPort
     protected var port = 0
@@ -31,7 +34,7 @@ abstract class ControllerTestBase{
      * Spring automatically load it from source root
      * */
     @Value("\${server.contextPath}")
-    private lateinit var contextPath : String
+    private lateinit var contextPath: String
 
     @Before
     @After
@@ -44,7 +47,7 @@ abstract class ControllerTestBase{
         // RestAssured configs shared by all the tests
         RestAssured.baseURI = "http://localhost"
         RestAssured.port = port
-        RestAssured.basePath = contextPath + "/matches"
+        RestAssured.basePath = contextPath + "/items"
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
         /*
@@ -55,7 +58,7 @@ abstract class ControllerTestBase{
                 .then()
                 .statusCode(200)
                 .extract()
-                .`as`(Array<MatchResultDto>::class.java)
+                .`as`(Array<ItemDto>::class.java)
                 .toList()
 
 
@@ -76,13 +79,11 @@ abstract class ControllerTestBase{
                 .body("size()", CoreMatchers.equalTo(0))
     }
 
-    fun getValidMatchResultDto():MatchResultDto {
-        val attackerWinner = PlayerDto("u1",30,28,5)
-        val defender  = PlayerDto("u2",25,25,-3)
-        return MatchResultDto(attackerWinner, defender, attackerWinner.username)
+    fun getItemDto():ItemDto {
+        return ItemDto("Sword of magic", "blablabla", "Weapon", 2, 3, 100, 2)
     }
 
-    fun postNewMatchResultValid(dto: MatchResultDto) : Long{
+    fun postNewItem(dto: ItemDto) : Long{
         return RestAssured.given().contentType(ContentType.JSON)
                 .body(dto)
                 .post()

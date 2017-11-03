@@ -73,15 +73,15 @@ class MatchResultController {
     @ApiOperation("Get a single match result specified by id")
     @GetMapping(path = arrayOf("/{id}"))
     fun getMatchResult(@ApiParam(ID_PARAM)
-                @PathVariable("id")
-                pathId: String?)
+                       @PathVariable("id")
+                       pathId: String?)
             : ResponseEntity<MatchResultDto> {
 
         val id: Long
         try {
             id = pathId!!.toLong()
         } catch (e: Exception) {
-            return ResponseEntity.status(404).build()
+            return ResponseEntity.status(400).build()
         }
 
         val dto = crud.findOne(id) ?: return ResponseEntity.status(404).build()
@@ -108,6 +108,75 @@ class MatchResultController {
         return ResponseEntity.status(204).build()
     }
 
+    @ApiOperation("Update an existing matchResult")
+    @PutMapping(path = arrayOf("/{id}"), consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
+    fun update(
+            @ApiParam(ID_PARAM)
+            @PathVariable("id")
+            pathId: String?,
+            //
+            @ApiParam("The matchResult that will replace the old one. Cannot change its id though.")
+            @RequestBody
+            dto: MatchResultDto
+    ): ResponseEntity<Any> {
+        val dtoId: Long
+
+        try {
+            dtoId = dto.id!!.toLong()
+        } catch (e: Exception) {
+            return ResponseEntity.status(404).build()
+        }
+
+        if (dto.id!! != pathId) {
+            // In this case, 409 (Conflict) sounds more appropriate than the generic 400
+            return ResponseEntity.status(409).build()
+        }
+
+        if (!crud.exists(dtoId)) {
+            //Here, in this API, made the decision to not allow to create a news with PUT.
+            // So, if we cannot find it, should return 404 instead of creating it
+            return ResponseEntity.status(404).build()
+        }
+
+//        if (dto.text == null || dto.authorId == null || dto.country == null || dto.creationTime == null) {
+//            return ResponseEntity.status(400).build()
+//        }
+        if(!updateMatch(dto))
+            return ResponseEntity.status(400).build()
+
+
+        return ResponseEntity.status(204).build()
+    }
+
+    @ApiOperation("Modify the winnername of given matchResult ID")
+    @PatchMapping(path = arrayOf("/{id}"),
+            // could have had a custom type here, but then would need an unmarshaller for it
+            consumes = arrayOf(MediaType.TEXT_PLAIN_VALUE))
+    fun updateWinnerName(@ApiParam("The unique id of the MatchResult")
+              @PathVariable("id")
+              id: Long,
+            //
+              @ApiParam("""
+                  The instructions on how to modify the winnername.
+                  In this specific matchResult, it should be a single string value
+              """)
+              @RequestBody
+              winnerName: String)
+            : ResponseEntity<Void> {
+
+        // not exist
+        if (!crud.exists(id)) {
+            return ResponseEntity.status(404).build()
+        }
+
+        // not valid winnerName
+        if(!crud.updateWinnerName(id,winnerName)){
+            return ResponseEntity.status(400).build()
+        } else {
+            return ResponseEntity.status(204).build()
+        }
+    }
+
     fun validDto(resultDto: MatchResultDto): Boolean{
 
         if (
@@ -119,6 +188,7 @@ class MatchResultController {
                 resultDto.defender?.damage!= null &&
                 resultDto.attacker?.remainingHealth!= null &&
                 resultDto.defender?.remainingHealth!= null &&
+
                 resultDto.winnerName!=null &&
                 // check if id is present than false
                 resultDto.id==null)
@@ -137,5 +207,19 @@ class MatchResultController {
                 resultDto.attacker!!.remainingHealth!!,
                 resultDto.defender!!.remainingHealth!!,
                 resultDto.winnerName!!)
+    }
+    fun updateMatch(resultDto: MatchResultDto):Boolean{
+        return crud.update(
+                resultDto.attacker!!.username!!,
+                resultDto.defender!!.username!!,
+                resultDto.attacker!!.health!!,
+                resultDto.defender!!.health!!,
+                resultDto.attacker!!.damage!!,
+                resultDto.defender!!.damage!!,
+                resultDto.attacker!!.remainingHealth!!,
+                resultDto.defender!!.remainingHealth!!,
+                resultDto.winnerName!!,
+                resultDto.id!!.toLong()
+        )
     }
 }

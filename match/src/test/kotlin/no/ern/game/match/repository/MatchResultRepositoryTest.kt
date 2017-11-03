@@ -35,7 +35,7 @@ class MatchResultRepositoryTest {
                 "u1")
     }
     private fun createMatchForUsername(username: String) : Long {
-        return return crud.createMatchResult(
+         return crud.createMatchResult(
                 username,
                 "u2",
                 25,
@@ -211,8 +211,177 @@ class MatchResultRepositoryTest {
         assertEquals(4, crud.count())
         assertEquals(2, list.size)
         assertTrue(list.stream().allMatch { it.winnerName.equals(winnerName) })
-
     }
 
+    @Test
+    fun testUpdateMatchResult(){
+        //Arrange
+        val winnerName = "yohohoho"
+        val match1= MatchResult(
+                winnerName,
+                "u1",
+                25,
+                20,
+                20,
+                15,
+                5,
+                0,
+                winnerName)
+        crud.save(match1)
+        val id = match1.id!!
+
+        //Act
+        val updated = crud.update(
+                "superman",
+                "batman",
+                25,
+                20,
+                20,
+                15,
+                5,
+                0,
+                "superman",
+                id)
+
+        //Assert
+        assertTrue(updated)
+        assertTrue(crud.findAll().toList().stream().allMatch { "superman"==it.attackerUsername})
+        assertTrue(crud.findAll().toList().stream().allMatch { "batman"==it.defenderUsername})
+        assertEquals(1,crud.count())
+    }
+
+    @Test
+    fun testUpdateMatchResult_InvalidInput(){
+        //Arrange
+        val winnerName = "yohohoho"
+        val match1= MatchResult(
+                winnerName,
+                "u1",
+                25,
+                20,
+                20,
+                15,
+                5,
+                0,
+                winnerName)
+        crud.save(match1)
+        val id = match1.id!!
+
+        //Act
+
+
+
+        val updated =crud.update(
+                "",
+                "batman",
+                5,
+                20,
+                20,
+                15,
+                5,
+                0,
+                "superman",
+                id)
+
+        //Assert
+        assertFalse(updated)
+        assertTrue(crud.findAll().toList().stream().allMatch { "yohohoho"==it.attackerUsername})
+        assertTrue(crud.findAll().toList().stream().allMatch { "u1"==it.defenderUsername})
+        assertEquals(1,crud.count())
+    }
+
+    @Test
+    fun testUpdateMatchResult_changeName(){
+        //Arrange
+        val winnerName = "u2"
+        val match1 = MatchResult(
+                winnerName,
+                "u1",
+                25,
+                20,
+                20,
+                15,
+                5,
+                0,
+                winnerName)
+        crud.save(match1)
+        val id = match1.id!!
+        assertEquals(1,crud.count())
+
+        // Act
+        val winnerNameUpdated = crud.updateWinnerName(id,"batman")
+
+        // Assert
+        val matchFromDb = crud.findOne(id)
+
+        assertEquals(1,crud.count())
+        assertTrue(winnerNameUpdated)
+        assertEquals("batman",matchFromDb.winnerName)
+    }
+
+    @Test
+    fun testUpdateWinnerNameInvalidName(){
+        //Arrange
+        val winnerName = "u2"
+        val match1 = MatchResult(
+                winnerName,
+                "u1",
+                25,
+                20,
+                20,
+                15,
+                5,
+                0,
+                winnerName)
+        crud.save(match1)
+        val id = match1.id!!
+        assertEquals(1,crud.count())
+
+        // Act
+        val winnerNameUpdated = crud.updateWinnerName(id,"")
+
+        // Assert
+        val matchFromDb = crud.findOne(id)
+
+        assertEquals(1,crud.count())
+        assertFalse(winnerNameUpdated)
+        assertEquals("u2",matchFromDb.winnerName)
+    }
+
+    @Test
+    fun testUpdateWinnerName(){
+        // Arrange
+        val match1 = MatchResult(
+                "u2",
+                "u1",
+                25,
+                20,
+                20,
+                15,
+                5,
+                0,
+                "u2")
+        crud.save(match1)
+        val id = match1.id!!
+        assertEquals(1,crud.count())
+
+
+        // Act
+            // valid
+        val winnerNameUpdated = crud.updateWinnerName(id,"batman")
+            // invalid
+        val winnerNameUpdated1 = crud.updateWinnerName(id,"")
+            // invalid
+        val winnerNameUpdated2 = crud.updateWinnerName(123123123123,"superman")
+
+
+        // Assert
+        val matchFromDb = crud.findOne(id)
+        assertEquals(1,crud.count())
+        assertTrue(winnerNameUpdated)
+        assertFalse(winnerNameUpdated1)
+        assertFalse(winnerNameUpdated2)
+        assertEquals("batman", matchFromDb.winnerName)
+    }
 
 }
