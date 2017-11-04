@@ -59,6 +59,8 @@ open class MatchResultRepositoryImpl : MatchResultRepositoryCustom {
     override fun update(attackerUsername: String, defenderUsername: String, attackerHealth: Long, defenderHealth: Long, attackerTotalDamage: Long, defenderTotalDamage: Long, attackerRemainingHealth: Long, defenderRemainingHealth: Long, winnerName: String, id: Long): Boolean {
 
         val matchResult = em.find(MatchResult::class.java, id) ?: return false
+        if (winnerName != attackerUsername && winnerName != defenderUsername) return false
+
         if (
             attackerUsername.isNullOrBlank() ||
             defenderUsername.isNullOrBlank() ||
@@ -93,7 +95,11 @@ open class MatchResultRepositoryImpl : MatchResultRepositoryCustom {
             defenderRemainingHealth: Long,
             winnerName: String): Long {
 
+
         var id = -1L
+
+//        if (winnerName != attackerUsername && winnerName != defenderUsername) return id
+
         val match = MatchResult(
                 attackerUsername,
                 defenderUsername,
