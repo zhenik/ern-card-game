@@ -182,31 +182,49 @@ class UserControllerTest : TestBase() {
 
         val postedId = postUserDto(userDto1, 201)
 
-        given().pathParam("username", userDto1.username)
-                .get("/{username}")
-                .then()
-                .statusCode(200)
-                .body("username", equalTo(userDto1.username))
-                .body("password", equalTo(userDto1.password))
-                .body("health", equalTo(userDto1.health))
-                .body("experience", equalTo(userDto1.experience))
-
         given().pathParam("id", postedId)
                 .body(newUsername)
                 .patch("/{id}")
                 .then()
                 .statusCode(204)
 
-        given().pathParam("id", postedId)
-                .body(newUsername)
-                .patch("/{id}")
-                .then()
-
         given().pathParam("username", newUsername)
                 .get("/{username}")
                 .then()
                 .statusCode(200)
                 .body("username", equalTo(newUsername))
+                .body("password", equalTo(userDto1.password))
+                .body("health", equalTo(userDto1.health))
+                .body("experience", equalTo(userDto1.experience))
+
+    }
+
+    @Test
+    fun setUsernameInvalid() {
+        val userDto1 = getValidUserDtos()[0]
+        val postedId = postUserDto(userDto1, 201)
+        val tooLongUsername = getTooLongUsername()
+
+
+        // Too long username
+        given().pathParam("id", postedId)
+                .body(tooLongUsername)
+                .patch("/{id}")
+                .then()
+                .statusCode(400)
+
+        // Empty body
+        given().pathParam("id", postedId)
+                .body(" ")
+                .patch("/{id}")
+                .then()
+                .statusCode(400)
+
+        given().pathParam("username", userDto1.username)
+                .get("/{username}")
+                .then()
+                .statusCode(200)
+                .body("username", equalTo(userDto1.username))
                 .body("password", equalTo(userDto1.password))
                 .body("health", equalTo(userDto1.health))
                 .body("experience", equalTo(userDto1.experience))
@@ -320,5 +338,9 @@ class UserControllerTest : TestBase() {
                 )
         )
     }
+
+    private fun getTooLongUsername() =
+            "somethingLongerThan50Characters_aoisdjasiojdaoisjdoaisdjisdijasdoiasdjaosidjaoisjdoaisjdaoisjdoiajsdiojasidojaosijdaoisjdoaisjdoaijsdiojasdiojasdoijaisodjaoisjdaoisjdoiasjdoiajsdoiajsdiojadoijdgapi nasdfasdioufhasdifasidfuhasdifhasodfihasduifhaisuodfhasidfh aohguidsfhuidhgsdfiuhsdiuofhgsdoifughsdioufhiusdfiusdfhgsidfhgsidofhgsdf"
+
 
 }
