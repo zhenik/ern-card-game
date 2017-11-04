@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
 import io.swagger.annotations.ApiResponse
 import no.ern.game.match.domain.converters.MatchResultConverter
-import no.ern.game.match.domain.dto.MatchResultDto
+import no.ern.game.schema.dto.MatchResultDto
 import no.ern.game.match.repository.MatchResultRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType

@@ -1,6 +1,6 @@
 package no.ern.game.match.domain.converters
 
-import no.ern.game.match.domain.dto.MatchResultDto
+import no.ern.game.schema.dto.MatchResultDto
 import no.ern.game.match.domain.model.MatchResult
 import org.junit.Assert.*
 import org.junit.Test

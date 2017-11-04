@@ -1,14 +1,14 @@
 package no.ern.game.match.domain.converters
 
-import no.ern.game.match.domain.dto.MatchResultDto
-import no.ern.game.match.domain.dto.PlayerDto
+import no.ern.game.schema.dto.MatchResultDto
+import no.ern.game.schema.dto.PlayerDto
 import no.ern.game.match.domain.model.MatchResult
 
 class MatchResultConverter {
     companion object {
         fun transform(entity: MatchResult) : MatchResultDto {
             return MatchResultDto(
-                    id=entity.id?.toString(),
+                    id = entity.id?.toString(),
                     attacker = PlayerDto(
                             entity.attackerUsername,
                             entity.attackerHealth,
