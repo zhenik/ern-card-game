@@ -44,10 +44,46 @@ class MatchResultRepositoryTest {
                 15,
                 5,
                 0,
-                "u1")
+                 username)
     }
     private fun createMatch(match: MatchResult): MatchResult? {
         return crud.save(match)
+    }
+
+    @Test
+    fun testCustomConstraint(){
+        //Act
+            // invalid: user fight with himself
+        try{
+            crud.createMatchResult(
+                    "u1",
+                    "u1",
+                    25,
+                    20,
+                    -20,
+                    15,
+                    5,
+                    0,
+                    "u1")
+            fail()
+        }
+        catch (e : ConstraintViolationException){}
+
+            // invalid: 1 vs 2 -> winnerName 3
+        try{
+            crud.createMatchResult(
+                    "1",
+                    "2",
+                    25,
+                    20,
+                    -20,
+                    15,
+                    5,
+                    0,
+                    "3")
+            fail()
+        }
+        catch (e : ConstraintViolationException){}
     }
 
 
@@ -127,7 +163,7 @@ class MatchResultRepositoryTest {
                     -15,
                     5,
                     0,
-                    "u1")
+                    "u2")
             fail()
         }
         catch (e : ConstraintViolationException){}
@@ -145,7 +181,7 @@ class MatchResultRepositoryTest {
                     -15,
                     5,
                     0,
-                    "u1")
+                    "u2")
             fail()
         }
         catch (e : ConstraintViolationException){}
@@ -309,14 +345,14 @@ class MatchResultRepositoryTest {
         assertEquals(1,crud.count())
 
         // Act
-        val winnerNameUpdated = crud.updateWinnerName(id,"batman")
+        val winnerNameUpdated = crud.updateWinnerName(id,"u1")
 
         // Assert
         val matchFromDb = crud.findOne(id)
 
         assertEquals(1,crud.count())
         assertTrue(winnerNameUpdated)
-        assertEquals("batman",matchFromDb.winnerName)
+        assertEquals("u1",matchFromDb.winnerName)
     }
 
     @Test
@@ -351,16 +387,18 @@ class MatchResultRepositoryTest {
     @Test
     fun testUpdateWinnerName(){
         // Arrange
+        val oldWinner = "u2"
+        val newWinner = "u1"
         val match1 = MatchResult(
-                "u2",
-                "u1",
+                oldWinner,
+                newWinner,
                 25,
                 20,
                 20,
                 15,
                 5,
                 0,
-                "u2")
+                oldWinner)
         crud.save(match1)
         val id = match1.id!!
         assertEquals(1,crud.count())
@@ -368,7 +406,7 @@ class MatchResultRepositoryTest {
 
         // Act
             // valid
-        val winnerNameUpdated = crud.updateWinnerName(id,"batman")
+        val winnerNameUpdated = crud.updateWinnerName(id,newWinner)
             // invalid
         val winnerNameUpdated1 = crud.updateWinnerName(id,"")
             // invalid
@@ -381,7 +419,7 @@ class MatchResultRepositoryTest {
         assertTrue(winnerNameUpdated)
         assertFalse(winnerNameUpdated1)
         assertFalse(winnerNameUpdated2)
-        assertEquals("batman", matchFromDb.winnerName)
+        assertEquals(newWinner, matchFromDb.winnerName)
     }
 
 }

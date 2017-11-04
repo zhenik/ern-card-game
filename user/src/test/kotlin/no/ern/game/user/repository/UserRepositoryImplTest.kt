@@ -153,55 +153,6 @@ class EntityRepositoryImplTest {
     }
 
     @Test
-    fun testSetUsername() {
-        val user1 = getValidTestUsers()[0]
-        val newUsername = getValidTestUsers()[1].username
-
-        val savedId = createUser(user1)
-        assertEquals(1, repo.count())
-
-        repo.setUsername(newUsername, savedId)
-
-        val findUser = repo.findFirstByUsername(newUsername)
-
-        assertEquals(newUsername, findUser?.username)
-        assertEquals(user1.health, findUser?.health)
-        assertEquals(user1.password, findUser?.password)
-        assertEquals(1, repo.count())
-    }
-
-    @Test
-    fun testSetUsernameTooLong() {
-        val user1 = getValidTestUsers()[0]
-        val tooLongUsername = getTooLongUsername()
-
-        val savedId = createUser(user1)
-
-        val wasSuccessful = repo.setUsername(tooLongUsername, savedId)
-        assertEquals(false, wasSuccessful)
-
-        assertNull(repo.findFirstByUsername(tooLongUsername))
-        assertNotNull(repo.findFirstByUsername(user1.username))
-        assertEquals(user1.username,repo.findOne(savedId).username)
-    }
-
-    @Test
-    fun testSetUsernameWrongId() {
-        val user1 = getValidTestUsers()[0]
-        val newUsername = getValidTestUsers()[1].username
-        val savedId = createUser(user1)
-
-        val wasSuccessful = repo.setUsername(newUsername, savedId * 2)
-        assertEquals(false, wasSuccessful)
-
-        val findUser = repo.findFirstByUsername(newUsername)
-        assertNull(findUser)
-
-        val findUser2 = repo.findFirstByUsername(user1.username)
-        assertEquals(user1.username, findUser2?.username)
-    }
-
-    @Test
     fun testDeleteUser() {
         val user1 = getValidTestUsers()[0]
         val user2 = getValidTestUsers()[1]

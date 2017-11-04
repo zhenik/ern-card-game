@@ -2,6 +2,7 @@ package no.ern.game.match.controller
 
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
+import no.ern.game.match.domain.converters.MatchResultConverter
 import no.ern.game.match.domain.dto.MatchResultDto
 import no.ern.game.match.domain.dto.PlayerDto
 import org.hamcrest.CoreMatchers
@@ -246,9 +247,12 @@ class MatchResultControllerTest : ControllerTestBase(){
     @Test
     fun testUpdateWinnerName(){
         // Arrange
-        val dto = getValidMatchResultDto()
+        val dto =MatchResultDto(
+                PlayerDto("superman",30,28,5),
+                PlayerDto("batman",25,25,-3),
+                "superman")
         val id = postNewMatchResultValid(dto)
-        val newWinnerName = "just a guy"
+        val newWinnerName = "batman"
 
         assertNotEquals(dto.winnerName, newWinnerName)
 
