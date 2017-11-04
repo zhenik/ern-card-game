@@ -64,6 +64,7 @@
     <resteasy-client.version>3.1.3.Final</resteasy-client.version>
     <jaeger-core.version>0.20.0</jaeger-core.version>
     <version.cobertura-maven-plugin>2.7</version.cobertura-maven-plugin>
+    <version.jwt>0.9.0</version.jwt>
   </properties>
   <dependencyManagement>
 
@@ -149,6 +150,12 @@
         <version>${jaeger-core.version}</version>
       </dependency>
 
+      <!-- Token based security verification-->
+      <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt</artifactId>
+        <version>${version.jwt}</version>
+      </dependency>
 
     </dependencies>
   </dependencyManagement>
