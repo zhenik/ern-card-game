@@ -37,7 +37,7 @@ data class User(
         var level: Int = 1,
 
         @get:ElementCollection
-        var equipment: Collection<Item> = listOf(),
+        var equipment: Collection<Long> = listOf(),
 
         @get:Id
         @get:GeneratedValue
