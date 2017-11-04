@@ -3,7 +3,7 @@ package no.ern.game.user.controller
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import junit.framework.TestCase.assertNotNull
-import no.ern.game.user.domain.dto.UserDto
+import no.ern.game.schema.dto.dto.UserDto
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -360,8 +360,8 @@ class UserControllerTest : TestBase() {
         )
     }
 
-    private fun getTooLongUsername() =
-            "somethingLongerThan50Characters_aoisdjasiojdaoisjdoaisdjisdijasdoiasdjaosidjaoisjdoaisjdaoisjdoiajsdiojasidojaosijdaoisjdoaisjdoaijsdiojasdiojasdoijaisodjaoisjdaoisjdoiasjdoiajsdoiajsdiojadoijdgapi nasdfasdioufhasdifasidfuhasdifhasodfihasduifhaisuodfhasidfh aohguidsfhuidhgsdfiuhsdiuofhgsdoifughsdioufhiusdfiusdfhgsidfhgsidofhgsdf"
-
+    private fun getTooLongUsername(): String {
+        return "somethingLongerThan50Characters".repeat(20)
+    }
 
 }
