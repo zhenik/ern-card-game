@@ -16,7 +16,6 @@
         <dependency>
             <groupId>no.ern.game</groupId>
             <artifactId>schema</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>

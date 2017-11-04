@@ -4,7 +4,7 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
 import io.swagger.annotations.ApiResponse
-import no.ern.game.schema.dto.dto.UserDto
+import no.ern.game.schema.dto.UserDto
 import no.ern.game.user.domain.converters.UserConverter
 import no.ern.game.user.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired

@@ -3,7 +3,7 @@ package no.ern.game.user.controller
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import junit.framework.TestCase.assertNotNull
-import no.ern.game.schema.dto.dto.UserDto
+import no.ern.game.schema.dto.UserDto
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -331,7 +331,7 @@ class UserControllerTest : TestBase() {
                         30,
                         40,
                         1,
-                        listOf(1L,2L,3L)
+                        listOf(1L, 2L, 3L)
                 ),
                 UserDto(
                         null,
@@ -343,7 +343,7 @@ class UserControllerTest : TestBase() {
                         33,
                         47,
                         23,
-                        listOf(1L,3L ,2L)
+                        listOf(1L, 3L, 2L)
                 ),
                 UserDto(
                         null,
@@ -355,7 +355,7 @@ class UserControllerTest : TestBase() {
                         38,
                         68,
                         68,
-                        listOf(1L,2L,3L)
+                        listOf(1L, 2L, 3L)
                 )
         )
     }

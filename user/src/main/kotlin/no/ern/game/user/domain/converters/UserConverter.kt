@@ -1,6 +1,6 @@
 package no.ern.game.user.domain.converters
 
-import no.ern.game.schema.dto.dto.UserDto
+import no.ern.game.schema.dto.UserDto
 import no.ern.game.user.domain.model.User
 
 class UserConverter {
