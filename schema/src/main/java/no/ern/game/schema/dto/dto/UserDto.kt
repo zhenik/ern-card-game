@@ -1,8 +1,7 @@
-package no.ern.game.user.domain.dto
+package no.ern.game.schema.dto.dto
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
-import no.ern.game.user.domain.model.Item
 
 @ApiModel("DTO representing User")
 data class UserDto(
@@ -37,6 +36,6 @@ data class UserDto(
         var level: Int? = 1,
 
         @ApiModelProperty("The items the user has")
-        var equipment: Collection<Item>? = null
+        var equipment: Collection<Long>? = null
 )
 

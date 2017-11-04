@@ -3,7 +3,7 @@ package no.ern.game.user.controller
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import junit.framework.TestCase.assertNotNull
-import no.ern.game.user.domain.dto.UserDto
+import no.ern.game.schema.dto.dto.UserDto
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -26,21 +26,31 @@ class UserControllerTest : TestBase() {
 
         given().get().then().statusCode(200).body("size()", equalTo(2))
 
-        given().pathParam("username", userDto1.username)
+        val foundUser1 = given().contentType(ContentType.JSON)
+                .pathParam("username", userDto1.username)
                 .get("/{username}")
                 .then()
                 .statusCode(200)
-                .body("username", equalTo(userDto1.username))
-                .body("password", equalTo(userDto1.password))
-                .body("experience", equalTo(userDto1.experience))
+                .extract()
+                .`as`(UserDto::class.java)
 
-        given().pathParam("username", userDto2.username)
+        assertEquals(userDto1.username, foundUser1.username)
+        assertEquals(userDto1.password, foundUser1.password)
+        assertEquals(userDto1.health, foundUser1.health)
+        assertEquals(userDto1.equipment, foundUser1.equipment)
+
+        val foundUser2 = given().contentType(ContentType.JSON)
+                .pathParam("username", userDto2.username)
                 .get("/{username}")
                 .then()
                 .statusCode(200)
-                .body("username", equalTo(userDto2.username))
-                .body("password", equalTo(userDto2.password))
-                .body("experience", equalTo(userDto2.experience))
+                .extract()
+                .`as`(UserDto::class.java)
+
+        assertEquals(userDto2.username, foundUser2.username)
+        assertEquals(userDto2.password, foundUser2.password)
+        assertEquals(userDto2.health, foundUser2.health)
+        assertEquals(userDto2.equipment, foundUser2.equipment)
     }
 
     @Test
@@ -158,14 +168,21 @@ class UserControllerTest : TestBase() {
                 .then()
                 .statusCode(409)
 
-        given().pathParam("username", userDto1.username)
+        val foundUser = given().contentType(ContentType.JSON)
+                .pathParam("username", userDto1.username)
                 .get("/{username}")
                 .then()
                 .statusCode(200)
-                .body("username", equalTo(userDto1.username))
-                .body("password", equalTo(userDto1.password))
-                .body("health", equalTo(userDto1.health))
-                .body("experience", equalTo(userDto1.experience))
+                .extract()
+                .`as`(UserDto::class.java)
+
+        assertEquals(userDto1.username, foundUser.username)
+        assertEquals(userDto1.password, foundUser.password)
+        assertEquals(userDto1.health, foundUser.health)
+        assertEquals(userDto1.equipment, foundUser.equipment)
+
+
+
 
         given().pathParam("username", userDto2.username)
                 .get("/{username}")
@@ -182,31 +199,53 @@ class UserControllerTest : TestBase() {
 
         val postedId = postUserDto(userDto1, 201)
 
-        given().pathParam("username", userDto1.username)
-                .get("/{username}")
-                .then()
-                .statusCode(200)
-                .body("username", equalTo(userDto1.username))
-                .body("password", equalTo(userDto1.password))
-                .body("health", equalTo(userDto1.health))
-                .body("experience", equalTo(userDto1.experience))
-
         given().pathParam("id", postedId)
                 .body(newUsername)
                 .patch("/{id}")
                 .then()
                 .statusCode(204)
 
-        given().pathParam("id", postedId)
-                .body(newUsername)
-                .patch("/{id}")
-                .then()
 
-        given().pathParam("username", newUsername)
+        val foundUser = given().contentType(ContentType.JSON)
+                .pathParam("username", newUsername)
                 .get("/{username}")
                 .then()
                 .statusCode(200)
-                .body("username", equalTo(newUsername))
+                .extract()
+                .`as`(UserDto::class.java)
+
+        assertEquals(newUsername, foundUser.username)
+        assertEquals(userDto1.password, foundUser.password)
+        assertEquals(userDto1.health, foundUser.health)
+        assertEquals(userDto1.equipment, foundUser.equipment)
+    }
+
+    @Test
+    fun setUsernameInvalid() {
+        val userDto1 = getValidUserDtos()[0]
+        val postedId = postUserDto(userDto1, 201)
+        val tooLongUsername = getTooLongUsername()
+
+
+        // Too long username
+        given().pathParam("id", postedId)
+                .body(tooLongUsername)
+                .patch("/{id}")
+                .then()
+                .statusCode(400)
+
+        // Empty body
+        given().pathParam("id", postedId)
+                .body(" ")
+                .patch("/{id}")
+                .then()
+                .statusCode(400)
+
+        given().pathParam("username", userDto1.username)
+                .get("/{username}")
+                .then()
+                .statusCode(200)
+                .body("username", equalTo(userDto1.username))
                 .body("password", equalTo(userDto1.password))
                 .body("health", equalTo(userDto1.health))
                 .body("experience", equalTo(userDto1.experience))
@@ -292,7 +331,7 @@ class UserControllerTest : TestBase() {
                         30,
                         40,
                         1,
-                        listOf()
+                        listOf(1L,2L,3L)
                 ),
                 UserDto(
                         null,
@@ -304,7 +343,7 @@ class UserControllerTest : TestBase() {
                         33,
                         47,
                         23,
-                        listOf()
+                        listOf(1L,3L ,2L)
                 ),
                 UserDto(
                         null,
@@ -316,9 +355,13 @@ class UserControllerTest : TestBase() {
                         38,
                         68,
                         68,
-                        listOf()
+                        listOf(1L,2L,3L)
                 )
         )
+    }
+
+    private fun getTooLongUsername(): String {
+        return "somethingLongerThan50Characters".repeat(20)
     }
 
 }

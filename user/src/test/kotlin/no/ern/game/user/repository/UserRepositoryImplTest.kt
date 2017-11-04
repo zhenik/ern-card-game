@@ -258,7 +258,8 @@ class EntityRepositoryImplTest {
                         44,
                         40,
                         1,
-                        1
+                        1,
+                        listOf(1L, 3L, 2L)
                 ),
                 User(
                         "Kotlin",
@@ -268,7 +269,8 @@ class EntityRepositoryImplTest {
                         46,
                         47,
                         23,
-                        4
+                        4,
+                        listOf(10L, 25L, 17L)
                 )
         )
     }

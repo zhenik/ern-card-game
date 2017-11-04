@@ -1,15 +1,12 @@
 
 package no.ern.game.user.repository
 
-import no.ern.game.user.domain.model.Item
 import no.ern.game.user.domain.model.User
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
-import org.springframework.data.jpa.repository.Modifying
-import org.springframework.data.jpa.repository.Query
 
 
 @Repository
@@ -21,10 +18,6 @@ interface UserRepository : CrudRepository<User, Long>, UserRepositoryCustom {
     @Transactional
     fun deleteByUsername(username: String): Long
 
-//                  Can only return int or void.
-//    @Modifying
-//    @Query("update User u set u.username = ?1 where u.id = ?2")
-//    fun setUsernameById(username: String, id: Long): Boolean
 }
 
 @Transactional
@@ -37,7 +30,7 @@ interface UserRepositoryCustom {
                    currency: Int,
                    experience: Int,
                    level: Int,
-                   equipment: Collection<Item>): Long
+                   equipment: Collection<Long>): Long
 
     fun updateUser(username: String,
                    password: String,
@@ -46,7 +39,7 @@ interface UserRepositoryCustom {
                    currency: Int,
                    experience: Int,
                    level: Int,
-                   equipment: Collection<Item>,
+                   equipment: Collection<Long>,
                    id: Long): Boolean
 
     fun setUsername(username: String, id: Long): Boolean
@@ -57,7 +50,7 @@ open class UserRepositoryImpl : UserRepositoryCustom {
     @PersistenceContext
     private lateinit var em: EntityManager
 
-    override fun createUser(username: String, password: String, salt: String, health: Int, damage: Int, currency: Int, experience: Int, level: Int, equipment: Collection<Item>): Long {
+    override fun createUser(username: String, password: String, salt: String, health: Int, damage: Int, currency: Int, experience: Int, level: Int, equipment: Collection<Long>): Long {
         val userEntity = User(
                 username,
                 password,
@@ -73,7 +66,7 @@ open class UserRepositoryImpl : UserRepositoryCustom {
         return userEntity.id!!
     }
 
-    override fun updateUser(username: String, password: String, health: Int, damage: Int, currency: Int, experience: Int, level: Int, equipment: Collection<Item>, id: Long): Boolean {
+    override fun updateUser(username: String, password: String, health: Int, damage: Int, currency: Int, experience: Int, level: Int, equipment: Collection<Long>, id: Long): Boolean {
         val user = em.find(User::class.java, id) ?: return false
 
         if (username.isBlank() ||
