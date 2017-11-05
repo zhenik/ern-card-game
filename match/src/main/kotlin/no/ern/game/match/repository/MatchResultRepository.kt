@@ -4,6 +4,7 @@ import no.ern.game.match.domain.model.MatchResult
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
+import java.time.ZonedDateTime
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
@@ -41,14 +42,16 @@ interface MatchResultRepositoryCustom {
             id: Long
     ): Boolean
 
-    fun updateWinnerName(id: Long, newWinnerName: String):Boolean
+    fun changeWinnerName(id: Long, newWinnerName: String):Boolean
 
     fun getMatchesByUserName(username: String): Iterable<MatchResult>
+
+    fun getLastMatchResultByUserName(username: String): MatchResult?
 }
 
 open class MatchResultRepositoryImpl : MatchResultRepositoryCustom {
 
-    override fun updateWinnerName(id: Long, newWinnerName: String): Boolean {
+    override fun changeWinnerName(id: Long, newWinnerName: String): Boolean {
         val matchResult = em.find(MatchResult::class.java, id) ?: return false
         if (newWinnerName.isNullOrBlank())return false
         matchResult.winnerName=newWinnerName
@@ -109,7 +112,8 @@ open class MatchResultRepositoryImpl : MatchResultRepositoryCustom {
                 defenderTotalDamage,
                 attackerRemainingHealth,
                 defenderRemainingHealth,
-                winnerName
+                winnerName,
+                ZonedDateTime.now()
         )
         em.persist(match)
 
@@ -123,5 +127,12 @@ open class MatchResultRepositoryImpl : MatchResultRepositoryCustom {
         query.setParameter(1, username)
         query.setParameter(2, username)
         return query.resultList.toList()
+    }
+
+    override fun getLastMatchResultByUserName(username: String): MatchResult? {
+        val query = em.createQuery("select m from MatchResult m where m.attackerUsername = ?1 OR m.defenderUsername=?2 ORDER BY m.creationTime DESC", MatchResult::class.java)
+        query.setParameter(1, username)
+        query.setParameter(2, username)
+        return query.setMaxResults(1).singleResult
     }
 }

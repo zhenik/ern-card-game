@@ -345,7 +345,7 @@ class MatchResultRepositoryTest {
         assertEquals(1,crud.count())
 
         // Act
-        val winnerNameUpdated = crud.updateWinnerName(id,"u1")
+        val winnerNameUpdated = crud.changeWinnerName(id,"u1")
 
         // Assert
         val matchFromDb = crud.findOne(id)
@@ -374,7 +374,7 @@ class MatchResultRepositoryTest {
         assertEquals(1,crud.count())
 
         // Act
-        val winnerNameUpdated = crud.updateWinnerName(id,"")
+        val winnerNameUpdated = crud.changeWinnerName(id,"")
 
         // Assert
         val matchFromDb = crud.findOne(id)
@@ -406,11 +406,11 @@ class MatchResultRepositoryTest {
 
         // Act
             // valid
-        val winnerNameUpdated = crud.updateWinnerName(id,newWinner)
+        val winnerNameUpdated = crud.changeWinnerName(id,newWinner)
             // invalid
-        val winnerNameUpdated1 = crud.updateWinnerName(id,"")
+        val winnerNameUpdated1 = crud.changeWinnerName(id,"")
             // invalid
-        val winnerNameUpdated2 = crud.updateWinnerName(123123123123,"superman")
+        val winnerNameUpdated2 = crud.changeWinnerName(123123123123,"superman")
 
 
         // Assert
@@ -420,6 +420,55 @@ class MatchResultRepositoryTest {
         assertFalse(winnerNameUpdated1)
         assertFalse(winnerNameUpdated2)
         assertEquals(newWinner, matchFromDb.winnerName)
+    }
+
+    @Test
+    fun testGetLastMatchResultByUserName(){
+
+        //Arrange
+        val id1 = crud.createMatchResult(
+                "u1",
+                "u2",
+                25,
+                20,
+                20,
+                15,
+                5,
+                0,
+                "u1")
+        val id2 = crud.createMatchResult(
+                "u1",
+                "u3",
+                25,
+                20,
+                20,
+                15,
+                5,
+                0,
+                "u3")
+        val id3 = crud.createMatchResult(
+                "u1",
+                "u4",
+                25,
+                20,
+                20,
+                15,
+                5,
+                0,
+                "u4")
+
+        // Act
+        val lastMatchResult = crud.getLastMatchResultByUserName("u1")
+        val matchResult1 = crud.findOne(id1)
+        val matchResult2 = crud.findOne(id2)
+
+        // Assert
+        assertTrue(matchResult1.creationTime!! < lastMatchResult!!.creationTime)
+        assertTrue(matchResult2.creationTime!! < lastMatchResult!!.creationTime)
+
+        assertEquals("u1", lastMatchResult.attackerUsername)
+        assertEquals("u4", lastMatchResult.defenderUsername)
+        assertEquals("u4", lastMatchResult.winnerName)
     }
 
 }
