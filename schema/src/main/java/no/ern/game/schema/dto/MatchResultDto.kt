@@ -2,6 +2,8 @@ package no.ern.game.schema.dto
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
+import java.time.ZonedDateTime
+import javax.validation.constraints.NotNull
 
 @ApiModel("MatchResult representation. Data transfer object represents match result")
 data class MatchResultDto(
@@ -14,6 +16,9 @@ data class MatchResultDto(
 
         @ApiModelProperty("Winner name of the match")
         var winnerName: String?= null,
+
+        @ApiModelProperty("When the match result was created")
+        var creationTime: ZonedDateTime? = null,
 
         @ApiModelProperty("MatchResult id")
         var id: String?=null

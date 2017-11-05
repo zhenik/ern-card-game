@@ -19,7 +19,8 @@ class MatchResultConverter {
                             entity.defenderHealth,
                             entity.defenderTotalDamage,
                             entity.defenderRemainingHealth),
-                    winnerName = entity.winnerName
+                    winnerName = entity.winnerName,
+                    creationTime = entity.creationTime
             )
         }
         fun transform(entities: Iterable<MatchResult>) : Iterable<MatchResultDto>{

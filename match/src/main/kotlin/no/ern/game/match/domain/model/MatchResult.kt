@@ -1,6 +1,7 @@
 package no.ern.game.match.domain.model
 
 import org.hibernate.validator.constraints.NotBlank
+import java.time.ZonedDateTime
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
@@ -31,6 +32,8 @@ data class MatchResult(
         var defenderRemainingHealth: Long,
 
         var winnerName: String? = null,
+
+        var creationTime: ZonedDateTime? = null,
 
         @get:Id @get:GeneratedValue
         var id: Long? = null
