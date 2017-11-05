@@ -159,7 +159,7 @@ class MatchResultControllerTest : ControllerTestBase(){
         val dto2 = MatchResultDto(
                 PlayerDto("superman", 30, 28, 5),
                 PlayerDto("batman", 25, 25, -3),
-                "superman",
+                "superman",null,
                 id.toString())
 
 
@@ -191,7 +191,7 @@ class MatchResultControllerTest : ControllerTestBase(){
         val dto = MatchResultDto(
                 PlayerDto("superman", 30, 28, 5),
                 PlayerDto("batman", 25, 25, -3),
-                "superman",
+                "superman",null,
                 id.toString())
 
 

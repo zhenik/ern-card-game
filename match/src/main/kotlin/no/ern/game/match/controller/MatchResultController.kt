@@ -16,8 +16,6 @@ import javax.validation.ConstraintViolationException
 
 const val ID_PARAM = "The numeric id of the match result"
 
-//TODO: PUT, PATCH
-
 @Api(value = "/matches", description = "API for match results.")
 @RequestMapping(
         path = arrayOf("/matches"),
@@ -170,7 +168,7 @@ class MatchResultController {
         }
 
         // not valid winnerName
-        if(!crud.updateWinnerName(id,winnerName)){
+        if(!crud.changeWinnerName(id,winnerName)){
             return ResponseEntity.status(400).build()
         } else {
             return ResponseEntity.status(204).build()
