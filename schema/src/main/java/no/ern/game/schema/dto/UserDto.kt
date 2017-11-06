@@ -2,9 +2,10 @@ package no.ern.game.schema.dto
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
+import java.io.Serializable
 
 @ApiModel("DTO representing User")
-data class UserDto(
+data class UserDto (
 
         @ApiModelProperty("The id of the User")
         var id: String? = null,
@@ -37,5 +38,5 @@ data class UserDto(
 
         @ApiModelProperty("The items the user has")
         var equipment: Collection<Long>? = null
-)
+): Serializable
 
