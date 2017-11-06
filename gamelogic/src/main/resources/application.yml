@@ -1,3 +1,11 @@
 server:
   contextPath: /game/api
   port: 8084
+gameApis:
+  user:
+    host: http://localhost
+    port: 8081
+    api: /game/api
+    controllers:
+      users: /users
+    path: ${gameApis.user.host}:${gameApis.user.port}${gameApis.user.api}${gameApis.user.controllers.users}
