@@ -2,7 +2,7 @@ package no.ern.game.item.controller
 
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
-import no.ern.game.item.domain.dto.ItemDto
+import no.ern.game.schema.dto.ItemDto
 import org.hamcrest.CoreMatchers
 import org.junit.Assert
 import org.junit.Test

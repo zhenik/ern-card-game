@@ -4,7 +4,7 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
 import no.ern.game.item.domain.converters.ItemConverter
-import no.ern.game.item.domain.dto.ItemDto
+import no.ern.game.schema.dto.ItemDto
 import no.ern.game.item.domain.enum.Type
 import no.ern.game.item.repository.ItemRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,14 +23,6 @@ import javax.validation.ConstraintViolationException
 @Validated
 class ItemController {
 
-
-
-    //TODO getAllItems (return a collection of all items) DONE
-    //TODO createItem (POST a new Item) DONE
-    //TODO getItems (minLevel, maxLevel, type) DONE
-    //TODO deleteItems DONE
-    //TODO updateItem DONE
-    //TODO replaceItem DONE
     @Autowired
     private lateinit var repo: ItemRepository
 

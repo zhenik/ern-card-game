@@ -4,10 +4,9 @@ package no.ern.game.item.controller
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import no.ern.game.item.Application
-import no.ern.game.item.domain.dto.ItemDto
+import no.ern.game.schema.dto.ItemDto
 import no.ern.game.item.domain.enum.Type
 import no.ern.game.item.domain.model.Item
-//import no.ern.game.item.domain.dto.PlayerDto
 import org.hamcrest.CoreMatchers
 import org.junit.After
 import org.junit.Before
