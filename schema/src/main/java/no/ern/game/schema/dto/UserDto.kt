@@ -40,3 +40,18 @@ data class UserDto (
         var equipment: Collection<Long>? = null
 ): Serializable
 
+
+/**
+ * example
+    {
+        "username":"SUPERGUY",
+        "password":"pdasd",
+        "salt":"super salt",
+        "health":100,
+        "damage":10,
+        "currency":100,
+        "experience":0,
+        "level":3,
+        "equipment":[]
+    }
+*/

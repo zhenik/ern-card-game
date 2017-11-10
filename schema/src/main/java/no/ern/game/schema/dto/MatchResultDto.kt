@@ -2,6 +2,7 @@ package no.ern.game.schema.dto
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
+import java.io.Serializable
 import java.time.ZonedDateTime
 import javax.validation.constraints.NotNull
 
@@ -22,7 +23,7 @@ data class MatchResultDto(
 
         @ApiModelProperty("MatchResult id")
         var id: String?=null
-)
+): Serializable
 
 data class PlayerDto(
         @ApiModelProperty("Username")
@@ -33,4 +34,24 @@ data class PlayerDto(
         var damage: Long?=null,
         @ApiModelProperty("Remaining health, when match is finished")
         var remainingHealth: Long?=null
-)
+): Serializable
+
+/**
+ * example
+      {
+         "attacker":
+         {
+             "username":"u1",
+             "health": 30,
+             "damage": 28,
+             "remainingHealth": 15
+         },
+         "defender":{
+             "username":"u2",
+              "health": 25,
+              "damage": 15,
+              "remainingHealth": -3
+         },
+        "winnerName": "u1"
+      }
+ */
