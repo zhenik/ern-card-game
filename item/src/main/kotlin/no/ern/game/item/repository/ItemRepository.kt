@@ -66,8 +66,8 @@ open class ItemRepositoryImpl : ItemRepositoryCustom {
                 levelRequirement
         )
 
-        if (type == "Weapon") item.type = Type.Weapon
-        else if (type == "Armor") item.type = Type.Armor
+        if (type.toLowerCase() == "Weapon".toLowerCase()) item.type = Type.Weapon
+        else if (type.toLowerCase() == "Armor".toLowerCase()) item.type = Type.Armor
 
         em.persist(item)
         return item.id!!

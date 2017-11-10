@@ -13,6 +13,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>no.ern.game</groupId>
+            <artifactId>schema</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>

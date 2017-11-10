@@ -1,7 +1,8 @@
-package no.ern.game.item.domain.dto
+package no.ern.game.schema.dto
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
+import java.io.Serializable
 
 //TODO: Go through swagger comments
 //TODO: Change DTO to represent model
@@ -32,4 +33,5 @@ data class ItemDto(
 
         @ApiModelProperty("Item id")
         var id: String?=null
-)
+) : Serializable
+

@@ -1,9 +1,8 @@
 package no.ern.game.item.domain.converters
 
-import no.ern.game.item.domain.dto.ItemDto
+import no.ern.game.schema.dto.ItemDto
 import no.ern.game.item.domain.model.Item
 
-//TODO: Update converters to reflect DTO and Item
 
 class ItemConverter{
 
@@ -22,7 +21,6 @@ class ItemConverter{
             )
         }
 
-        //TODO: return iterable
         fun transform(items: Iterable<Item>) : Iterable<ItemDto>{
             return items.map { transform(it) }
         }
