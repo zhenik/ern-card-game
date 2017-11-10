@@ -18,7 +18,7 @@ import java.util.*
 @Api(value = "/play", description = "API for game logic processes.")
 @RequestMapping(
         path = arrayOf("/play"),
-        produces = arrayOf(MediaType.APPLICATION_JSON_VALUE)
+        produces = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE)
 )
 @RestController
 @Validated
@@ -31,7 +31,7 @@ class GameLogicController {
     private lateinit var usersPath: String
 
     @ApiOperation("Find opponent")
-    @GetMapping(path = arrayOf("/hunting"), consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    @GetMapping(path = arrayOf("/hunting"), consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
     fun createMatchResult(
             @ApiParam("Search enemy for specific lvl")
             @RequestParam("level", required = false)
