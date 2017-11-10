@@ -16,3 +16,14 @@ data class PlayerSearchDto(
         var level: Int? = 1
 )
 
+/**
+ *  example
+
+    {
+        "id":"1",
+        "username":"dangerPlayer",
+        "level":1
+    }
+
+ */
+
