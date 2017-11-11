@@ -1,0 +1,27 @@
+spring:
+  profiles: test
+server:
+  contextPath: /game/api
+  port: 9084
+gameApis:
+  user:
+    host: http://localhost
+    port: 9081
+    api: /game/api
+    controllers:
+      users: /users
+    path: ${gameApis.user.host}:${gameApis.user.port}${gameApis.user.api}${gameApis.user.controllers.users}
+  item:
+    host: http://localhost
+    port: 9083
+    api: /game/api
+    controllers:
+      items: /items
+    path: ${gameApis.item.host}:${gameApis.item.port}${gameApis.item.api}${gameApis.item.controllers.items}
+  match:
+    host: http://localhost
+    port: 9082
+    api: /game/api
+    controllers:
+      matches: /matches
+    path: ${gameApis.match.host}:${gameApis.match.port}${gameApis.match.api}${gameApis.match.controllers.matches}
