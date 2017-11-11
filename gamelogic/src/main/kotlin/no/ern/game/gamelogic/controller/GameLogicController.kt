@@ -7,11 +7,14 @@ import io.swagger.annotations.ApiResponse
 import no.ern.game.gamelogic.domain.converters.PlayerFightConverter
 import no.ern.game.gamelogic.domain.converters.PlayerSearchConverter
 import no.ern.game.gamelogic.domain.model.Player
-import no.ern.game.gamelogic.services.GameProcessService
+import no.ern.game.gamelogic.services.GameProcessorService
 import no.ern.game.schema.dto.ItemDto
+import no.ern.game.schema.dto.MatchResultDto
+import no.ern.game.schema.dto.PlayerDto
 import no.ern.game.schema.dto.UserDto
+import no.ern.game.schema.dto.gamelogic.FightResultLogDto
 import no.ern.game.schema.dto.gamelogic.PlayerSearchDto
-import no.ern.game.schema.dto.gamelogic.PlayersFightDto
+import no.ern.game.schema.dto.gamelogic.PlayersFightIdsDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
@@ -34,10 +37,15 @@ class GameLogicController {
     lateinit var restTemplate : RestTemplate
 
     @Autowired
-    lateinit var gameService: GameProcessService
+    lateinit var gameService: GameProcessorService
 
     @Value("\${gameApis.user.path}")
     private lateinit var usersPath: String
+    @Value("\${gameApis.item.path}")
+    private lateinit var itemsPath: String
+    @Value("\${gameApis.match.path}")
+    private lateinit var matchesPath: String
+
 
     @ApiOperation("Find opponent")
     @GetMapping(path = arrayOf("/hunting"), consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -84,42 +92,45 @@ class GameLogicController {
 
     @ApiOperation("Initiate match")
     @PostMapping(path = arrayOf("/fight"),consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
-    @ApiResponse(code = 200, message = "The log of match")
+    @ApiResponse(code = 200, message = "The fight log of match, represents as FightResultLogDto")
     fun startFight(
             @ApiParam("Model represent ids of users who are going to fight against each other")
-            @RequestBody resultDto: PlayersFightDto) : ResponseEntity<Long>{
+            @RequestBody resultIdsDto: PlayersFightIdsDto) : ResponseEntity<FightResultLogDto>{
 
-        // 1 TODO: validate PlayersFightDto
-        // 2.1 TODO: fetch users from user-module (if any errors -> propagate them)
-        // 2.2 TODO: fetch their items (validate lvl requirements for each item)
-        // 3 call GameProcessService.fight(attacker,defender) -> return GameLogDto
-        // 4 TODO: send matchResult to MatchResult processor (if use rabbitMq || persist directly via HTTP)
-        // 5 TODO: generate experience for player(s) and persist it
-        // 6 TODO: return GameLogDto
+        // 1 validate PlayersFightIdsDto
+        if( ! isPlayersFightIdsDtoValid(resultIdsDto)){ return ResponseEntity.status(404).build() }
 
-
-
-
-
-        //2.1 Users
+        // 2.1 TODO: fetch users from user-module (if any errors -> propagate them). Extract logic to method
         val attackerUserDtoMock = UserDto("1","attackerName",null,null,100,10,null,null,1,null)
         val defenderUserDtoMock = UserDto("2","defenderName",null,null,120,12,null,null,2,null)
-        //2.2 Items
+
+        // 2.2 TODO: fetch their items (validate lvl requirements for each item). Extract logic to method
         val randomItems1: List<ItemDto> = getMockListOfItems()
         val randomItems2: List<ItemDto> = getMockListOfItems()
 
+        // 3 call GameProcessorService.fight(attacker,defender) -> return GameLogDto
         val attacker: Player = PlayerFightConverter.transform(attackerUserDtoMock,randomItems1)
         val defender: Player = PlayerFightConverter.transform(defenderUserDtoMock,randomItems2)
 
 
-        //3 TODO: return FightResultLogDto
-        gameService.fight(attacker,defender)
+        val fightResultGameLog = gameService.fight(attacker,defender)
 
-        return ResponseEntity.ok(1L)
+        // 4 send matchResult to MatchResult processor (if use rabbitMq || persist directly via HTTP)
+        val matchResult = getMatchResult(attacker,defender,fightResultGameLog.winner!!)
+        val responseMatchApi : ResponseEntity<Long> = restTemplate.postForEntity(matchesPath,matchResult,Long::class.java)
+        if (responseMatchApi.statusCode.value()!=201){ return ResponseEntity.status(responseMatchApi.statusCode.value()).build() }
+
+
+        // 5 TODO: generate experience for player(s) and persist it (if use rabbitMq || persist directly via HTTP)
+        // How to rollback if this fail (? delete on responseMatch ?)
+
+        // 6 return FightResultLogDto
+        return ResponseEntity.ok(fightResultGameLog)
 
     }
 
 
+    // TODO: remove later mock items
     private fun getMockListOfItems():List<ItemDto>{
         // 1 weapon
         // 1 armor
@@ -127,6 +138,29 @@ class GameLogicController {
                 ItemDto(null,null,null,(Math.random()*15).toLong(),0),
                 ItemDto(null,null,null,0,(Math.random()*15).toLong())
                 )
+    }
+
+    private fun isPlayersFightIdsDtoValid(dto: PlayersFightIdsDto):Boolean{
+        if(dto.attackerId.isNullOrBlank() || dto.defenderId.isNullOrBlank()) return false
+        if(dto.attackerId!!.trim()==dto.defenderId!!.trim()) return false
+        return true
+    }
+
+    private fun getMatchResult(attacker: Player, defender:Player, winner: String):MatchResultDto{
+        return MatchResultDto(
+                PlayerDto(
+                        attacker.username,
+                        attacker.health,
+                        attacker.damage,
+                        attacker.remainingHealth),
+                PlayerDto(
+                        defender.username,
+                        defender.health,
+                        defender.damage,
+                        defender.remainingHealth
+                ),
+                winner
+        )
     }
 
 }
