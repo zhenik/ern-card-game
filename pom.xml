@@ -67,6 +67,7 @@
     <jaeger-core.version>0.20.0</jaeger-core.version>
     <version.cobertura-maven-plugin>2.7</version.cobertura-maven-plugin>
     <version.jwt>0.9.0</version.jwt>
+    <version.wiremock>2.2.1</version.wiremock>
   </properties>
   <dependencyManagement>
 
@@ -164,6 +165,14 @@
         <groupId>io.jsonwebtoken</groupId>
         <artifactId>jjwt</artifactId>
         <version>${version.jwt}</version>
+      </dependency>
+
+      <dependency>
+        <!-- to mock web services -->
+        <groupId>com.github.tomakehurst</groupId>
+        <artifactId>wiremock-standalone</artifactId>
+        <version>${version.wiremock}</version>
+        <scope>test</scope>
       </dependency>
 
     </dependencies>
