@@ -17,7 +17,7 @@ import javax.validation.ConstraintViolationException
 @Api(value = "/users", description = "API for user entities")
 @RequestMapping(
         path = arrayOf("/users"),
-        produces = arrayOf(MediaType.APPLICATION_JSON_VALUE)
+        produces = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE)
 )
 @RestController
 @Validated
@@ -27,7 +27,7 @@ class UserController {
     private lateinit var repo: UserRepository
 
     @ApiOperation("Create new user")
-    @PostMapping(consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    @PostMapping(consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
     @ApiResponse(code = 201, message = "Id of created user")
     fun createUser(
             @ApiParam("User to save")
@@ -106,7 +106,7 @@ class UserController {
 
 
     @ApiOperation("Replace the data of a user")
-    @PutMapping(path = arrayOf("/{id}"), consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    @PutMapping(path = arrayOf("/{id}"), consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
     fun updateUser(
             @ApiParam("Id defining the user.")
             @PathVariable("id")
