@@ -20,24 +20,24 @@ interface MatchResultRepositoryCustom {
     fun createMatchResult(
             attackerUsername: String,
             defenderUsername: String,
-            attackerHealth: Long,
-            defenderHealth: Long,
-            attackerTotalDamage: Long,
-            defenderTotalDamage: Long,
-            attackerRemainingHealth: Long,
-            defenderRemainingHealth: Long,
+            attackerHealth: Int,
+            defenderHealth: Int,
+            attackerTotalDamage: Int,
+            defenderTotalDamage: Int,
+            attackerRemainingHealth: Int,
+            defenderRemainingHealth: Int,
             winnerName: String
     ): Long
 
     fun update(
             attackerUsername: String,
             defenderUsername: String,
-            attackerHealth: Long,
-            defenderHealth: Long,
-            attackerTotalDamage: Long,
-            defenderTotalDamage: Long,
-            attackerRemainingHealth: Long,
-            defenderRemainingHealth: Long,
+            attackerHealth: Int,
+            defenderHealth: Int,
+            attackerTotalDamage: Int,
+            defenderTotalDamage: Int,
+            attackerRemainingHealth: Int,
+            defenderRemainingHealth: Int,
             winnerName: String,
             id: Long
     ): Boolean
@@ -59,7 +59,7 @@ open class MatchResultRepositoryImpl : MatchResultRepositoryCustom {
 
     }
 
-    override fun update(attackerUsername: String, defenderUsername: String, attackerHealth: Long, defenderHealth: Long, attackerTotalDamage: Long, defenderTotalDamage: Long, attackerRemainingHealth: Long, defenderRemainingHealth: Long, winnerName: String, id: Long): Boolean {
+    override fun update(attackerUsername: String, defenderUsername: String, attackerHealth: Int, defenderHealth: Int, attackerTotalDamage: Int, defenderTotalDamage: Int, attackerRemainingHealth: Int, defenderRemainingHealth: Int, winnerName: String, id: Long): Boolean {
 
         val matchResult = em.find(MatchResult::class.java, id) ?: return false
         if (winnerName != attackerUsername && winnerName != defenderUsername) return false
@@ -90,12 +90,12 @@ open class MatchResultRepositoryImpl : MatchResultRepositoryCustom {
     override fun createMatchResult(
             attackerUsername: String,
             defenderUsername: String,
-            attackerHealth: Long,
-            defenderHealth: Long,
-            attackerTotalDamage: Long,
-            defenderTotalDamage: Long,
-            attackerRemainingHealth: Long,
-            defenderRemainingHealth: Long,
+            attackerHealth: Int,
+            defenderHealth: Int,
+            attackerTotalDamage: Int,
+            defenderTotalDamage: Int,
+            attackerRemainingHealth: Int,
+            defenderRemainingHealth: Int,
             winnerName: String): Long {
 
 

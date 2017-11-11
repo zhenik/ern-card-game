@@ -18,18 +18,18 @@ data class MatchResult(
         var defenderUsername: String,
 
         @get:Min(0)
-        var attackerHealth: Long,
+        var attackerHealth: Int,
         @get:Min(0)
-        var defenderHealth: Long,
+        var defenderHealth: Int,
 
         @get:Min(0)
-        var attackerTotalDamage: Long,
+        var attackerTotalDamage: Int,
         @get:Min(0)
-        var defenderTotalDamage: Long,
+        var defenderTotalDamage: Int,
 
         // can be negative
-        var attackerRemainingHealth: Long,
-        var defenderRemainingHealth: Long,
+        var attackerRemainingHealth: Int,
+        var defenderRemainingHealth: Int,
 
         var winnerName: String? = null,
 
