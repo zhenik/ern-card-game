@@ -5,14 +5,15 @@ import no.ern.game.gamelogic.domain.model.LogLine
 import no.ern.game.gamelogic.domain.model.Player
 import no.ern.game.schema.dto.ItemDto
 import no.ern.game.schema.dto.UserDto
+import no.ern.game.schema.dto.gamelogic.FightResultLogDto
 import org.springframework.stereotype.Service
 
 @Service
-class GameProcessService {
+class GameProcessorService {
 
-    fun fight(attacker: Player, defender: Player){
+    fun fight(attacker: Player, defender: Player):FightResultLogDto{
 
-        var gameLog : MutableMap<Int,String> = HashMap()
+        val gameLog : MutableMap<Int,String> = HashMap()
         var counter = 1
 
         // game loop
@@ -34,14 +35,12 @@ class GameProcessService {
                     defender.remainingHealth=defender.remainingHealth-(attacker.damage*2)
                     val logLine = LogLine(attacker,defender, true)
                     gameLog.put(counter++,logLine.toString())
-//                    println(logLine)
 
                 }
                 else{
                     defender.remainingHealth=defender.remainingHealth-attacker.damage
                     val logLine = LogLine(attacker,defender, false)
                     gameLog.put(counter++,logLine.toString())
-//                    println(logLine)
                 }
             }
 
@@ -52,13 +51,11 @@ class GameProcessService {
                     attacker.remainingHealth= attacker.remainingHealth-(defender.damage*2)
                     val logLine = LogLine(defender,attacker,true)
                     gameLog.put(counter++,logLine.toString())
-//                    println(logLine)
                 }
                 else {
                     attacker.remainingHealth= attacker.remainingHealth-defender.damage
                     val logLine = LogLine(defender,attacker,false)
                     gameLog.put(counter++,logLine.toString())
-//                    println(logLine)
                 }
             }
 
@@ -68,7 +65,9 @@ class GameProcessService {
             }
         }
 
-//        println(gameLog)
+
+        val winner = if(attacker.remainingHealth<1) defender.username else attacker.username
+        return FightResultLogDto(attacker.username,defender.username,winner,gameLog)
 
     }
 
@@ -101,10 +100,7 @@ class GameProcessService {
 //
 //    val attacker: Player = PlayerFightConverter.transform(attackerUserDtoMock,randomItems1)
 //    val defender: Player = PlayerFightConverter.transform(defenderUserDtoMock,randomItems2)
-//
-//
-//
-//
-//    val service = GameProcessService()
+
+//    val service = GameProcessorService()
 //    service.fight(attacker,defender)
 //}
