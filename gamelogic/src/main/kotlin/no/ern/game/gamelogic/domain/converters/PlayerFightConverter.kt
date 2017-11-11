@@ -7,9 +7,8 @@ import no.ern.game.schema.dto.UserDto
 class PlayerFightConverter{
     companion object {
         fun transform(user: UserDto, items: List<ItemDto>): Player {
-            // TODO: additional check for null ???
             val healthBonus = items.sumBy { it.healthBonus!!.toInt() }
-            val damageBonus = items.sumBy { it.healthBonus!!.toInt() }
+            val damageBonus = items.sumBy { it.damageBonus!!.toInt() }
             return Player(
                     username = user.username.toString(),
                     health = user.health!!.plus(healthBonus),
