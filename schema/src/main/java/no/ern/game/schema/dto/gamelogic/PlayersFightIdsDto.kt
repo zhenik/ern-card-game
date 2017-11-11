@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty
 
 //TODO: discuss by id or by username (both are unique)
 @ApiModel("DTO representing players who are going fight with each other")
-data class PlayersFightDto(
+data class PlayersFightIdsDto(
 
         @ApiModelProperty("The id of the attacker")
         var attackerId: String? = null,

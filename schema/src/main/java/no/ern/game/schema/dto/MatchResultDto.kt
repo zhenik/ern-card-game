@@ -29,11 +29,11 @@ data class PlayerDto(
         @ApiModelProperty("Username")
         var username: String?=null,
         @ApiModelProperty("Total health")
-        var health: Long?=null,
+        var health: Int?=null,
         @ApiModelProperty("Total damage")
-        var damage: Long?=null,
+        var damage: Int?=null,
         @ApiModelProperty("Remaining health, when match is finished")
-        var remainingHealth: Long?=null
+        var remainingHealth: Int?=null
 ): Serializable
 
 /**
