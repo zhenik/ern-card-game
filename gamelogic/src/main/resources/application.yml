@@ -1,9 +1,12 @@
+# default profile
 spring:
   profiles:
     active: "dev"
-# default
-#server:
-#  email: default@mkyong.com
+
+#  add more for default
+
+# HOW TO RUN specific profile
+# java -jar -Dspring.profiles.active=docker target/gamelogic.jar
 
 ---
 
@@ -12,6 +15,36 @@ spring:
 server:
   contextPath: /game/api
   port: 8084
+gameApis:
+  user:
+    host: http://localhost
+    port: 8081
+    api: /game/api
+    controllers:
+      users: /users
+    path: ${gameApis.user.host}:${gameApis.user.port}${gameApis.user.api}${gameApis.user.controllers.users}
+  item:
+    host: http://localhost
+    port: 8083
+    api: /game/api
+    controllers:
+      items: /items
+    path: ${gameApis.item.host}:${gameApis.item.port}${gameApis.item.api}${gameApis.item.controllers.items}
+  match:
+    host: http://localhost
+    port: 8082
+    api: /game/api
+    controllers:
+      matches: /matches
+    path: ${gameApis.match.host}:${gameApis.match.port}${gameApis.match.api}${gameApis.match.controllers.matches}
+
+
+---
+
+spring:
+  profiles: docker
+server:
+  contextPath: /whatever # docker service host & port
 gameApis:
   user:
     host: http://localhost
