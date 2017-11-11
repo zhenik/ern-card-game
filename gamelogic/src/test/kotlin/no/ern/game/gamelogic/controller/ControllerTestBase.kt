@@ -1,6 +1,7 @@
 package no.ern.game.gamelogic.controller
 
 import com.github.tomakehurst.wiremock.WireMockServer
+import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.common.ConsoleNotifier
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import io.restassured.RestAssured
@@ -20,9 +21,9 @@ abstract class ControllerTestBase{
     private val logger : Logger = Logger.getLogger(ControllerTestBase::class.java.canonicalName)
 
     companion object {
-        private lateinit var wiremockServerUser: WireMockServer
-        private lateinit var wiremockServerMatch: WireMockServer
-        private lateinit var wiremockServerItem: WireMockServer
+        lateinit var wiremockServerMatch: WireMockServer
+        lateinit var wiremockServerUser: WireMockServer
+//        private lateinit var wiremockServerItem: WireMockServer
 
         @BeforeClass
         @JvmStatic
@@ -32,22 +33,44 @@ abstract class ControllerTestBase{
             RestAssured.basePath = "/game/api/play"
             RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
+            wiremockServerMatch = WireMockServer(WireMockConfiguration.wireMockConfig().port(9082).notifier(ConsoleNotifier(true)))
             wiremockServerUser = WireMockServer(WireMockConfiguration.wireMockConfig().port(9081).notifier(ConsoleNotifier(true)))
-            wiremockServerMatch = WireMockServer(WireMockConfiguration.wireMockConfig().port(9083).notifier(ConsoleNotifier(true)))
-            wiremockServerItem = WireMockServer(WireMockConfiguration.wireMockConfig().port(9082).notifier(ConsoleNotifier(true)))
+//            wiremockServerItem = WireMockServer(WireMockConfiguration.wireMockConfig().port(9083).notifier(ConsoleNotifier(true)))
 
 
-            wiremockServerUser.start()
             wiremockServerMatch.start()
-            wiremockServerItem.start()
+            wiremockServerUser.start()
+//            wiremockServerItem.start()
         }
 
         @AfterClass
         @JvmStatic
         fun tearDown() {
-            wiremockServerUser.stop()
             wiremockServerMatch.stop()
-            wiremockServerItem.stop()
+            wiremockServerUser.stop()
+//            wiremockServerItem.stop()
         }
     }
+
+
+    fun getMockedJson_PlayerSearch(): String {
+        var json = """
+            [
+                {
+                    "id": "1",
+                    "username": "guy",
+                    "password": "pdasd",
+                    "salt": "super salt",
+                    "health": 100,
+                    "damage": 10,
+                    "currency": 100,
+                    "experience": 0,
+                    "level": 1,
+                    "equipment": []
+                }
+            ]
+        """
+        return json
+    }
+
 }

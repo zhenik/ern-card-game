@@ -44,6 +44,7 @@ data class UserDto (
 /**
  * example
     {
+        "id":"1",
         "username":"SUPERGUY",
         "password":"pdasd",
         "salt":"super salt",

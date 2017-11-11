@@ -28,6 +28,12 @@ class MatchResultController {
     @Autowired
     private lateinit var crud: MatchResultRepository
 
+    // TODO: remove later, when finish with wiremock
+    @GetMapping(path = arrayOf("/string"), produces = arrayOf(MediaType.TEXT_PLAIN_VALUE))
+    fun check() : ResponseEntity<String>{
+        return ResponseEntity.ok("this is string from Match result")
+    }
+
     @ApiOperation("Retrieve all match results. Fetch all match results by default. Fetch all match results for specific user if username provided in request parameters")
     @GetMapping
     fun getMatchesResults(@ApiParam("The specific username as parameter")

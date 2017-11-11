@@ -47,21 +47,30 @@ class GameLogicController {
     @Value("\${gameApis.match.path}")
     private lateinit var matchesPath: String
 
-
+    //TODO: remove after wiremock tests
     @ApiOperation("Health check")
     @GetMapping(path = arrayOf("/me"), produces = arrayOf(MediaType.TEXT_PLAIN_VALUE))
     fun check() : ResponseEntity<String>{
         return ResponseEntity.ok("UP")
     }
 
+    //TODO: remove after wiremock tests
+    @GetMapping(path = arrayOf("/chain"), produces = arrayOf(MediaType.TEXT_PLAIN_VALUE))
+    fun chainCheck() : ResponseEntity<String>{
+
+        val newPath = matchesPath+"/string"
+        println(newPath)
+
+        val response  = try {
+            restTemplate.getForEntity(newPath, String::class.java)
+        } catch (e: HttpClientErrorException){ }
+        return ResponseEntity.ok(response.toString())
+    }
+
     @ApiOperation("""
         Find opponent, which is closest to hunter level (+/- 1 level).
         If level not defined, find opponent in limit from 0 to 2 level""")
-    @GetMapping(
-            path = arrayOf("/hunting"),
-            consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE),
-            produces = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE)
-    )
+    @GetMapping(path = arrayOf("/hunting"), produces = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
     @ApiResponse(code = 200, message = "The opponent found")
     fun findEnemy(
             @ApiParam("Search enemy for specific lvl")
