@@ -21,13 +21,14 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
 import java.util.*
 
 @Api(value = "/play", description = "API for game logic processes.")
 @RequestMapping(
-        path = arrayOf("/play"),
-        produces = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE)
+        path = arrayOf("/play")
+//        produces = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE)
 )
 @RestController
 @Validated
@@ -47,8 +48,21 @@ class GameLogicController {
     private lateinit var matchesPath: String
 
 
-    @ApiOperation("Find opponent")
-    @GetMapping(path = arrayOf("/hunting"), consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
+    @ApiOperation("Health check")
+    @GetMapping(path = arrayOf("/me"), produces = arrayOf(MediaType.TEXT_PLAIN_VALUE))
+    fun check() : ResponseEntity<String>{
+        return ResponseEntity.ok("UP")
+    }
+
+    @ApiOperation("""
+        Find opponent, which is closest to hunter level (+/- 1 level).
+        If level not defined, find opponent in limit from 0 to 2 level""")
+    @GetMapping(
+            path = arrayOf("/hunting"),
+            consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE),
+            produces = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE)
+    )
+    @ApiResponse(code = 200, message = "The opponent found")
     fun findEnemy(
             @ApiParam("Search enemy for specific lvl")
             @RequestParam("level", required = false)
@@ -61,21 +75,27 @@ class GameLogicController {
             searchLevel=level
         }
 
-        /** 1
-         *  make request to user module. Find single player, which is closest to my searchLevel.
-         *  if level not defined, find any user close to 1st level
-         * */
+        /** 1 make request to user module.
+            (specific of restTemplate)
+            @see package org.tsdes.spring.rest.wiremock.ConverterRestServiceXml)
+        */
+        val response : ResponseEntity<Array<UserDto>> = try {
+            restTemplate.getForEntity(usersPath, Array<UserDto>::class.java)
+        } catch (e: HttpClientErrorException){
+            val code = if (e.statusCode.value() == 400) 400 else 500
+            return ResponseEntity.status(code).build()
+        }
 
-            // 1 Request
-        val response : ResponseEntity<Array<UserDto>> =
-                restTemplate.getForEntity(usersPath, Array<UserDto>::class.java)
+            // 2 Additional Error handling
+        if (response.statusCode.run{ is4xxClientError || is5xxServerError}){
+            val code = if (response.statusCode.value() == 400) 400 else 500
+            return ResponseEntity.status(code).build()
+        }
 
-            // 2 Error handling
-        if (response.statusCode.value()!=200){ return ResponseEntity.status(response.statusCode.value()).build() }
-
-            // 3 get list. If list is empty return nothing (TODO:think what to return)
+            // 3 get list. If list is empty return bad request
+            // (TODO:think what to return)
         val players = response.body.asList()
-        if (players.isEmpty()){ return ResponseEntity.status(200).build() }
+        if (players.isEmpty()){ return ResponseEntity.status(404).build() }
 
 
             // 3.1 (TODO: make list filter => to exclude /me)
