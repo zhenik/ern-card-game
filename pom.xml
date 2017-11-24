@@ -14,7 +14,8 @@
     <module>match</module>
     <module>user</module>
     <module>schema</module>
-      <module>gamelogic</module>
+    <module>gamelogic</module>
+    <module>gateway</module>
   </modules>
 
   <contributors>
