@@ -1,12 +1,12 @@
-package no.ern.game.user.controller
+package no.ern.game.player.controller
 
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
 import io.swagger.annotations.ApiResponse
-import no.ern.game.schema.dto.UserDto
-import no.ern.game.user.domain.converters.UserConverter
-import no.ern.game.user.repository.UserRepository
+import no.ern.game.player.domain.converters.PlayerConverter
+import no.ern.game.player.domain.model.PlayerDto
+import no.ern.game.player.repository.PlayerRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -14,50 +14,50 @@ import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import javax.validation.ConstraintViolationException
 
-@Api(value = "/users", description = "API for user entities")
+@Api(value = "/players", description = "API for player entities")
 @RequestMapping(
-        path = arrayOf("/users"),
+        path = arrayOf("/players"),
         produces = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE)
 )
 @RestController
 @Validated
-class UserController {
+class PlayerController {
 
     @Autowired
-    private lateinit var repo: UserRepository
+    private lateinit var repo: PlayerRepository
 
-    @ApiOperation("Create new user")
+    @ApiOperation("Create new player")
     @PostMapping(consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
-    @ApiResponse(code = 201, message = "Id of created user")
-    fun createUser(
-            @ApiParam("User to save")
+    @ApiResponse(code = 201, message = "Id of created player")
+    fun createPlayer(
+            @ApiParam("Player to save")
             @RequestBody
-            userDto: UserDto): ResponseEntity<Long> {
+            playerDto: PlayerDto): ResponseEntity<Long> {
 
-        if (!userDto.id.isNullOrEmpty()) {
+        if (!playerDto.id.isNullOrEmpty()) {
             return ResponseEntity.status(400).build()
         }
 
-        if (!isDtoFieldsNotNull(userDto)) {
+        if (!isDtoFieldsNotNull(playerDto)) {
             return ResponseEntity.status(400).build()
         }
 
         // Checks for null i isDtoFieldsNotNull method.
-        if(repo.existsByUsername(userDto.username!!)) {
+        if(repo.existsByUsername(playerDto.username!!)) {
             return ResponseEntity.status(400).build()
         }
 
         try {
-            val savedId = repo.createUser(
-                    username = userDto.username!!,
-                    password = userDto.password!!,
-                    salt = userDto.salt!!,
-                    health = userDto.health!!,
-                    damage = userDto.damage!!,
-                    currency = userDto.currency!!,
-                    experience = userDto.experience!!,
-                    level = userDto.level!!,
-                    equipment = userDto.equipment!!
+            val savedId = repo.createPlayer(
+                    username = playerDto.username!!,
+                    password = playerDto.password!!,
+                    salt = playerDto.salt!!,
+                    health = playerDto.health!!,
+                    damage = playerDto.damage!!,
+                    currency = playerDto.currency!!,
+                    experience = playerDto.experience!!,
+                    level = playerDto.level!!,
+                    equipment = playerDto.equipment!!
             )
 
             return ResponseEntity.status(201).body(savedId)
@@ -67,31 +67,31 @@ class UserController {
         }
     }
 
-    @ApiOperation("Get all users by level")
+    @ApiOperation("Get all players by level")
     @GetMapping
-    fun getAllUsersByLevel(
+    fun getAllPlayersByLevel(
             @ApiParam("Level to find")
             @RequestParam(name = "level", required = false)
             level: Int?
-    ): ResponseEntity<Iterable<UserDto>> {
+    ): ResponseEntity<Iterable<PlayerDto>> {
         if (level == null) {
-            return ResponseEntity.ok(UserConverter.transform(repo.findAll()))
+            return ResponseEntity.ok(PlayerConverter.transform(repo.findAll()))
         }
 
         if (level < 1) {
             return ResponseEntity.status(400).build()
         }
 
-        return ResponseEntity.ok(UserConverter.transform(repo.findAllByLevel(level)))
+        return ResponseEntity.ok(PlayerConverter.transform(repo.findAllByLevel(level)))
     }
 
-    @ApiOperation("Get user by username")
+    @ApiOperation("Get player by username")
     @GetMapping(path = arrayOf("/{username}"))
-    fun getUserByUsername(
+    fun getPlayerByUsername(
             @ApiParam("Username to search by")
             @PathVariable("username")
             username: String?
-    ): ResponseEntity<UserDto> {
+    ): ResponseEntity<PlayerDto> {
         if (username.isNullOrBlank()) {
             return ResponseEntity.status(404).build()
         } else {
@@ -100,50 +100,50 @@ class UserController {
             if (entity == null) {
                 return ResponseEntity.status(404).build()
             }
-            return ResponseEntity.ok(UserConverter.transform(entity))
+            return ResponseEntity.ok(PlayerConverter.transform(entity))
         }
     }
 
 
-    @ApiOperation("Replace the data of a user")
+    @ApiOperation("Replace the data of a player")
     @PutMapping(path = arrayOf("/{id}"), consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
-    fun updateUser(
-            @ApiParam("Id defining the user.")
+    fun updatePlayer(
+            @ApiParam("Id defining the player.")
             @PathVariable("id")
             id: String?,
 
-            @ApiParam("Data to replace old user. Id cannot be changed, and must be the same in path and RequestBody")
+            @ApiParam("Data to replace old player. Id cannot be changed, and must be the same in path and RequestBody")
             @RequestBody
-            userDto: UserDto
+            playerDto: PlayerDto
     ): ResponseEntity<Long> {
         val dtoId: Long
         try {
-            dtoId = userDto.id!!.toLong()
+            dtoId = playerDto.id!!.toLong()
         } catch (e: Exception) {
             return ResponseEntity.status(404).build()
         }
 
         // Don't change ID
-        if (userDto.id != id) {
+        if (playerDto.id != id) {
             return ResponseEntity.status(409).build()
         }
         if (!repo.exists(dtoId)) {
             return ResponseEntity.status(404).build()
         }
-        if (!isDtoFieldsNotNull(userDto)) {
+        if (!isDtoFieldsNotNull(playerDto)) {
             return ResponseEntity.status(400).build()
         }
 
         try {
-            val successful = repo.updateUser(userDto.username!!,
-                    userDto.password!!,
-                    userDto.health!!,
-                    userDto.damage!!,
-                    userDto.currency!!,
-                    userDto.experience!!,
-                    userDto.level!!,
-                    userDto.equipment!!,
-                    userDto.id!!.toLong()
+            val successful = repo.updatePlayer(playerDto.username!!,
+                    playerDto.password!!,
+                    playerDto.health!!,
+                    playerDto.damage!!,
+                    playerDto.currency!!,
+                    playerDto.experience!!,
+                    playerDto.level!!,
+                    playerDto.equipment!!,
+                    playerDto.id!!.toLong()
             )
             if (!successful) {
                 return ResponseEntity.status(400).build()
@@ -154,14 +154,14 @@ class UserController {
         }
     }
 
-    @ApiOperation("Replace the username of a user")
+    @ApiOperation("Replace the username of a player")
     @PatchMapping(path = arrayOf("/{id}"), consumes = arrayOf(MediaType.TEXT_PLAIN_VALUE))
     fun updateUsername(
-            @ApiParam("Id defining the user.")
+            @ApiParam("Id defining the player.")
             @PathVariable("id")
             id: Long,
 
-            @ApiParam("New username for user. Username must be unique and must be a string.")
+            @ApiParam("New username for player. Username must be unique and must be a string.")
             @RequestBody
             username: String
     ): ResponseEntity<Long> {
@@ -178,10 +178,10 @@ class UserController {
         return ResponseEntity.status(204).build()
     }
 
-    @ApiOperation("Delete a user by username")
+    @ApiOperation("Delete a player by username")
     @DeleteMapping(path = arrayOf("/{username}"))
     fun deleteUserByUsername(
-            @ApiParam("Username of user to delete")
+            @ApiParam("Username of player to delete")
             @PathVariable("username")
             username: String?
     ) : ResponseEntity<Any>{
@@ -196,14 +196,14 @@ class UserController {
         return ResponseEntity.status(204).build()
     }
 
-    private fun isDtoFieldsNotNull(userDto: UserDto): Boolean {
-        if ((!userDto.username.isNullOrBlank()) &&
-                (!userDto.password.isNullOrBlank()) &&
-                userDto.salt != null &&
-                userDto.health != null &&
-                userDto.damage != null &&
-                userDto.currency != null &&
-                userDto.experience != null
+    private fun isDtoFieldsNotNull(playerDto: PlayerDto): Boolean {
+        if ((!playerDto.username.isNullOrBlank()) &&
+                (!playerDto.password.isNullOrBlank()) &&
+                playerDto.salt != null &&
+                playerDto.health != null &&
+                playerDto.damage != null &&
+                playerDto.currency != null &&
+                playerDto.experience != null
                 ) {
             return true
         }

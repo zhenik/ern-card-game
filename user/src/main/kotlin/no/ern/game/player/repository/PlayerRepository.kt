@@ -1,7 +1,7 @@
 
-package no.ern.game.user.repository
+package no.ern.game.player.repository
 
-import no.ern.game.user.domain.model.User
+import no.ern.game.player.domain.model.Player
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -10,9 +10,9 @@ import javax.persistence.PersistenceContext
 
 
 @Repository
-interface UserRepository : CrudRepository<User, Long>, UserRepositoryCustom {
-    fun findFirstByUsername(username: String): User?
-    fun findAllByLevel(level: Int): Iterable<User>
+interface PlayerRepository : CrudRepository<Player, Long>, PlayerRepositoryCustom {
+    fun findFirstByUsername(username: String): Player?
+    fun findAllByLevel(level: Int): Iterable<Player>
     fun existsByUsername(username: String): Boolean
 
     @Transactional
@@ -21,8 +21,8 @@ interface UserRepository : CrudRepository<User, Long>, UserRepositoryCustom {
 }
 
 @Transactional
-interface UserRepositoryCustom {
-    fun createUser(username: String,
+interface PlayerRepositoryCustom {
+    fun createPlayer(username: String,
                    password: String,
                    salt: String,
                    health: Int,
@@ -32,7 +32,7 @@ interface UserRepositoryCustom {
                    level: Int,
                    equipment: Collection<Long>): Long
 
-    fun updateUser(username: String,
+    fun updatePlayer(username: String,
                    password: String,
                    health: Int,
                    damage: Int,
@@ -45,13 +45,13 @@ interface UserRepositoryCustom {
     fun setUsername(username: String, id: Long): Boolean
 }
 
-open class UserRepositoryImpl : UserRepositoryCustom {
+open class PlayerRepositoryImpl : PlayerRepositoryCustom {
 
     @PersistenceContext
     private lateinit var em: EntityManager
 
-    override fun createUser(username: String, password: String, salt: String, health: Int, damage: Int, currency: Int, experience: Int, level: Int, equipment: Collection<Long>): Long {
-        val userEntity = User(
+    override fun createPlayer(username: String, password: String, salt: String, health: Int, damage: Int, currency: Int, experience: Int, level: Int, equipment: Collection<Long>): Long {
+        val playerEntity = Player(
                 username,
                 password,
                 salt,
@@ -62,12 +62,12 @@ open class UserRepositoryImpl : UserRepositoryCustom {
                 level,
                 equipment
         )
-        em.persist(userEntity)
-        return userEntity.id!!
+        em.persist(playerEntity)
+        return playerEntity.id!!
     }
 
-    override fun updateUser(username: String, password: String, health: Int, damage: Int, currency: Int, experience: Int, level: Int, equipment: Collection<Long>, id: Long): Boolean {
-        val user = em.find(User::class.java, id) ?: return false
+    override fun updatePlayer(username: String, password: String, health: Int, damage: Int, currency: Int, experience: Int, level: Int, equipment: Collection<Long>, id: Long): Boolean {
+        val player = em.find(Player::class.java, id) ?: return false
 
         if (username.isBlank() ||
                 username.length > 50 ||
@@ -80,18 +80,18 @@ open class UserRepositoryImpl : UserRepositoryCustom {
         }
 
         // Cannot take a username that already exists
-        if (getUsersByUsername(username).isNotEmpty()) {
+        if (getPlayersByUsername(username).isNotEmpty()) {
             return false
         }
 
-        user.username = username
-        user.password = password
-        user.health = health
-        user.damage = damage
-        user.currency = currency
-        user.experience = experience
-        user.level = level
-        user.equipment = equipment
+        player.username = username
+        player.password = password
+        player.health = health
+        player.damage = damage
+        player.currency = currency
+        player.experience = experience
+        player.level = level
+        player.equipment = equipment
 
         try {
             em.flush()
@@ -101,19 +101,19 @@ open class UserRepositoryImpl : UserRepositoryCustom {
         return true
     }
 
-    fun getUsersByUsername(username: String): List<User> {
-        val query = em.createQuery("SELECT u FROM User u WHERE u.username = ?1", User::class.java)
+    fun getPlayersByUsername(username: String): List<Player> {
+        val query = em.createQuery("SELECT u FROM Player u WHERE u.username = ?1", Player::class.java)
         query.setParameter(1, username)
         return query.resultList.toList()
     }
 
     override fun setUsername(username: String, id: Long): Boolean {
-        val user = em.find(User::class.java, id) ?: return false
+        val player = em.find(Player::class.java, id) ?: return false
         if (username.isNullOrBlank() || username.length > 50) {
             return false
         }
 
-        user.username = username
+        player.username = username
 
         try {
             em.flush()

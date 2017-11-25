@@ -1,11 +1,11 @@
-package no.ern.game.user
+package no.ern.game.player
 
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 
-@SpringBootApplication(scanBasePackages = arrayOf("no.ern.game.user"))
+@SpringBootApplication(scanBasePackages = arrayOf("no.ern.game.player"))
 class Application : WebMvcConfigurerAdapter() {}
 
 fun main(args: Array<String>) {

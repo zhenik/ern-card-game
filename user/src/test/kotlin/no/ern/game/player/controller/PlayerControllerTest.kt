@@ -1,15 +1,15 @@
-package no.ern.game.user.controller
+package no.ern.game.player.controller
 
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import junit.framework.TestCase.assertNotNull
-import no.ern.game.schema.dto.UserDto
+import no.ern.game.player.domain.model.PlayerDto
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
-class UserControllerTest : TestBase() {
+class PlayerControllerTest : TestBase() {
 
     @Before
     fun assertThatDatabaseIsEmpty(){
@@ -17,82 +17,82 @@ class UserControllerTest : TestBase() {
     }
 
     @Test
-    fun createAndGetUserByUsername() {
-        val userDto1 = getValidUserDtos()[0]
-        val userDto2 = getValidUserDtos()[1]
+    fun createAndGetPlayerByUsername() {
+        val playerDto1 = getValidPlayerDtos()[0]
+        val playerDto2 = getValidPlayerDtos()[1]
 
-        postUserDto(userDto1, 201)
-        postUserDto(userDto2, 201)
+        postPlayerDto(playerDto1, 201)
+        postPlayerDto(playerDto2, 201)
 
         given().get().then().statusCode(200).body("size()", equalTo(2))
 
-        val foundUser1 = given().contentType(ContentType.JSON)
-                .pathParam("username", userDto1.username)
+        val foundPlayer1 = given().contentType(ContentType.JSON)
+                .pathParam("username", playerDto1.username)
                 .get("/{username}")
                 .then()
                 .statusCode(200)
                 .extract()
-                .`as`(UserDto::class.java)
+                .`as`(PlayerDto::class.java)
 
-        assertEquals(userDto1.username, foundUser1.username)
-        assertEquals(userDto1.password, foundUser1.password)
-        assertEquals(userDto1.health, foundUser1.health)
-        assertEquals(userDto1.equipment, foundUser1.equipment)
+        assertEquals(playerDto1.username, foundPlayer1.username)
+        assertEquals(playerDto1.password, foundPlayer1.password)
+        assertEquals(playerDto1.health, foundPlayer1.health)
+        assertEquals(playerDto1.equipment, foundPlayer1.equipment)
 
-        val foundUser2 = given().contentType(ContentType.JSON)
-                .pathParam("username", userDto2.username)
+        val foundPlayer2 = given().contentType(ContentType.JSON)
+                .pathParam("username", playerDto2.username)
                 .get("/{username}")
                 .then()
                 .statusCode(200)
                 .extract()
-                .`as`(UserDto::class.java)
+                .`as`(PlayerDto::class.java)
 
-        assertEquals(userDto2.username, foundUser2.username)
-        assertEquals(userDto2.password, foundUser2.password)
-        assertEquals(userDto2.health, foundUser2.health)
-        assertEquals(userDto2.equipment, foundUser2.equipment)
+        assertEquals(playerDto2.username, foundPlayer2.username)
+        assertEquals(playerDto2.password, foundPlayer2.password)
+        assertEquals(playerDto2.health, foundPlayer2.health)
+        assertEquals(playerDto2.equipment, foundPlayer2.equipment)
     }
 
     @Test
-    fun createUsersWithDuplicateUsername() {
-        val userDto1 = getValidUserDtos()[0]
+    fun createPlayersWithDuplicateUsername() {
+        val playerDto = getValidPlayerDtos()[0]
 
-        postUserDto(userDto1, 201)
-        postUserDto(userDto1, 400)
+        postPlayerDto(playerDto, 201)
+        postPlayerDto(playerDto, 400)
 
         given().get().then().statusCode(200).body("size()", equalTo(1))
     }
 
     @Test
-    fun createUserWithIdFails() {
-        val userDto = getValidUserDtos()[0]
-        userDto.id = "12312312"
+    fun createPlayerWithIdFails() {
+        val playerDto = getValidPlayerDtos()[0]
+        playerDto.id = "12312312"
 
-        postUserDto(userDto, 400)
+        postPlayerDto(playerDto, 400)
 
         given().get().then().statusCode(200).body("size()", equalTo(0))
 
     }
 
     @Test
-    fun getAllUsersByLevel() {
-        val userDto1 = getValidUserDtos()[0]
-        val userDto2 = getValidUserDtos()[1]
-        val unusedLevel = getValidUserDtos()[2].level
+    fun getAllPlayersByLevel() {
+        val playerDto1 = getValidPlayerDtos()[0]
+        val playerDto2 = getValidPlayerDtos()[1]
+        val unusedLevel = getValidPlayerDtos()[2].level
 
-        postUserDto(userDto1, 201)
-        postUserDto(userDto2, 201)
+        postPlayerDto(playerDto1, 201)
+        postPlayerDto(playerDto2, 201)
 
         given().get().then().statusCode(200).body("size()", equalTo(2))
 
 
-        given().param("level", userDto1.level)
+        given().param("level", playerDto1.level)
                 .get()
                 .then()
                 .statusCode(200)
                 .body("size()", equalTo(1))
 
-        given().param("level", userDto2.level)
+        given().param("level", playerDto2.level)
                 .get()
                 .then()
                 .statusCode(200)
@@ -104,87 +104,86 @@ class UserControllerTest : TestBase() {
                 .statusCode(200)
                 .body("size()", equalTo(0))
 
-        //Why does this get all fields as an "array" ??? [username] instead of username
-        val foundUser = given().contentType(ContentType.JSON)
-                .param("level", userDto1.level)
+        val foundPlayer = given().contentType(ContentType.JSON)
+                .param("level", playerDto1.level)
                 .get()
                 .then()
                 .statusCode(200)
                 .extract()
-                .`as`(Array<UserDto>::class.java)
-        assertEquals(foundUser[0].username, userDto1.username)
-        assertEquals(foundUser[0].password, userDto1.password)
-        assertEquals(foundUser[0].experience, userDto1.experience)
+                .`as`(Array<PlayerDto>::class.java)
+        assertEquals(foundPlayer[0].username, playerDto1.username)
+        assertEquals(foundPlayer[0].password, playerDto1.password)
+        assertEquals(foundPlayer[0].experience, playerDto1.experience)
     }
 
     @Test
-    fun updateUser() {
-        val userDto1 = getValidUserDtos()[0]
-        val userDto2 = getValidUserDtos()[1]
+    fun updatePlayer() {
+        val playerDto1 = getValidPlayerDtos()[0]
+        val playerDto2 = getValidPlayerDtos()[1]
 
-        val postedId = postUserDto(userDto1, 201)
+        val postedId = postPlayerDto(playerDto1, 201)
 
         given().get().then().statusCode(200).body("size()", equalTo(1))
         assertNotNull(postedId)
-        userDto2.id = postedId.toString()
+        playerDto2.id = postedId.toString()
 
-        // Update data to be like userDto2
+        // Update data to be like playerDto2
         given().pathParam("id", postedId)
                 .contentType(ContentType.JSON)
-                .body(userDto2)
+                .body(playerDto2)
                 .put("/{id}")
                 .then()
                 .statusCode(204)
 
         // Validate that it changed
-        given().pathParam("username", userDto2.username)
+        given().pathParam("username", playerDto2.username)
                 .get("/{username}")
                 .then()
                 .statusCode(200)
-                .body("username", equalTo(userDto2.username))
-                .body("password", equalTo(userDto2.password))
-                .body("health", equalTo(userDto2.health))
-                .body("experience", equalTo(userDto2.experience))
+                .body("username", equalTo(playerDto2.username))
+                .body("password", equalTo(playerDto2.password))
+                .body("health", equalTo(playerDto2.health))
+                .body("experience", equalTo(playerDto2.experience))
                 .body("id", equalTo(postedId.toString()))
 
         given().get().then().statusCode(200).body("size()", equalTo(1))
     }
 
     @Test
-    fun updateUserChangedId() {
-        val userDto1 = getValidUserDtos()[0]
-        val userDto2 = getValidUserDtos()[1]
+    fun updatePlayerChangedId() {
+        val playerDto1 = getValidPlayerDtos()[0]
+        val playerDto2 = getValidPlayerDtos()[1]
 
-        val postedId = postUserDto(userDto1, 201)
+        val postedId = postPlayerDto(playerDto1, 201)
         assertNotNull(postedId)
 
         // Change ID in dto, but not path.
-        userDto2.id = (postedId?.times(2)).toString()
+        playerDto2.id = (postedId?.times(2)).toString()
 
         given().pathParam("id", postedId)
                 .contentType(ContentType.JSON)
-                .body(userDto2)
+                .body(playerDto2)
                 .put("/{id}")
                 .then()
                 .statusCode(409)
 
-        val foundUser = given().contentType(ContentType.JSON)
-                .pathParam("username", userDto1.username)
+        val foundPlayer = given().contentType(ContentType.JSON)
+                .pathParam("username", playerDto1.username)
                 .get("/{username}")
                 .then()
                 .statusCode(200)
                 .extract()
-                .`as`(UserDto::class.java)
+                .`as`(PlayerDto::class.java)
 
-        assertEquals(userDto1.username, foundUser.username)
-        assertEquals(userDto1.password, foundUser.password)
-        assertEquals(userDto1.health, foundUser.health)
-        assertEquals(userDto1.equipment, foundUser.equipment)
-
-
+        assertEquals(playerDto1.username, foundPlayer.username)
+        assertEquals(playerDto1.password, foundPlayer.password)
+        assertEquals(playerDto1.health, foundPlayer.health)
+        assertEquals(playerDto1.equipment, foundPlayer.equipment)
 
 
-        given().pathParam("username", userDto2.username)
+
+
+        given().pathParam("username", playerDto2.username)
                 .get("/{username}")
                 .then()
                 .statusCode(404)
@@ -194,10 +193,10 @@ class UserControllerTest : TestBase() {
 
     @Test
     fun setUsername() {
-        val userDto1 = getValidUserDtos()[0]
+        val playerDto = getValidPlayerDtos()[0]
         val newUsername = "newUsername"
 
-        val postedId = postUserDto(userDto1, 201)
+        val postedId = postPlayerDto(playerDto, 201)
 
         given().pathParam("id", postedId)
                 .body(newUsername)
@@ -212,18 +211,18 @@ class UserControllerTest : TestBase() {
                 .then()
                 .statusCode(200)
                 .extract()
-                .`as`(UserDto::class.java)
+                .`as`(PlayerDto::class.java)
 
         assertEquals(newUsername, foundUser.username)
-        assertEquals(userDto1.password, foundUser.password)
-        assertEquals(userDto1.health, foundUser.health)
-        assertEquals(userDto1.equipment, foundUser.equipment)
+        assertEquals(playerDto.password, foundUser.password)
+        assertEquals(playerDto.health, foundUser.health)
+        assertEquals(playerDto.equipment, foundUser.equipment)
     }
 
     @Test
     fun setUsernameInvalid() {
-        val userDto1 = getValidUserDtos()[0]
-        val postedId = postUserDto(userDto1, 201)
+        val playerDto = getValidPlayerDtos()[0]
+        val postedId = postPlayerDto(playerDto, 201)
         val tooLongUsername = getTooLongUsername()
 
 
@@ -241,34 +240,34 @@ class UserControllerTest : TestBase() {
                 .then()
                 .statusCode(400)
 
-        given().pathParam("username", userDto1.username)
+        given().pathParam("username", playerDto.username)
                 .get("/{username}")
                 .then()
                 .statusCode(200)
-                .body("username", equalTo(userDto1.username))
-                .body("password", equalTo(userDto1.password))
-                .body("health", equalTo(userDto1.health))
-                .body("experience", equalTo(userDto1.experience))
+                .body("username", equalTo(playerDto.username))
+                .body("password", equalTo(playerDto.password))
+                .body("health", equalTo(playerDto.health))
+                .body("experience", equalTo(playerDto.experience))
 
     }
 
     @Test
-    fun deleteUserByUsername() {
-        val userDto1 = getValidUserDtos()[0]
-        val userDto2 = getValidUserDtos()[1]
+    fun deletePlayerByUsername() {
+        val playerDto1 = getValidPlayerDtos()[0]
+        val playerDto2 = getValidPlayerDtos()[1]
 
-        postUserDto(userDto1, 201)
-        postUserDto(userDto2, 201)
+        postPlayerDto(playerDto1, 201)
+        postPlayerDto(playerDto2, 201)
         given().get().then().statusCode(200).body("size()", equalTo(2))
 
 
-        given().pathParam("username", userDto1.username)
+        given().pathParam("username", playerDto1.username)
                 .delete("/{username}")
                 .then()
                 .statusCode(204)
         given().get().then().statusCode(200).body("size()", equalTo(1))
 
-        given().pathParam("username", userDto2.username)
+        given().pathParam("username", playerDto2.username)
                 .delete("/{username}")
                 .then()
                 .statusCode(204)
@@ -276,14 +275,14 @@ class UserControllerTest : TestBase() {
     }
 
     @Test
-    fun deleteUserWithEmptyUsername() {
-        val userDto1 = getValidUserDtos()[0]
-        postUserDto(userDto1, 201)
+    fun deletePlayerWithEmptyUsername() {
+        val playerDto = getValidPlayerDtos()[0]
+        postPlayerDto(playerDto, 201)
 
         given().get().then().statusCode(200).body("size()", equalTo(1))
 
-        // Since delete on /game/api/users is not supported, return a 405: Method Not Allowed.
-        // Delete is only allowed on /game/api/users/{username}
+        // Since delete on /game/api/players is not supported, return a 405: Method Not Allowed.
+        // Delete is only allowed on /game/api/players/{username}
         given().pathParam("username", "")
                 .delete("/{username}")
                 .then()
@@ -293,9 +292,9 @@ class UserControllerTest : TestBase() {
     }
 
     @Test
-    fun deleteUserWithNonExistingUsername() {
-        val userDto1 = getValidUserDtos()[0]
-        postUserDto(userDto1, 201)
+    fun deletePlayerWithNonExistingUsername() {
+        val playerDto = getValidPlayerDtos()[0]
+        postPlayerDto(playerDto, 201)
 
         given().get().then().statusCode(200).body("size()", equalTo(1))
         given().pathParam("username", "golang")
@@ -306,10 +305,10 @@ class UserControllerTest : TestBase() {
         given().get().then().statusCode(200).body("size()", equalTo(1))
     }
 
-    private fun postUserDto(userDto2: UserDto, expectedStatusCode: Int): Long? {
+    private fun postPlayerDto(playerDto: PlayerDto, expectedStatusCode: Int): Long? {
         return try {
             given().contentType(ContentType.JSON)
-                    .body(userDto2)
+                    .body(playerDto)
                     .post()
                     .then()
                     .statusCode(expectedStatusCode)
@@ -319,9 +318,9 @@ class UserControllerTest : TestBase() {
         }
     }
 
-    private fun getValidUserDtos(): List<UserDto> {
+    private fun getValidPlayerDtos(): List<PlayerDto> {
         return listOf(
-                UserDto(
+                PlayerDto(
                         null,
                         "Ruby",
                         "ThisIsAHash",
@@ -333,7 +332,7 @@ class UserControllerTest : TestBase() {
                         1,
                         listOf(1L, 2L, 3L)
                 ),
-                UserDto(
+                PlayerDto(
                         null,
                         "Kotlin",
                         "Spicy language..",
@@ -345,7 +344,7 @@ class UserControllerTest : TestBase() {
                         23,
                         listOf(1L, 3L, 2L)
                 ),
-                UserDto(
+                PlayerDto(
                         null,
                         "Another language",
                         "Its actually PHP...",
