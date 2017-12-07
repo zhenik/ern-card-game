@@ -1,4 +1,4 @@
-package no.ern.game.player.domain.model
+package no.ern.game.schema.dto
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty

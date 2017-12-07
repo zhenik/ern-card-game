@@ -3,7 +3,8 @@ package no.ern.game.player.controller
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import junit.framework.TestCase.assertNotNull
-import no.ern.game.player.domain.model.PlayerDto
+import no.ern.game.schema.dto.PlayerDto
+
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Assert.assertEquals
 import org.junit.Before

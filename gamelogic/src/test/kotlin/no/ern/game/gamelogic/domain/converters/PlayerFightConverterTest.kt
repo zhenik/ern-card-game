@@ -1,7 +1,7 @@
 package no.ern.game.gamelogic.domain.converters
 
 import no.ern.game.schema.dto.ItemDto
-import no.ern.game.schema.dto.UserDto
+import no.ern.game.schema.dto.PlayerDto
 import no.ern.game.gamelogic.domain.model.Character
 
 import org.junit.Assert.*
@@ -13,7 +13,7 @@ class PlayerFightConverterTest{
             ItemDto("sword","long sword","good",10,0),
             ItemDto("armor","metal heavy armor","excelent",0,5)
     )
-    val userDto = UserDto(
+    val userDto = PlayerDto(
             "1",
             "attackerName",
             "some pass",

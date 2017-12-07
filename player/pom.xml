@@ -87,7 +87,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <finalName>user</finalName>
+                    <finalName>player</finalName>
                 </configuration>
             </plugin>
         </plugins>

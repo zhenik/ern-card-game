@@ -83,8 +83,8 @@ class GameProcessorService {
 
 //fun main(args: Array<String>) {
 ////    2.1 Users
-//    val attackerUserDtoMock = UserDto("1","attackerName",null,null,100,10,null,null,1,null)
-//    val defenderUserDtoMock = UserDto("2","defenderName",null,null,120,12,null,null,2,null)
+//    val attackerUserDtoMock = PlayerDto("1","attackerName",null,null,100,10,null,null,1,null)
+//    val defenderUserDtoMock = PlayerDto("2","defenderName",null,null,120,12,null,null,2,null)
 //    //2.2 Items
 //    val randomItems1: List<ItemDto> = listOf(
 //            ItemDto(null,null,null,(Math.random()*15).toLong(),0),

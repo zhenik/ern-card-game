@@ -11,7 +11,7 @@ import no.ern.game.gamelogic.services.GameProcessorService
 import no.ern.game.schema.dto.ItemDto
 import no.ern.game.schema.dto.MatchResultDto
 import no.ern.game.schema.dto.PlayerResultDto
-import no.ern.game.schema.dto.UserDto
+import no.ern.game.schema.dto.PlayerDto
 import no.ern.game.schema.dto.gamelogic.FightResultLogDto
 import no.ern.game.schema.dto.gamelogic.PlayerSearchDto
 import no.ern.game.schema.dto.gamelogic.PlayersFightIdsDto
@@ -88,8 +88,8 @@ class GameLogicController {
             (specific of restTemplate)
             @see package org.tsdes.spring.rest.wiremock.ConverterRestServiceXml)
         */
-        val response : ResponseEntity<Array<UserDto>> = try {
-            restTemplate.getForEntity(playersPath, Array<UserDto>::class.java)
+        val response : ResponseEntity<Array<PlayerDto>> = try {
+            restTemplate.getForEntity(playersPath, Array<PlayerDto>::class.java)
         } catch (e: HttpClientErrorException){
             val code = if (e.statusCode.value() == 400) 400 else 500
             return ResponseEntity.status(code).build()
@@ -130,8 +130,8 @@ class GameLogicController {
         if( ! isPlayersFightIdsDtoValid(resultIdsDto)){ return ResponseEntity.status(400).build() }
 
         // 2.1 TODO: fetch users from user-module (if any errors -> propagate them). Extract logic to method
-        val attackerUserDtoMock = UserDto("1","attackerName",null,null,100,10,null,null,1,null)
-        val defenderUserDtoMock = UserDto("2","defenderName",null,null,120,12,null,null,2,null)
+        val attackerUserDtoMock = PlayerDto("1","attackerName",null,null,100,10,null,null,1,null)
+        val defenderUserDtoMock = PlayerDto("2","defenderName",null,null,120,12,null,null,2,null)
 
         // 2.2 TODO: fetch their items (validate lvl requirements for each item). Extract logic to method
         val randomItems1: List<ItemDto> = getMockListOfItems()

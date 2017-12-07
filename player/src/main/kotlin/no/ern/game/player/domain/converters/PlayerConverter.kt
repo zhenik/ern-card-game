@@ -1,7 +1,8 @@
 package no.ern.game.player.domain.converters
 
 import no.ern.game.player.domain.model.Player
-import no.ern.game.player.domain.model.PlayerDto
+import no.ern.game.schema.dto.PlayerDto
+
 
 class PlayerConverter {
 

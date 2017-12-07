@@ -1,12 +1,12 @@
 package no.ern.game.gamelogic.domain.converters
 
-import no.ern.game.schema.dto.UserDto
+import no.ern.game.schema.dto.PlayerDto
 import org.junit.Assert.*
 import org.junit.Test
 
 
 class PlayerSearchConverterTest{
-    val userDto = UserDto(
+    val userDto = PlayerDto(
             "1",
             "attackerName",
             "some pass",

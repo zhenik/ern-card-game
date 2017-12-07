@@ -5,8 +5,8 @@ import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
 import io.swagger.annotations.ApiResponse
 import no.ern.game.player.domain.converters.PlayerConverter
-import no.ern.game.player.domain.model.PlayerDto
 import no.ern.game.player.repository.PlayerRepository
+import no.ern.game.schema.dto.PlayerDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
