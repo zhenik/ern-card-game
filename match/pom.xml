@@ -76,6 +76,23 @@
             <artifactId>resteasy-client</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!--To use EUREKA-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-eureka-server</artifactId>
+        </dependency>
+        <!-- To use Zuul-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-zuul</artifactId>
+        </dependency>
+        <!--To use Ribbon-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-ribbon</artifactId>
+        </dependency>
+
         <!--TRACING-->
         <!-- https://mvnrepository.com/artifact/com.uber.jaeger/jaeger-core -->
         <!--<dependency>-->

@@ -69,6 +69,8 @@
     <version.cobertura-maven-plugin>2.7</version.cobertura-maven-plugin>
     <version.jwt>0.9.0</version.jwt>
     <version.wiremock>2.2.1</version.wiremock>
+    <version.springcloud>Dalston.SR3</version.springcloud>
+    <version.postgres>42.1.4</version.postgres>
   </properties>
   <dependencyManagement>
 
@@ -174,6 +176,28 @@
         <artifactId>wiremock-standalone</artifactId>
         <version>${version.wiremock}</version>
         <scope>test</scope>
+      </dependency>
+      <!--Netflix stack: Ribbon, Zuul, Eureka-->
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>${version.springcloud}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- Postgres db-->
+      <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>${version.postgres}</version>
+      </dependency>
+
+      <!--RabbitMq-->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-amqp</artifactId>
+        <version>${version.springboot}</version>
       </dependency>
 
     </dependencies>
