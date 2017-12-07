@@ -45,7 +45,7 @@ class MatchResultControllerTest : ControllerTestBase(){
                 .body(dto)
                 .post()
                 .then()
-                .statusCode(422)
+                .statusCode(409)
     }
 
     @Test

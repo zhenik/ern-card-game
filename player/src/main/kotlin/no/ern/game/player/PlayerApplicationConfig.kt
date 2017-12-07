@@ -22,7 +22,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 @EnableSwagger2
 @EnableJpaRepositories(basePackages = arrayOf("no.ern.game.player"))
 @EntityScan(basePackages = arrayOf("no.ern.game.player"))
-class ApplicationConfig {
+class PlayerApplicationConfig {
     @Bean
     fun swaggerApi(): Docket {
         return Docket(DocumentationType.SWAGGER_2)

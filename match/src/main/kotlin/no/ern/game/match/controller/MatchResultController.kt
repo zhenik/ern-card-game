@@ -67,7 +67,7 @@ class MatchResultController {
         }catch (e: ConstraintViolationException){
             // 422 Unprocessable Entity
             // 409 Conflict (for duplication id)
-            return ResponseEntity.status(422).build()
+            return ResponseEntity.status(409).build()
         }catch (e: Exception){
             return ResponseEntity.status(500).build()
         }

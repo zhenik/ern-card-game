@@ -1,4 +1,4 @@
-package no.ern.game.gamelogic
+package no.ern.game.item
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -20,9 +20,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 
 @Configuration
 @EnableSwagger2
-@EnableJpaRepositories(basePackages = arrayOf("no.ern.game.gamelogic"))
-@EntityScan(basePackages = arrayOf("no.ern.game.gamelogic"))
-class ApplicationConfig {
+@EnableJpaRepositories(basePackages = arrayOf("no.ern.game.item"))
+@EntityScan(basePackages = arrayOf("no.ern.game.item"))
+class ItemApplicationConfig {
 
     @Bean
     fun swaggerApi(): Docket {
@@ -35,8 +35,8 @@ class ApplicationConfig {
 
     private fun apiInfo(): ApiInfo {
         return ApiInfoBuilder()
-                .title("API for game logic")
-                .description("Micro-service for running game logic.")
+                .title("API for entity items")
+                .description("Micro-service for Item entity. This entity represents equipment for users.")
                 .version("1.0")
                 .build()
     }
