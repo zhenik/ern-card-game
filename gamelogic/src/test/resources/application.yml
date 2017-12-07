@@ -4,13 +4,13 @@ server:
   contextPath: /game/api
   port: 9084
 gameApis:
-  user:
+  player:
     host: http://localhost
     port: 9081
     api: /game/api
     controllers:
-      users: /users
-    path: ${gameApis.user.host}:${gameApis.user.port}${gameApis.user.api}${gameApis.user.controllers.users}
+      players: /players
+    path: ${gameApis.player.host}:${gameApis.player.port}${gameApis.player.api}${gameApis.player.controllers.players}
   item:
     host: http://localhost
     port: 9083

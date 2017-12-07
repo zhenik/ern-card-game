@@ -12,7 +12,7 @@
     <module>api</module>
     <module>item</module>
     <module>match</module>
-    <module>user</module>
+    <module>player</module>
     <module>schema</module>
     <module>gamelogic</module>
     <module>gateway</module>

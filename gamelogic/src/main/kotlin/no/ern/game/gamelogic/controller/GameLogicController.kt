@@ -40,8 +40,8 @@ class GameLogicController {
     @Autowired
     lateinit var gameService: GameProcessorService
 
-    @Value("\${gameApis.user.path}")
-    private lateinit var usersPath: String
+    @Value("\${gameApis.player.path}")
+    private lateinit var playersPath: String
     @Value("\${gameApis.item.path}")
     private lateinit var itemsPath: String
     @Value("\${gameApis.match.path}")
@@ -89,7 +89,7 @@ class GameLogicController {
             @see package org.tsdes.spring.rest.wiremock.ConverterRestServiceXml)
         */
         val response : ResponseEntity<Array<UserDto>> = try {
-            restTemplate.getForEntity(usersPath, Array<UserDto>::class.java)
+            restTemplate.getForEntity(playersPath, Array<UserDto>::class.java)
         } catch (e: HttpClientErrorException){
             val code = if (e.statusCode.value() == 400) 400 else 500
             return ResponseEntity.status(code).build()
