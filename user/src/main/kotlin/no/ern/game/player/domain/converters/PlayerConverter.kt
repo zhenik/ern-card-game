@@ -1,14 +1,14 @@
-package no.ern.game.user.domain.converters
+package no.ern.game.player.domain.converters
 
-import no.ern.game.schema.dto.UserDto
-import no.ern.game.user.domain.model.User
+import no.ern.game.player.domain.model.Player
+import no.ern.game.player.domain.model.PlayerDto
 
-class UserConverter {
+class PlayerConverter {
 
     companion object {
 
-        fun transform(entity: User): UserDto {
-            return UserDto(
+        fun transform(entity: Player): PlayerDto {
+            return PlayerDto(
                     id = entity.id.toString(),
                     username = entity.username,
                     password = entity.password,
@@ -22,7 +22,7 @@ class UserConverter {
             )
         }
 
-        fun transform(entities: Iterable<User>): Iterable<UserDto> {
+        fun transform(entities: Iterable<Player>): Iterable<PlayerDto> {
             return entities.map { transform(it) }
         }
     }

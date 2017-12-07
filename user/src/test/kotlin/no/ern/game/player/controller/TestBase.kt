@@ -1,16 +1,13 @@
-package no.ern.game.user.controller
+package no.ern.game.player.controller
 
 
-import no.ern.game.user.Application
+import no.ern.game.player.Application
 import io.restassured.RestAssured
-import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
-import no.ern.game.user.domain.model.User
+import no.ern.game.player.domain.model.Player
 import org.hamcrest.CoreMatchers
-import org.hamcrest.CoreMatchers.equalTo
 import org.junit.After
 import org.junit.Before
-import org.junit.BeforeClass
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.context.embedded.LocalServerPort
@@ -35,7 +32,7 @@ abstract class TestBase {
         // RestAssured configs shared by all the tests
         RestAssured.baseURI = "http://localhost"
         RestAssured.port = port
-        RestAssured.basePath = contextPath + "/users"
+        RestAssured.basePath = contextPath + "/players"
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
 
@@ -43,7 +40,7 @@ abstract class TestBase {
                 .then()
                 .statusCode(200)
                 .extract()
-                .`as`(Array<User>::class.java)
+                .`as`(Array<Player>::class.java)
                 .toList()
 
 

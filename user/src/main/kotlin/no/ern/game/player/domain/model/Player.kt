@@ -1,4 +1,4 @@
-package no.ern.game.user.domain.model
+package no.ern.game.player.domain.model
 
 import org.hibernate.validator.constraints.NotBlank
 import javax.persistence.*
@@ -7,7 +7,7 @@ import javax.validation.constraints.Min
 import javax.validation.constraints.Size
 
 @Entity
-data class User(
+data class Player(
 
         @get:NotBlank
         @get:Size(max = 50)
@@ -23,8 +23,6 @@ data class User(
 
         @get:Min(1)
         var damage: Int = 10,
-
-        //var avatar: Blob? = null,
 
         @get:Min(0)
         var currency: Int = 0,

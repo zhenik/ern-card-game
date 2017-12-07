@@ -1,4 +1,4 @@
-package no.ern.game.user
+package no.ern.game.player
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -20,8 +20,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 
 @Configuration
 @EnableSwagger2
-@EnableJpaRepositories(basePackages = arrayOf("no.ern.game.user"))
-@EntityScan(basePackages = arrayOf("no.ern.game.user"))
+@EnableJpaRepositories(basePackages = arrayOf("no.ern.game.player"))
+@EntityScan(basePackages = arrayOf("no.ern.game.player"))
 class ApplicationConfig {
     @Bean
     fun swaggerApi(): Docket {
@@ -34,8 +34,8 @@ class ApplicationConfig {
 
     private fun apiInfo(): ApiInfo {
         return ApiInfoBuilder()
-                .title("API for user entities")
-                .description("MicroService that Contains user entity repository")
+                .title("API for player entities")
+                .description("MicroService that Contains player entity repository")
                 .version("1.0")
                 .build()
     }
