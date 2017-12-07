@@ -1,17 +1,14 @@
 package no.ern.game.gamelogic.services
 
-import no.ern.game.gamelogic.domain.converters.PlayerFightConverter
 import no.ern.game.gamelogic.domain.model.LogLine
-import no.ern.game.gamelogic.domain.model.Player
-import no.ern.game.schema.dto.ItemDto
-import no.ern.game.schema.dto.UserDto
+import no.ern.game.gamelogic.domain.model.Character
 import no.ern.game.schema.dto.gamelogic.FightResultLogDto
 import org.springframework.stereotype.Service
 
 @Service
 class GameProcessorService {
 
-    fun fight(attacker: Player, defender: Player):FightResultLogDto{
+    fun fight(attacker: Character, defender: Character):FightResultLogDto{
 
         val gameLog : MutableMap<Int,String> = HashMap()
         var counter = 1
@@ -71,7 +68,7 @@ class GameProcessorService {
 
     }
 
-    private fun isMatchFinished(attacker: Player,defender: Player):Boolean{
+    private fun isMatchFinished(attacker: Character, defender: Character):Boolean{
         return (attacker.remainingHealth<1 || defender.remainingHealth<1)
     }
 
@@ -98,8 +95,8 @@ class GameProcessorService {
 //            ItemDto(null,null,null,0,(Math.random()*15).toLong())
 //    )
 //
-//    val attacker: Player = PlayerFightConverter.transform(attackerUserDtoMock,randomItems1)
-//    val defender: Player = PlayerFightConverter.transform(defenderUserDtoMock,randomItems2)
+//    val attacker: Character = PlayerFightConverter.transform(attackerUserDtoMock,randomItems1)
+//    val defender: Character = PlayerFightConverter.transform(defenderUserDtoMock,randomItems2)
 
 //    val service = GameProcessorService()
 //    service.fight(attacker,defender)

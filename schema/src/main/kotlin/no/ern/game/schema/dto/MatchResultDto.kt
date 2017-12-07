@@ -4,16 +4,15 @@ import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import java.io.Serializable
 import java.time.ZonedDateTime
-import javax.validation.constraints.NotNull
 
 @ApiModel("MatchResult representation. Data transfer object represents match result")
 data class MatchResultDto(
 
         @ApiModelProperty("Attacker info")
-        var attacker: PlayerDto? = null,
+        var attacker: PlayerResultDto? = null,
 
         @ApiModelProperty("Defender info")
-        var defender: PlayerDto? = null,
+        var defender: PlayerResultDto? = null,
 
         @ApiModelProperty("Winner name of the match")
         var winnerName: String?= null,
@@ -25,7 +24,7 @@ data class MatchResultDto(
         var id: String?=null
 ): Serializable
 
-data class PlayerDto(
+data class PlayerResultDto(
         @ApiModelProperty("Username")
         var username: String?=null,
         @ApiModelProperty("Total health")

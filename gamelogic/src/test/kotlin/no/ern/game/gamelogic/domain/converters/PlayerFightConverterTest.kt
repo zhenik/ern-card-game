@@ -2,8 +2,7 @@ package no.ern.game.gamelogic.domain.converters
 
 import no.ern.game.schema.dto.ItemDto
 import no.ern.game.schema.dto.UserDto
-import no.ern.game.gamelogic.domain.converters.PlayerFightConverter
-import no.ern.game.gamelogic.domain.model.Player
+import no.ern.game.gamelogic.domain.model.Character
 
 import org.junit.Assert.*
 import org.junit.Test
@@ -30,11 +29,11 @@ class PlayerFightConverterTest{
     fun testTransform(){
 
         // Act
-        val player : Player = PlayerFightConverter.transform(userDto,items)
+        val character: Character = PlayerFightConverter.transform(userDto,items)
 
         // Assert
-        assertEquals(20,player.damage)
-        assertEquals(105,player.health)
+        assertEquals(20, character.damage)
+        assertEquals(105, character.health)
     }
 
 }

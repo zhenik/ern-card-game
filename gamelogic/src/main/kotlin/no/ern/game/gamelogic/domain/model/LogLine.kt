@@ -2,8 +2,8 @@ package no.ern.game.gamelogic.domain.model
 
 
 class LogLine(
-        private var diceWinner: Player,
-        private var diceLoser: Player,
+        private var diceWinner: Character,
+        private var diceLoser: Character,
         private var critical: Boolean
 ){
 

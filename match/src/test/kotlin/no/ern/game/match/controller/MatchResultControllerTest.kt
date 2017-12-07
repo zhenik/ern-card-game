@@ -3,7 +3,7 @@ package no.ern.game.match.controller
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import no.ern.game.schema.dto.MatchResultDto
-import no.ern.game.schema.dto.PlayerDto
+import no.ern.game.schema.dto.PlayerResultDto
 import org.hamcrest.CoreMatchers
 import org.junit.Test
 import org.junit.Assert.*
@@ -157,8 +157,8 @@ class MatchResultControllerTest : ControllerTestBase(){
         // Arrange
         val id = postNewMatchResultValid(getValidMatchResultDto())
         val dto2 = MatchResultDto(
-                PlayerDto("superman", 30, 28, 5),
-                PlayerDto("batman", 25, 25, -3),
+                PlayerResultDto("superman", 30, 28, 5),
+                PlayerResultDto("batman", 25, 25, -3),
                 "superman",null,
                 id.toString())
 
@@ -189,8 +189,8 @@ class MatchResultControllerTest : ControllerTestBase(){
         // Arrange
         val id = postNewMatchResultValid(getValidMatchResultDto())
         val dto = MatchResultDto(
-                PlayerDto("superman", 30, 28, 5),
-                PlayerDto("batman", 25, 25, -3),
+                PlayerResultDto("superman", 30, 28, 5),
+                PlayerResultDto("batman", 25, 25, -3),
                 "superman",null,
                 id.toString())
 
@@ -247,8 +247,8 @@ class MatchResultControllerTest : ControllerTestBase(){
     fun testUpdateWinnerName(){
         // Arrange
         val dto = MatchResultDto(
-                PlayerDto("superman", 30, 28, 5),
-                PlayerDto("batman", 25, 25, -3),
+                PlayerResultDto("superman", 30, 28, 5),
+                PlayerResultDto("batman", 25, 25, -3),
                 "superman")
         val id = postNewMatchResultValid(dto)
         val newWinnerName = "batman"

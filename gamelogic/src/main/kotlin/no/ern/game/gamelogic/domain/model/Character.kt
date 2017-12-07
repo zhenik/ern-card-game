@@ -1,6 +1,6 @@
 package no.ern.game.gamelogic.domain.model
 
-data class Player(
+data class Character(
         var username: String,
         var health: Int,
         var damage: Int,

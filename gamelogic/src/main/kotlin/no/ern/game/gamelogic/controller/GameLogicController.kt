@@ -6,11 +6,11 @@ import io.swagger.annotations.ApiParam
 import io.swagger.annotations.ApiResponse
 import no.ern.game.gamelogic.domain.converters.PlayerFightConverter
 import no.ern.game.gamelogic.domain.converters.PlayerSearchConverter
-import no.ern.game.gamelogic.domain.model.Player
+import no.ern.game.gamelogic.domain.model.Character
 import no.ern.game.gamelogic.services.GameProcessorService
 import no.ern.game.schema.dto.ItemDto
 import no.ern.game.schema.dto.MatchResultDto
-import no.ern.game.schema.dto.PlayerDto
+import no.ern.game.schema.dto.PlayerResultDto
 import no.ern.game.schema.dto.UserDto
 import no.ern.game.schema.dto.gamelogic.FightResultLogDto
 import no.ern.game.schema.dto.gamelogic.PlayerSearchDto
@@ -84,7 +84,7 @@ class GameLogicController {
             searchLevel=level
         }
 
-        /** 1 make request to user module.
+        /** 1 make request to player module.
             (specific of restTemplate)
             @see package org.tsdes.spring.rest.wiremock.ConverterRestServiceXml)
         */
@@ -138,8 +138,8 @@ class GameLogicController {
         val randomItems2: List<ItemDto> = getMockListOfItems()
 
         // 3 call GameProcessorService.fight(attacker,defender) -> return GameLogDto
-        val attacker: Player = PlayerFightConverter.transform(attackerUserDtoMock,randomItems1)
-        val defender: Player = PlayerFightConverter.transform(defenderUserDtoMock,randomItems2)
+        val attacker: Character = PlayerFightConverter.transform(attackerUserDtoMock,randomItems1)
+        val defender: Character = PlayerFightConverter.transform(defenderUserDtoMock,randomItems2)
 
 
         val fightResultGameLog = gameService.fight(attacker,defender)
@@ -175,14 +175,14 @@ class GameLogicController {
         return true
     }
 
-    private fun getMatchResult(attacker: Player, defender:Player, winner: String):MatchResultDto{
+    private fun getMatchResult(attacker: Character, defender: Character, winner: String):MatchResultDto{
         return MatchResultDto(
-                PlayerDto(
+                PlayerResultDto(
                         attacker.username,
                         attacker.health,
                         attacker.damage,
                         attacker.remainingHealth),
-                PlayerDto(
+                PlayerResultDto(
                         defender.username,
                         defender.health,
                         defender.damage,
