@@ -127,7 +127,7 @@ class GameLogicController {
             @RequestBody resultIdsDto: PlayersFightIdsDto) : ResponseEntity<FightResultLogDto>{
 
         // 1 validate PlayersFightIdsDto
-        if( ! isPlayersFightIdsDtoValid(resultIdsDto)){ return ResponseEntity.status(404).build() }
+        if( ! isPlayersFightIdsDtoValid(resultIdsDto)){ return ResponseEntity.status(400).build() }
 
         // 2.1 TODO: fetch users from user-module (if any errors -> propagate them). Extract logic to method
         val attackerUserDtoMock = UserDto("1","attackerName",null,null,100,10,null,null,1,null)
