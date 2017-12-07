@@ -8,17 +8,6 @@ import javax.validation.constraints.Size
 
 @Entity
 data class Player(
-
-        @get:NotBlank
-        @get:Size(max = 50)
-        @get:Column(unique = true)
-        var username: String,
-
-        @get:NotBlank
-        var password: String,
-
-        var salt: String = "",
-
         var health: Int = 100,
 
         @get:Min(1)
@@ -38,6 +27,5 @@ data class Player(
         var equipment: Collection<Long> = listOf(),
 
         @get:Id
-        @get:GeneratedValue
-        var id: Long? = null
+        var id: Long
 )

@@ -3,6 +3,7 @@ package no.ern.game.player.controller
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import junit.framework.TestCase.assertNotNull
+import junit.framework.TestCase.assertTrue
 import no.ern.game.schema.dto.PlayerDto
 
 import org.hamcrest.CoreMatchers.equalTo
@@ -18,7 +19,7 @@ class PlayerControllerTest : TestBase() {
     }
 
     @Test
-    fun createAndGetPlayerByUsername() {
+    fun createAndGetPlayer() {
         val playerDto1 = getValidPlayerDtos()[0]
         val playerDto2 = getValidPlayerDtos()[1]
 
@@ -28,51 +29,28 @@ class PlayerControllerTest : TestBase() {
         given().get().then().statusCode(200).body("size()", equalTo(2))
 
         val foundPlayer1 = given().contentType(ContentType.JSON)
-                .pathParam("username", playerDto1.username)
-                .get("/{username}")
+                .pathParam("id", playerDto1.id)
+                .get("/{id}")
                 .then()
                 .statusCode(200)
                 .extract()
                 .`as`(PlayerDto::class.java)
 
-        assertEquals(playerDto1.username, foundPlayer1.username)
-        assertEquals(playerDto1.password, foundPlayer1.password)
         assertEquals(playerDto1.health, foundPlayer1.health)
+        assertEquals(playerDto1.currency, foundPlayer1.currency)
         assertEquals(playerDto1.equipment, foundPlayer1.equipment)
 
         val foundPlayer2 = given().contentType(ContentType.JSON)
-                .pathParam("username", playerDto2.username)
-                .get("/{username}")
+                .pathParam("id", playerDto2.id)
+                .get("/{id}")
                 .then()
                 .statusCode(200)
                 .extract()
                 .`as`(PlayerDto::class.java)
 
-        assertEquals(playerDto2.username, foundPlayer2.username)
-        assertEquals(playerDto2.password, foundPlayer2.password)
+        assertEquals(playerDto2.currency, foundPlayer2.currency)
         assertEquals(playerDto2.health, foundPlayer2.health)
         assertEquals(playerDto2.equipment, foundPlayer2.equipment)
-    }
-
-    @Test
-    fun createPlayersWithDuplicateUsername() {
-        val playerDto = getValidPlayerDtos()[0]
-
-        postPlayerDto(playerDto, 201)
-        postPlayerDto(playerDto, 400)
-
-        given().get().then().statusCode(200).body("size()", equalTo(1))
-    }
-
-    @Test
-    fun createPlayerWithIdFails() {
-        val playerDto = getValidPlayerDtos()[0]
-        playerDto.id = "12312312"
-
-        postPlayerDto(playerDto, 400)
-
-        given().get().then().statusCode(200).body("size()", equalTo(0))
-
     }
 
     @Test
@@ -112,8 +90,8 @@ class PlayerControllerTest : TestBase() {
                 .statusCode(200)
                 .extract()
                 .`as`(Array<PlayerDto>::class.java)
-        assertEquals(foundPlayer[0].username, playerDto1.username)
-        assertEquals(foundPlayer[0].password, playerDto1.password)
+        assertEquals(foundPlayer[0].health, playerDto1.health)
+        assertEquals(foundPlayer[0].currency, playerDto1.currency)
         assertEquals(foundPlayer[0].experience, playerDto1.experience)
     }
 
@@ -122,14 +100,14 @@ class PlayerControllerTest : TestBase() {
         val playerDto1 = getValidPlayerDtos()[0]
         val playerDto2 = getValidPlayerDtos()[1]
 
-        val postedId = postPlayerDto(playerDto1, 201)
+        val wasSuccesful = postPlayerDto(playerDto1, 201)
 
         given().get().then().statusCode(200).body("size()", equalTo(1))
-        assertNotNull(postedId)
-        playerDto2.id = postedId.toString()
+        assertEquals(true, wasSuccesful)
+        playerDto2.id = playerDto1.id.toString()
 
         // Update data to be like playerDto2
-        given().pathParam("id", postedId)
+        given().pathParam("id", playerDto1.id)
                 .contentType(ContentType.JSON)
                 .body(playerDto2)
                 .put("/{id}")
@@ -137,15 +115,14 @@ class PlayerControllerTest : TestBase() {
                 .statusCode(204)
 
         // Validate that it changed
-        given().pathParam("username", playerDto2.username)
-                .get("/{username}")
+        given().pathParam("id", playerDto2.id)
+                .get("/{id}")
                 .then()
                 .statusCode(200)
-                .body("username", equalTo(playerDto2.username))
-                .body("password", equalTo(playerDto2.password))
+                .body("currency", equalTo(playerDto2.currency))
                 .body("health", equalTo(playerDto2.health))
                 .body("experience", equalTo(playerDto2.experience))
-                .body("id", equalTo(postedId.toString()))
+                .body("id", equalTo(playerDto1.id.toString()))
 
         given().get().then().statusCode(200).body("size()", equalTo(1))
     }
@@ -154,14 +131,16 @@ class PlayerControllerTest : TestBase() {
     fun updatePlayerChangedId() {
         val playerDto1 = getValidPlayerDtos()[0]
         val playerDto2 = getValidPlayerDtos()[1]
+        val player1Id = playerDto1.id?.toLong()
 
-        val postedId = postPlayerDto(playerDto1, 201)
-        assertNotNull(postedId)
+        val wasSuccesful = postPlayerDto(playerDto1, 201)
+        assertEquals(true, wasSuccesful)
+
 
         // Change ID in dto, but not path.
-        playerDto2.id = (postedId?.times(2)).toString()
+        playerDto2.id = (player1Id?.times(2)).toString()
 
-        given().pathParam("id", postedId)
+        given().pathParam("id", player1Id)
                 .contentType(ContentType.JSON)
                 .body(playerDto2)
                 .put("/{id}")
@@ -169,163 +148,74 @@ class PlayerControllerTest : TestBase() {
                 .statusCode(409)
 
         val foundPlayer = given().contentType(ContentType.JSON)
-                .pathParam("username", playerDto1.username)
-                .get("/{username}")
+                .pathParam("id", playerDto1.id)
+                .get("/{id}")
                 .then()
                 .statusCode(200)
                 .extract()
                 .`as`(PlayerDto::class.java)
 
-        assertEquals(playerDto1.username, foundPlayer.username)
-        assertEquals(playerDto1.password, foundPlayer.password)
+        assertEquals(playerDto1.currency, foundPlayer.currency)
         assertEquals(playerDto1.health, foundPlayer.health)
         assertEquals(playerDto1.equipment, foundPlayer.equipment)
 
-
-
-
-        given().pathParam("username", playerDto2.username)
-                .get("/{username}")
+        given().pathParam("id", playerDto2.id)
+                .get("/{id}")
                 .then()
                 .statusCode(404)
 
         given().get().then().statusCode(200).body("size()", equalTo(1))
     }
 
-    @Test
-    fun setUsername() {
-        val playerDto = getValidPlayerDtos()[0]
-        val newUsername = "newUsername"
-
-        val postedId = postPlayerDto(playerDto, 201)
-
-        given().pathParam("id", postedId)
-                .body(newUsername)
-                .patch("/{id}")
-                .then()
-                .statusCode(204)
-
-
-        val foundUser = given().contentType(ContentType.JSON)
-                .pathParam("username", newUsername)
-                .get("/{username}")
-                .then()
-                .statusCode(200)
-                .extract()
-                .`as`(PlayerDto::class.java)
-
-        assertEquals(newUsername, foundUser.username)
-        assertEquals(playerDto.password, foundUser.password)
-        assertEquals(playerDto.health, foundUser.health)
-        assertEquals(playerDto.equipment, foundUser.equipment)
-    }
 
     @Test
-    fun setUsernameInvalid() {
+    fun setCurrencyInvalid() {
         val playerDto = getValidPlayerDtos()[0]
-        val postedId = postPlayerDto(playerDto, 201)
-        val tooLongUsername = getTooLongUsername()
+        postPlayerDto(playerDto, 201)
 
 
-        // Too long username
-        given().pathParam("id", postedId)
-                .body(tooLongUsername)
+        // Cannot have negativ id
+        given().pathParam("id", playerDto.id)
+                .body(-20L)
                 .patch("/{id}")
                 .then()
                 .statusCode(400)
 
         // Empty body
-        given().pathParam("id", postedId)
+        given().pathParam("id", playerDto.id)
                 .body(" ")
                 .patch("/{id}")
                 .then()
                 .statusCode(400)
 
-        given().pathParam("username", playerDto.username)
-                .get("/{username}")
+        given().pathParam("id", playerDto.id)
+                .get("/{id}")
                 .then()
                 .statusCode(200)
-                .body("username", equalTo(playerDto.username))
-                .body("password", equalTo(playerDto.password))
+                .body("currency", equalTo(playerDto.currency))
                 .body("health", equalTo(playerDto.health))
                 .body("experience", equalTo(playerDto.experience))
 
     }
 
-    @Test
-    fun deletePlayerByUsername() {
-        val playerDto1 = getValidPlayerDtos()[0]
-        val playerDto2 = getValidPlayerDtos()[1]
-
-        postPlayerDto(playerDto1, 201)
-        postPlayerDto(playerDto2, 201)
-        given().get().then().statusCode(200).body("size()", equalTo(2))
-
-
-        given().pathParam("username", playerDto1.username)
-                .delete("/{username}")
-                .then()
-                .statusCode(204)
-        given().get().then().statusCode(200).body("size()", equalTo(1))
-
-        given().pathParam("username", playerDto2.username)
-                .delete("/{username}")
-                .then()
-                .statusCode(204)
-        given().get().then().statusCode(200).body("size()", equalTo(0))
-    }
-
-    @Test
-    fun deletePlayerWithEmptyUsername() {
-        val playerDto = getValidPlayerDtos()[0]
-        postPlayerDto(playerDto, 201)
-
-        given().get().then().statusCode(200).body("size()", equalTo(1))
-
-        // Since delete on /game/api/players is not supported, return a 405: Method Not Allowed.
-        // Delete is only allowed on /game/api/players/{username}
-        given().pathParam("username", "")
-                .delete("/{username}")
-                .then()
-                .statusCode(405)
-
-        given().get().then().statusCode(200).body("size()", equalTo(1))
-    }
-
-    @Test
-    fun deletePlayerWithNonExistingUsername() {
-        val playerDto = getValidPlayerDtos()[0]
-        postPlayerDto(playerDto, 201)
-
-        given().get().then().statusCode(200).body("size()", equalTo(1))
-        given().pathParam("username", "golang")
-                .delete("/{username}")
-                .then()
-                .statusCode(404)
-
-        given().get().then().statusCode(200).body("size()", equalTo(1))
-    }
-
-    private fun postPlayerDto(playerDto: PlayerDto, expectedStatusCode: Int): Long? {
-        return try {
+    private fun postPlayerDto(playerDto: PlayerDto, expectedStatusCode: Int): Boolean {
+        try {
             given().contentType(ContentType.JSON)
                     .body(playerDto)
                     .post()
                     .then()
                     .statusCode(expectedStatusCode)
-                    .extract().`as`(Long::class.java)
+
+            return true
         } catch (e: IllegalStateException) {
-            null
+            return false
         }
     }
 
     private fun getValidPlayerDtos(): List<PlayerDto> {
         return listOf(
                 PlayerDto(
-                        null,
-                        "Ruby",
-                        "ThisIsAHash",
-                        "ThisIsSomeSalt",
+                        "1",
                         120,
                         44,
                         30,
@@ -334,10 +224,7 @@ class PlayerControllerTest : TestBase() {
                         listOf(1L, 2L, 3L)
                 ),
                 PlayerDto(
-                        null,
-                        "Kotlin",
-                        "Spicy language..",
-                        "Thisshouldalsobesalted",
+                        "5",
                         122,
                         46,
                         33,
@@ -346,10 +233,7 @@ class PlayerControllerTest : TestBase() {
                         listOf(1L, 3L, 2L)
                 ),
                 PlayerDto(
-                        null,
-                        "Another language",
-                        "Its actually PHP...",
-                        "yes, there should be salt here",
+                        "10",
                         132,
                         56,
                         38,
@@ -358,10 +242,6 @@ class PlayerControllerTest : TestBase() {
                         listOf(1L, 2L, 3L)
                 )
         )
-    }
-
-    private fun getTooLongUsername(): String {
-        return "somethingLongerThan50Characters".repeat(20)
     }
 
 }

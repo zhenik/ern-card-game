@@ -32,9 +32,9 @@ class PlayerController {
     fun createPlayer(
             @ApiParam("Player to save")
             @RequestBody
-            playerDto: PlayerDto): ResponseEntity<Long> {
+            playerDto: PlayerDto): ResponseEntity<Void> {
 
-        if (!playerDto.id.isNullOrEmpty()) {
+        if (playerDto.id.isNullOrEmpty()) {
             return ResponseEntity.status(400).build()
         }
 
@@ -42,29 +42,39 @@ class PlayerController {
             return ResponseEntity.status(400).build()
         }
 
-        // Checks for null i isDtoFieldsNotNull method.
-        if(repo.existsByUsername(playerDto.username!!)) {
-            return ResponseEntity.status(400).build()
-        }
-
         try {
-            val savedId = repo.createPlayer(
-                    username = playerDto.username!!,
-                    password = playerDto.password!!,
-                    salt = playerDto.salt!!,
+            repo.createPlayer(
                     health = playerDto.health!!,
                     damage = playerDto.damage!!,
                     currency = playerDto.currency!!,
                     experience = playerDto.experience!!,
                     level = playerDto.level!!,
-                    equipment = playerDto.equipment!!
+                    equipment = playerDto.equipment!!,
+                    id = playerDto.id!!.toLong()
             )
-
-            return ResponseEntity.status(201).body(savedId)
+            return ResponseEntity.status(201).build()
 
         } catch (e: ConstraintViolationException) {
             return ResponseEntity.status(400).build()
         }
+    }
+
+    @ApiOperation("Get player specified by id")
+    @GetMapping(path = arrayOf("/{id}"))
+    fun getPlayerById(@ApiParam("Id of Player")
+                      @PathVariable("id")
+                      pathId: String?)
+            : ResponseEntity<PlayerDto> {
+
+        val id: Long
+        try {
+            id = pathId!!.toLong()
+        } catch (e: Exception) {
+            return ResponseEntity.status(400).build()
+        }
+
+        val dto = repo.findOne(id) ?: return ResponseEntity.status(404).build()
+        return ResponseEntity.ok(PlayerConverter.transform(dto))
     }
 
     @ApiOperation("Get all players by level")
@@ -84,26 +94,6 @@ class PlayerController {
 
         return ResponseEntity.ok(PlayerConverter.transform(repo.findAllByLevel(level)))
     }
-
-    @ApiOperation("Get player by username")
-    @GetMapping(path = arrayOf("/{username}"))
-    fun getPlayerByUsername(
-            @ApiParam("Username to search by")
-            @PathVariable("username")
-            username: String?
-    ): ResponseEntity<PlayerDto> {
-        if (username.isNullOrBlank()) {
-            return ResponseEntity.status(404).build()
-        } else {
-            // username cannot be null because we already checked.
-            val entity = repo.findFirstByUsername(username!!)
-            if (entity == null) {
-                return ResponseEntity.status(404).build()
-            }
-            return ResponseEntity.ok(PlayerConverter.transform(entity))
-        }
-    }
-
 
     @ApiOperation("Replace the data of a player")
     @PutMapping(path = arrayOf("/{id}"), consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -135,8 +125,7 @@ class PlayerController {
         }
 
         try {
-            val successful = repo.updatePlayer(playerDto.username!!,
-                    playerDto.password!!,
+            val successful = repo.updatePlayer(
                     playerDto.health!!,
                     playerDto.damage!!,
                     playerDto.currency!!,
@@ -154,56 +143,55 @@ class PlayerController {
         }
     }
 
-    @ApiOperation("Replace the username of a player")
+    @ApiOperation("Replace the currency of a player")
     @PatchMapping(path = arrayOf("/{id}"), consumes = arrayOf(MediaType.TEXT_PLAIN_VALUE))
-    fun updateUsername(
+    fun updateCurrency(
             @ApiParam("Id defining the player.")
             @PathVariable("id")
             id: Long,
 
-            @ApiParam("New username for player. Username must be unique and must be a string.")
+            @ApiParam("New currency for player. Currency cannot be negative.")
             @RequestBody
-            username: String
+            currency: Int
     ): ResponseEntity<Long> {
+
         if (!repo.exists(id)) {
             return ResponseEntity.status(404).build()
         }
-
-        if (username.isNullOrEmpty() || username.length > 50) {
+        if (currency < 0) {
             return ResponseEntity.status(400).build()
         }
-        if (!repo.setUsername(username, id)) {
+        if (!repo.setCurrency(currency, id)) {
             return ResponseEntity.status(400).build()
         }
         return ResponseEntity.status(204).build()
     }
 
-    @ApiOperation("Delete a player by username")
-    @DeleteMapping(path = arrayOf("/{username}"))
-    fun deleteUserByUsername(
-            @ApiParam("Username of player to delete")
-            @PathVariable("username")
-            username: String?
-    ) : ResponseEntity<Any>{
 
-        if (username.isNullOrBlank()) {
+    @ApiOperation("Delete user by id")
+    @DeleteMapping(path = arrayOf("/{id}"))
+    fun deleteUserById(
+            @ApiParam("Id of user to delete")
+            @PathVariable("id")
+            pathId: Long?
+    ): ResponseEntity<Any> {
+
+        val id: Long
+        try {
+            id = pathId!!.toLong()
+        } catch (e: Exception) {
             return ResponseEntity.status(400).build()
         }
-        if (!repo.existsByUsername(username!!)) {
-            return ResponseEntity.status(404).build()
-        }
-        repo.deleteByUsername(username)
+        repo.delete(id)
         return ResponseEntity.status(204).build()
     }
 
     private fun isDtoFieldsNotNull(playerDto: PlayerDto): Boolean {
-        if ((!playerDto.username.isNullOrBlank()) &&
-                (!playerDto.password.isNullOrBlank()) &&
-                playerDto.salt != null &&
-                playerDto.health != null &&
+        if (playerDto.health != null &&
                 playerDto.damage != null &&
                 playerDto.currency != null &&
-                playerDto.experience != null
+                playerDto.experience != null &&
+                playerDto.level != null
                 ) {
             return true
         }

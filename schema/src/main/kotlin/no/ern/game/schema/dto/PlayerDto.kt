@@ -10,22 +10,11 @@ data class PlayerDto(
         @ApiModelProperty("The id of the player")
         var id: String? = null,
 
-        @ApiModelProperty("Username of the player")
-        var username: String? = null,
-
-        @ApiModelProperty("Hashed password")
-        var password: String? = null,
-
-        @ApiModelProperty("Salt of the hashed password, if required by hashing algorithm")
-        var salt: String? = null,
-
         @ApiModelProperty("Player's health")
         var health: Int? = 1,
+
         @ApiModelProperty("Player's damage")
         var damage: Int? = 1,
-
-//        @ApiModelProperty("Image in a Binary format, if exists")
-//        var avatar: Blob? = null,
 
         @ApiModelProperty("Amount of money the user has")
         var currency: Int? = null,
@@ -45,9 +34,6 @@ data class PlayerDto(
  * example
     {
         "id":"1",
-        "username":"SUPERGUY",
-        "password":"pdasd",
-        "salt":"super salt",
         "health":100,
         "damage":10,
         "currency":100,

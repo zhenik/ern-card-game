@@ -45,7 +45,7 @@ abstract class TestBase {
 
 
         list.stream().forEach {
-            RestAssured.given().pathParam("id", it.username)
+            RestAssured.given().pathParam("id", it.id)
                     .delete("/{id}")
                     .then()
                     .statusCode(204)

@@ -11,9 +11,6 @@ class PlayerConverter {
         fun transform(entity: Player): PlayerDto {
             return PlayerDto(
                     id = entity.id.toString(),
-                    username = entity.username,
-                    password = entity.password,
-                    salt = entity.salt,
                     health = entity.health,
                     damage = entity.damage,
                     currency = entity.currency,

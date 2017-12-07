@@ -30,64 +30,23 @@ class EntityRepositoryImplTest {
     @Test
     fun testCreatePlayer() {
         val player = getValidPlayers()[0]
-        val savedId = createPlayer(player)
+        createPlayer(player)
 
-        assertTrue(repo.exists(savedId))
+        assertTrue(repo.exists(player.id))
         assertEquals(1, repo.count())
-    }
 
-    @Test
-    fun testCreatingDuplicateUsername() {
-        val player1 = getValidPlayers()[0]
-        val player2 = getValidPlayers()[0]
-
-        var savedPlayer1: Player? = null
-        var savedPlayer2: Player? = null
-
-        try {
-            savedPlayer1 = repo.save(player1)
-            savedPlayer2 = repo.save(player2)
-            fail()
-        } catch (e: Exception) {
-            assertNotNull(savedPlayer1)
-            assertNull(savedPlayer2)
-
-            assertNotNull(savedPlayer1?.id)
-            assertNull(savedPlayer2?.id)
-        }
-
-    }
-
-    @Test
-    fun testFindFirstByUsername() {
-        val player1 = getValidPlayers()[0]
-        val player2 = getValidPlayers()[1]
-        val savedPlayer1Id = createPlayer(player1)
-        val savedPlayer2Id = createPlayer(player2)
-
-        // Needs to be persisted, to avoid reading from cache.
-        val savedPlayer1 = repo.findFirstByUsername(player1.username)
-        val savedPlayer2 = repo.findFirstByUsername(player2.username)
-
-        assertNotNull(savedPlayer1Id)
-        assertNotNull(savedPlayer2Id)
-
-        assertEquals(player1.username, savedPlayer1?.username)
-        assertEquals(player1.password, savedPlayer1?.password)
-
-        assertEquals(player2.username, savedPlayer2?.username)
-        assertEquals(player2.password, savedPlayer2?.password)
-
-        assertEquals(savedPlayer1Id, savedPlayer1?.id)
-        assertEquals(savedPlayer2Id, savedPlayer2?.id)
+        val foundPlayer = repo.findOne(player.id)
+        foundPlayer.currency = player.currency
+        foundPlayer.health = player.health
+        foundPlayer.experience = player.experience
     }
 
     @Test
     fun testFindPlayerByLevel() {
         val player1 = getValidPlayers()[0]
-        val player2 = getValidPlayers()[0]
-        player2.username = "asdasjdoasjdioasoidj"
-        val player3 = getValidPlayers()[1]
+        val player2 = getValidPlayers()[1]
+        player2.level = player1.level
+        val player3 = getValidPlayers()[2]
 
         assertEquals(0, repo.findAllByLevel(player1.level).count())
 
@@ -98,11 +57,11 @@ class EntityRepositoryImplTest {
         val playersFound2 = repo.findAllByLevel(player3.level)
 
         assertEquals(2, playersFound1.count())
-        assertTrue(playersFound1.any({ e -> e.username == player1.username }))
-        assertTrue(playersFound1.any({ e -> e.username == player2.username }))
+        assertTrue(playersFound1.any({ e -> e.health == player1.health }))
+        assertTrue(playersFound1.any({ e -> e.health == player2.health }))
 
         assertEquals(1, playersFound2.count())
-        assertTrue(playersFound2.any({ e -> e.username == player3.username }))
+        assertTrue(playersFound2.any({ e -> e.health == player3.health }))
     }
 
     @Test
@@ -110,45 +69,32 @@ class EntityRepositoryImplTest {
         val player1 = getValidPlayers()[0]
         val player2 = getValidPlayers()[1]
 
-        val savedId = createPlayer(player1)
+        createPlayer(player1)
         assertEquals(1, repo.count())
 
-        val wasSuccessful = updatePlayer(player2, savedId)
+        val wasSuccessful = updatePlayer(player2, player1.id)
         assertEquals(true, wasSuccessful)
 
-        val readPlayer = repo.findFirstByUsername(player2.username)
+        val readPlayer = repo.findOne(player1.id)
 
-        assertEquals(readPlayer?.username, player2.username)
-        assertEquals(readPlayer?.id, savedId)
-        assertEquals(readPlayer?.password, player2.password)
+        assertEquals(readPlayer?.health, player2.health)
+        assertEquals(readPlayer?.id, player1.id)
+        assertEquals(readPlayer?.currency, player2.currency)
 
         assertEquals(1, repo.count())
     }
 
     @Test
-    fun testUpdatePlayerIdChange() {
+    fun testChangeIdByUpdate() {
         val player1 = getValidPlayers()[0]
         val player2 = getValidPlayers()[1]
 
-        val savedId = createPlayer(player1)
+        createPlayer(player1)
 
-        val wasSuccessful = updatePlayer(player2, savedId * 2)
-        assertEquals(false, wasSuccessful)
+        updatePlayer(player2, player1.id)
 
-        val playerFound = repo.findFirstByUsername(player2.username)
+        val playerFound = repo.findOne(player2.id)
         assertNull(playerFound)
-        assertEquals(1, repo.count())
-    }
-
-    @Test
-    fun testUpdatePlayerWithTooLongUsername() {
-        val player1 = getValidPlayers()[0]
-        val savedId = createPlayer(player1)
-
-        player1.username = getTooLongUsername()
-        val wasSuccessful = updatePlayer(player1, savedId)
-
-        assertEquals(false, wasSuccessful)
         assertEquals(1, repo.count())
     }
 
@@ -160,41 +106,24 @@ class EntityRepositoryImplTest {
         createPlayer(player2)
 
         assertEquals(2, repo.count())
-        repo.deleteByUsername(player2.username)
+        repo.delete(player1.id)
 
         assertEquals(1, repo.count())
 
-        repo.deleteByUsername(player1.username)
+        repo.delete(player2.id)
         assertEquals(0, repo.count())
     }
 
-    @Test
-    fun testExistsByUsername() {
-        val player1 = getValidPlayers()[0]
-        val player2 = getValidPlayers()[1]
-        assertEquals(false, repo.existsByUsername(player1.username))
-
-        createPlayer(player1)
-        assertEquals(true, repo.existsByUsername(player1.username))
-
-        assertEquals(false, repo.existsByUsername(player2.username))
-    }
-
-    @Test
-    fun testDeletePlayerWithWrongUsername() {
-        val player1 = getValidPlayers()[0]
-        createPlayer(player1)
-
-        assertEquals(1, repo.count())
-        repo.deleteByUsername(getTooLongUsername())
-
-        assertEquals(1, repo.count())
-    }
 
     @Test
     fun testDeleteWhenNoPlayerExists() {
         assertEquals(0, repo.count())
-        repo.deleteByUsername(getTooLongUsername())
+        try {
+            repo.delete(2323)
+            fail("Delete id that doesnt should throw exception")
+        } catch (e: Exception) {
+
+        }
         assertEquals(0, repo.count())
     }
 
@@ -204,95 +133,75 @@ class EntityRepositoryImplTest {
     fun testPositiveIntegerConstraint() {
         val player = getValidPlayers()[0]
 
-        player.level = 500
+        player.level = 9000
 
-        assertThatSavingPlayerFails(player)
+        createPlayer(player)
+
+        val foundPlayer = repo.findOne(player.id)
+        assertEquals(null, foundPlayer)
     }
 
     @Test
     fun testNegativeIntegerConstraint() {
         val player = getValidPlayers()[0]
 
-        player.damage = -23
+        player.level = -23
 
-        assertThatSavingPlayerFails(player)
+        createPlayer(player)
+        //assertEquals(false, isSaveSuccessful)
+
+        val foundPlayer = repo.findOne(player.id)
+        assertEquals(null, foundPlayer)
     }
 
-    @Test
-    fun testTooLongUsernameConstraint() {
-        val player = getValidPlayers()[1]
-
-        player.username = getTooLongUsername()
-        assertThatSavingPlayerFails(player)
-    }
-
-    @Test
-    fun testBlankConstraint() {
-        val player = getValidPlayers()[1]
-
-        player.username = "    "
-        assertThatSavingPlayerFails(player)
-    }
-
-    private fun getTooLongUsername() =
-            "somethingLongerThan50Characters_aoisdjasiojdaoisjdoaisdjisdijasdoiasdjaosidjaoisjdoaisjdaoisjdoiajsdiojasidojaosijdaoisjdoaisjdoaijsdiojasdiojasdoijaisodjaoisjdaoisjdoiasjdoiajsdoiajsdiojadoijdgapi nasdfasdioufhasdifasidfuhasdifhasodfihasduifhaisuodfhasidfh aohguidsfhuidhgsdfiuhsdiuofhgsdoifughsdioufhiusdfiusdfhgsidfhgsidofhgsdf"
-
-    private fun assertThatSavingPlayerFails(player: Player) {
-        try {
-            repo.save(player)
-            fail()
-        } catch (e: ConstraintViolationException) {
-
-        }
-        assertEquals(null, player.id)
-    }
 
 
     fun getValidPlayers(): List<Player> {
         return listOf(
                 Player(
-                        "Ruby",
-                        "ThisIsAHash",
-                        "ThisIsSomeSalt",
                         120,
                         44,
                         40,
                         1,
                         1,
-                        listOf(1L, 3L, 2L)
+                        listOf(1L, 3L, 2L),
+                        1
                 ),
                 Player(
-                        "Kotlin",
-                        "Spicy language..",
-                        "Thisshouldalsobesalted",
                         122,
                         46,
                         47,
                         23,
                         4,
-                        listOf(10L, 25L, 17L)
+                        listOf(10L, 25L, 17L),
+                        5
+                ),
+                Player(
+                        240,
+                        96,
+                        22,
+                        222,
+                        9,
+                        listOf(11L, 27L, 19L),
+                        13
                 )
         )
     }
 
-    fun createPlayer(player: Player): Long {
+    fun createPlayer(player: Player): Boolean {
         return repo.createPlayer(
-                username = player.username,
-                password = player.password,
-                salt = player.salt,
                 health = player.health,
                 damage = player.damage,
                 currency = player.currency,
                 experience = player.experience,
                 level = player.level,
-                equipment = player.equipment
+                equipment = player.equipment,
+                id = player.id
         )
     }
 
     fun updatePlayer(player: Player, id: Long): Boolean {
         return repo.updatePlayer(
-                username = player.username,
-                password = player.password,
                 health = player.health,
                 damage = player.damage,
                 currency = player.currency,
