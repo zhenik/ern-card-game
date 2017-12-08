@@ -8,3 +8,6 @@ eureka:
 spring:
   application:
     name: item-server
+server:
+  contextPath: /game/api
+  port: 8083
