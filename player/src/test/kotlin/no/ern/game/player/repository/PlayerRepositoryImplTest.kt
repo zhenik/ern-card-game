@@ -184,6 +184,18 @@ class EntityRepositoryImplTest {
         assertEquals(0, repo.count())
     }
 
+    @Test
+    fun testExistsByUsername() {
+        val player1 = getValidPlayers()[0]
+        val player2 = getValidPlayers()[1]
+        assertEquals(false, repo.existsByUsername(player1.username))
+
+        createPlayer(player1)
+        assertEquals(true, repo.existsByUsername(player1.username))
+
+        assertEquals(false, repo.existsByUsername(player2.username))
+    }
+
 //                  Constraints
 
     @Test

@@ -46,6 +46,13 @@ class PlayerController {
             return ResponseEntity.status(400).build()
         }
 
+        playerDto.username = playerDto.username!!.toLowerCase()
+        
+        // Username must be unique
+        if (repo.existsByUsername(playerDto.username!!)) {
+            return ResponseEntity.status(409).build()
+        }
+
         try {
             val savedId = repo.createPlayer(
                     userId = playerDto.userId!!.toLong(),

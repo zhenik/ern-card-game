@@ -12,6 +12,10 @@ import javax.persistence.PersistenceContext
 @Repository
 interface PlayerRepository : CrudRepository<Player, Long>, PlayerRepositoryCustom {
     fun findAllByLevel(level: Int): Iterable<Player>
+
+    fun findFirstByUsername(username: String): Player?
+
+    fun existsByUsername(username: String): Boolean
 }
 
 @Transactional
