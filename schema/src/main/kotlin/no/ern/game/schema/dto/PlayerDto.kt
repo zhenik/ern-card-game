@@ -7,6 +7,9 @@ import java.io.Serializable
 @ApiModel("DTO representing Player")
 data class PlayerDto(
 
+        @ApiModelProperty("Id pointing to user entity")
+        var userId: String? = null,
+
         @ApiModelProperty("Username of the player")
         var username: String? = null,
 
