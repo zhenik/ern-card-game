@@ -16,20 +16,22 @@ interface PlayerRepository : CrudRepository<Player, Long>, PlayerRepositoryCusto
 @Transactional
 interface PlayerRepositoryCustom {
     fun createPlayer(
+            username: String,
             health: Int,
             damage: Int,
             currency: Int,
             experience: Int,
             level: Int,
-            equipment: Collection<Long>,
+            items: MutableCollection<Long>,
             id: Long): Boolean
 
-    fun updatePlayer(health: Int,
+    fun updatePlayer(username: String,
+                     health: Int,
                      damage: Int,
                      currency: Int,
                      experience: Int,
                      level: Int,
-                     equipment: Collection<Long>,
+                     items: MutableCollection<Long>,
                      id: Long): Boolean
 
     fun setCurrency(currency: Int, id: Long): Boolean
@@ -40,14 +42,15 @@ open class PlayerRepositoryImpl : PlayerRepositoryCustom {
     @PersistenceContext
     private lateinit var em: EntityManager
 
-    override fun createPlayer(health: Int, damage: Int, currency: Int, experience: Int, level: Int, equipment: Collection<Long>, id: Long): Boolean {
+    override fun createPlayer(username: String, health: Int, damage: Int, currency: Int, experience: Int, level: Int, items: MutableCollection<Long>, id: Long): Boolean {
         val playerEntity = Player(
+                username,
                 health,
                 damage,
                 currency,
                 experience,
                 level,
-                equipment,
+                items,
                 id
         )
         try {
@@ -58,8 +61,12 @@ open class PlayerRepositoryImpl : PlayerRepositoryCustom {
         return true
     }
 
-    override fun updatePlayer(health: Int, damage: Int, currency: Int, experience: Int, level: Int, equipment: Collection<Long>, id: Long): Boolean {
+    override fun updatePlayer(username: String, health: Int, damage: Int, currency: Int, experience: Int, level: Int, items: MutableCollection<Long>, id: Long): Boolean {
         val player = em.find(Player::class.java, id) ?: return false
+
+        if (username.isNullOrEmpty() || username.length > 50) {
+            return false
+        }
 
         if (currency < 0 ||
                 damage < 1 ||
@@ -69,18 +76,14 @@ open class PlayerRepositoryImpl : PlayerRepositoryCustom {
             return false
         }
 
+        player.username = username
         player.health = health
         player.damage = damage
         player.currency = currency
         player.experience = experience
         player.level = level
-        player.equipment = equipment
+        player.items = items
 
-        try {
-            em.flush()
-        } catch (e: Exception) {
-            return false
-        }
         return true
     }
 
@@ -89,14 +92,8 @@ open class PlayerRepositoryImpl : PlayerRepositoryCustom {
         if (currency < 0) {
             return false
         }
-
         player.currency = currency
 
-        try {
-            em.flush()
-        } catch (e: Exception) {
-            return false
-        }
         return true
     }
 }

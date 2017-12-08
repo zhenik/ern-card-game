@@ -8,7 +8,6 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.junit4.SpringRunner
-import javax.validation.ConstraintViolationException
 
 @RunWith(SpringRunner::class)
 @DataJpaTest
@@ -20,11 +19,6 @@ class EntityRepositoryImplTest {
     @Before
     fun setup() {
         assertEquals(0, repo.count())
-    }
-
-    @Test
-    fun testNoCrash() {
-        assertEquals(true, true)
     }
 
     @Test
@@ -45,14 +39,15 @@ class EntityRepositoryImplTest {
     fun testFindPlayerByLevel() {
         val player1 = getValidPlayers()[0]
         val player2 = getValidPlayers()[1]
+        // Change level so that we find more than one.
         player2.level = player1.level
         val player3 = getValidPlayers()[2]
-
-        assertEquals(0, repo.findAllByLevel(player1.level).count())
 
         createPlayer(player1)
         createPlayer(player2)
         createPlayer(player3)
+
+        assertEquals(3, repo.count())
         val playersFound1 = repo.findAllByLevel(player1.level)
         val playersFound2 = repo.findAllByLevel(player3.level)
 
@@ -135,10 +130,11 @@ class EntityRepositoryImplTest {
 
         player.level = 9000
 
-        createPlayer(player)
+        val wasSuccesful = createPlayer(player)
+        assertFalse(wasSuccesful)
 
         val foundPlayer = repo.findOne(player.id)
-        assertEquals(null, foundPlayer)
+        assertNull(foundPlayer)
     }
 
     @Test
@@ -155,34 +151,36 @@ class EntityRepositoryImplTest {
     }
 
 
-
     fun getValidPlayers(): List<Player> {
         return listOf(
                 Player(
+                        "Bob",
                         120,
                         44,
                         40,
                         1,
                         1,
-                        listOf(1L, 3L, 2L),
+                        mutableListOf(1L, 3L, 2L),
                         1
                 ),
                 Player(
+                        "Robert",
                         122,
                         46,
                         47,
                         23,
                         4,
-                        listOf(10L, 25L, 17L),
+                        mutableListOf(10L, 25L, 17L),
                         5
                 ),
                 Player(
+                        "someone",
                         240,
                         96,
                         22,
                         222,
                         9,
-                        listOf(11L, 27L, 19L),
+                        mutableListOf(11L, 27L, 19L),
                         13
                 )
         )
@@ -190,24 +188,26 @@ class EntityRepositoryImplTest {
 
     fun createPlayer(player: Player): Boolean {
         return repo.createPlayer(
+                username = player.username,
                 health = player.health,
                 damage = player.damage,
                 currency = player.currency,
                 experience = player.experience,
                 level = player.level,
-                equipment = player.equipment,
+                items = player.items,
                 id = player.id
         )
     }
 
     fun updatePlayer(player: Player, id: Long): Boolean {
         return repo.updatePlayer(
+                username = player.username,
                 health = player.health,
                 damage = player.damage,
                 currency = player.currency,
                 experience = player.experience,
                 level = player.level,
-                equipment = player.equipment,
+                items = player.items,
                 id = id
         )
     }

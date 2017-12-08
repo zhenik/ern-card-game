@@ -10,13 +10,14 @@ class PlayerConverter {
 
         fun transform(entity: Player): PlayerDto {
             return PlayerDto(
+                    username = entity.username,
                     id = entity.id.toString(),
                     health = entity.health,
                     damage = entity.damage,
                     currency = entity.currency,
                     experience = entity.experience,
                     level = entity.level,
-                    equipment = entity.equipment
+                    items = entity.items
             )
         }
 

@@ -7,6 +7,9 @@ import java.io.Serializable
 @ApiModel("DTO representing Player")
 data class PlayerDto(
 
+        @ApiModelProperty("Username of the player")
+        var username: String? = null,
+
         @ApiModelProperty("The id of the player")
         var id: String? = null,
 
@@ -26,7 +29,7 @@ data class PlayerDto(
         var level: Int? = 1,
 
         @ApiModelProperty("The items the player has")
-        var equipment: Collection<Long>? = null
+        var items: Collection<Long>? = null
 ): Serializable
 
 
