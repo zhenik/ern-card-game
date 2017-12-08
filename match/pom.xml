@@ -13,7 +13,7 @@
 
 
     <dependencies>
-        <!--DTOs-->
+        <!--SCHEMA-->
         <dependency>
             <groupId>no.ern.game</groupId>
             <artifactId>schema</artifactId>
@@ -40,10 +40,7 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
@@ -77,33 +74,31 @@
             <scope>test</scope>
         </dependency>
 
+        <!--DBs-->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
 
-        <!--To use EUREKA-->
+        <!--EUREKA service discovery-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-eureka-server</artifactId>
         </dependency>
-        <!-- To use Zuul-->
+        <!-- ZUUL gateway-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-zuul</artifactId>
         </dependency>
-        <!--To use Ribbon-->
+        <!--RIBBON load balancer inter-communications-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-ribbon</artifactId>
         </dependency>
-
-        <!--TRACING-->
-        <!-- https://mvnrepository.com/artifact/com.uber.jaeger/jaeger-core -->
-        <!--<dependency>-->
-            <!--<groupId>com.uber.jaeger</groupId>-->
-            <!--<artifactId>jaeger-core</artifactId>-->
-        <!--</dependency>-->
     </dependencies>
 
     <build>
