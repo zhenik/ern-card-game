@@ -18,8 +18,8 @@ interface ItemRepositoryCustom {
             name: String,
             description: String,
             type: String,
-            bonusDamage: Long,
-            bonusHealth: Long,
+            bonusDamage: Int,
+            bonusHealth: Int,
             price: Int,
             levelRequirement: Int
     ): Long
@@ -28,8 +28,8 @@ interface ItemRepositoryCustom {
             name: String,
             description: String,
             type: String,
-            bonusDamage: Long,
-            bonusHealth: Long,
+            bonusDamage: Int,
+            bonusHealth: Int,
             price: Int,
             levelRequirement: Int,
             id: Long
@@ -50,8 +50,8 @@ open class ItemRepositoryImpl : ItemRepositoryCustom {
     override fun createItem(name: String,
                             description: String,
                             type: String,
-                            bonusDamage: Long,
-                            bonusHealth: Long,
+                            bonusDamage: Int,
+                            bonusHealth: Int,
                             price:Int,
                             levelRequirement: Int
     ): Long {
@@ -79,8 +79,8 @@ open class ItemRepositoryImpl : ItemRepositoryCustom {
             name: String,
             description: String,
             type: String,
-            bonusDamage: Long,
-            bonusHealth: Long,
+            bonusDamage: Int,
+            bonusHealth: Int,
             price: Int,
             levelRequirement: Int,
             id: Long

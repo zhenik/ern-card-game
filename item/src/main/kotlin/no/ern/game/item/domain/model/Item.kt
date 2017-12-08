@@ -16,8 +16,8 @@ data class Item(
         var description: String,
         @Enumerated(EnumType.STRING)
         var type: Type,
-        var damageBonus: Long?= null,
-        var healthBonus: Long?= null,
+        var damageBonus: Int?= null,
+        var healthBonus: Int?= null,
         @get:Min(0)
         var price: Int,
         @get:Min(0)

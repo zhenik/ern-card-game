@@ -20,10 +20,10 @@ data class ItemDto(
         var type: String?=null,
 
         @ApiModelProperty("How much extra damage this item gives")
-        var damageBonus: Long?=null,
+        var damageBonus: Int?=null,
 
         @ApiModelProperty("How much extra health this item gives")
-        var healthBonus: Long?=null,
+        var healthBonus: Int?=null,
 
         @ApiModelProperty("How much this items costs to buy (ie. in a shop)")
         var price: Int?=null,
