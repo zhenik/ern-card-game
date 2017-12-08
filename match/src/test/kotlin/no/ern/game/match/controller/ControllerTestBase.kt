@@ -4,7 +4,7 @@ import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import no.ern.game.match.Application
 import no.ern.game.schema.dto.MatchResultDto
-import no.ern.game.schema.dto.PlayerDto
+import no.ern.game.schema.dto.PlayerResultDto
 import org.hamcrest.CoreMatchers
 import org.junit.After
 import org.junit.Before
@@ -77,8 +77,8 @@ abstract class ControllerTestBase{
     }
 
     fun getValidMatchResultDto(): MatchResultDto {
-        val attackerWinner = PlayerDto("u1", 30, 28, 5)
-        val defender  = PlayerDto("u2", 25, 25, -3)
+        val attackerWinner = PlayerResultDto("u1", 30, 28, 5)
+        val defender  = PlayerResultDto("u2", 25, 25, -3)
         return MatchResultDto(attackerWinner, defender, attackerWinner.username)
     }
 

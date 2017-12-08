@@ -1,19 +1,19 @@
 package no.ern.game.gamelogic.domain.converters
 
-import no.ern.game.gamelogic.domain.model.Player
+import no.ern.game.gamelogic.domain.model.Character
 import no.ern.game.schema.dto.ItemDto
-import no.ern.game.schema.dto.UserDto
+import no.ern.game.schema.dto.PlayerDto
 
 class PlayerFightConverter{
     companion object {
-        fun transform(user: UserDto, items: List<ItemDto>): Player {
+        fun transform(player: PlayerDto, items: List<ItemDto>): Character {
             val healthBonus = items.sumBy { it.healthBonus!!.toInt() }
             val damageBonus = items.sumBy { it.damageBonus!!.toInt() }
-            return Player(
-                    username = user.username.toString(),
-                    health = user.health!!.plus(healthBonus),
-                    damage = user.damage!!.plus(damageBonus),
-                    remainingHealth = user.health!!.plus(healthBonus)
+            return Character(
+                    username = player.username.toString(),
+                    health = player.health!!.plus(healthBonus),
+                    damage = player.damage!!.plus(damageBonus),
+                    remainingHealth = player.health!!.plus(healthBonus)
             )
         }
     }

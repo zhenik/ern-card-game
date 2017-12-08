@@ -9,11 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>match</artifactId>
+    <artifactId>player</artifactId>
 
 
     <dependencies>
-        <!--DTOs-->
         <dependency>
             <groupId>no.ern.game</groupId>
             <artifactId>schema</artifactId>
@@ -77,33 +76,7 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-        </dependency>
 
-        <!--To use EUREKA-->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-eureka-server</artifactId>
-        </dependency>
-        <!-- To use Zuul-->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-zuul</artifactId>
-        </dependency>
-        <!--To use Ribbon-->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-ribbon</artifactId>
-        </dependency>
-
-        <!--TRACING-->
-        <!-- https://mvnrepository.com/artifact/com.uber.jaeger/jaeger-core -->
-        <!--<dependency>-->
-            <!--<groupId>com.uber.jaeger</groupId>-->
-            <!--<artifactId>jaeger-core</artifactId>-->
-        <!--</dependency>-->
     </dependencies>
 
     <build>
@@ -114,10 +87,9 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <finalName>match</finalName>
+                    <finalName>player</finalName>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
 </project>

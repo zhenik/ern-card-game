@@ -1,3 +1,41 @@
+# default profile
+spring:
+  profiles:
+    active: "dev"
+
+---
+
+spring:
+  profiles: dev
+  datasource:
+    url: "jdbc:h2:mem:"
+    driver-class-name: "org.h2.Driver"
+  jpa:
+    database: "h2"
+    hibernate:
+      ddl-auto: "create-drop"
 server:
   contextPath: /game/api
   port: 8082
+
+---
+
+spring:
+  profiles: docker
+  application:
+    name: service
+  datasource:
+    url: "jdbc:postgresql://postgres:5432/postgres"
+    username: "postgres"
+    password: ""
+    driver-class-name: "org.postgresql.Driver"
+  jpa:
+    database: "postgresql"
+    hibernate:
+      # This is tricky. Schema handling should not really be done
+      # from Hibernate, but rather use an external tool like Flyway,
+      # as to avoid issues with schema migration and losing existing data.
+      ddl-auto: "update"
+
+server:
+  contextPath: /game/api

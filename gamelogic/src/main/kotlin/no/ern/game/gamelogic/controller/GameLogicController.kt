@@ -6,12 +6,12 @@ import io.swagger.annotations.ApiParam
 import io.swagger.annotations.ApiResponse
 import no.ern.game.gamelogic.domain.converters.PlayerFightConverter
 import no.ern.game.gamelogic.domain.converters.PlayerSearchConverter
-import no.ern.game.gamelogic.domain.model.Player
+import no.ern.game.gamelogic.domain.model.Character
 import no.ern.game.gamelogic.services.GameProcessorService
 import no.ern.game.schema.dto.ItemDto
 import no.ern.game.schema.dto.MatchResultDto
+import no.ern.game.schema.dto.PlayerResultDto
 import no.ern.game.schema.dto.PlayerDto
-import no.ern.game.schema.dto.UserDto
 import no.ern.game.schema.dto.gamelogic.FightResultLogDto
 import no.ern.game.schema.dto.gamelogic.PlayerSearchDto
 import no.ern.game.schema.dto.gamelogic.PlayersFightIdsDto
@@ -40,8 +40,8 @@ class GameLogicController {
     @Autowired
     lateinit var gameService: GameProcessorService
 
-    @Value("\${gameApis.user.path}")
-    private lateinit var usersPath: String
+    @Value("\${gameApis.player.path}")
+    private lateinit var playersPath: String
     @Value("\${gameApis.item.path}")
     private lateinit var itemsPath: String
     @Value("\${gameApis.match.path}")
@@ -84,12 +84,12 @@ class GameLogicController {
             searchLevel=level
         }
 
-        /** 1 make request to user module.
+        /** 1 make request to player module.
             (specific of restTemplate)
             @see package org.tsdes.spring.rest.wiremock.ConverterRestServiceXml)
         */
-        val response : ResponseEntity<Array<UserDto>> = try {
-            restTemplate.getForEntity(usersPath, Array<UserDto>::class.java)
+        val response : ResponseEntity<Array<PlayerDto>> = try {
+            restTemplate.getForEntity(playersPath, Array<PlayerDto>::class.java)
         } catch (e: HttpClientErrorException){
             val code = if (e.statusCode.value() == 400) 400 else 500
             return ResponseEntity.status(code).build()
@@ -127,19 +127,19 @@ class GameLogicController {
             @RequestBody resultIdsDto: PlayersFightIdsDto) : ResponseEntity<FightResultLogDto>{
 
         // 1 validate PlayersFightIdsDto
-        if( ! isPlayersFightIdsDtoValid(resultIdsDto)){ return ResponseEntity.status(404).build() }
+        if( ! isPlayersFightIdsDtoValid(resultIdsDto)){ return ResponseEntity.status(400).build() }
 
         // 2.1 TODO: fetch users from user-module (if any errors -> propagate them). Extract logic to method
-        val attackerUserDtoMock = UserDto("1","attackerName",null,null,100,10,null,null,1,null)
-        val defenderUserDtoMock = UserDto("2","defenderName",null,null,120,12,null,null,2,null)
+        val attackerUserDtoMock = PlayerDto("1","attackerName",null,null,100,10,null,null,1,null)
+        val defenderUserDtoMock = PlayerDto("2","defenderName",null,null,120,12,null,null,2,null)
 
         // 2.2 TODO: fetch their items (validate lvl requirements for each item). Extract logic to method
         val randomItems1: List<ItemDto> = getMockListOfItems()
         val randomItems2: List<ItemDto> = getMockListOfItems()
 
         // 3 call GameProcessorService.fight(attacker,defender) -> return GameLogDto
-        val attacker: Player = PlayerFightConverter.transform(attackerUserDtoMock,randomItems1)
-        val defender: Player = PlayerFightConverter.transform(defenderUserDtoMock,randomItems2)
+        val attacker: Character = PlayerFightConverter.transform(attackerUserDtoMock,randomItems1)
+        val defender: Character = PlayerFightConverter.transform(defenderUserDtoMock,randomItems2)
 
 
         val fightResultGameLog = gameService.fight(attacker,defender)
@@ -175,14 +175,14 @@ class GameLogicController {
         return true
     }
 
-    private fun getMatchResult(attacker: Player, defender:Player, winner: String):MatchResultDto{
+    private fun getMatchResult(attacker: Character, defender: Character, winner: String):MatchResultDto{
         return MatchResultDto(
-                PlayerDto(
+                PlayerResultDto(
                         attacker.username,
                         attacker.health,
                         attacker.damage,
                         attacker.remainingHealth),
-                PlayerDto(
+                PlayerResultDto(
                         defender.username,
                         defender.health,
                         defender.damage,

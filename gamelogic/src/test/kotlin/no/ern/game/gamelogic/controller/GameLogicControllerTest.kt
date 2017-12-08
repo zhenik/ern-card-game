@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Value
 
 class GameLogicControllerTest : ControllerTestBase() {
 
-    @Value("\${gameApis.user.path}")
+    @Value("\${gameApis.player.path}")
     private lateinit var usersPath: String
 
     @Value("\${gameApis.match.path}")
@@ -58,7 +58,7 @@ class GameLogicControllerTest : ControllerTestBase() {
         val json = getMockedJson_PlayerSearch()
         wiremockServerUser.stubFor(
                 WireMock.get(
-                        urlMatching(".*/users"))
+                        urlMatching(".*/players"))
                         .willReturn(WireMock.aResponse()
                                 .withHeader("Content-Type", "application/json; charset=utf-8")
                                 .withBody(json)))
