@@ -4,10 +4,16 @@ import org.hibernate.validator.constraints.NotBlank
 import javax.persistence.*
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
+import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
 @Entity
 data class Player(
+
+        @get:Column(unique = true)
+        @get:NotNull
+        @get:Min(0)
+        var userId: Long,
 
         @get:NotBlank
         @get:Size(max = 50)
@@ -30,8 +36,9 @@ data class Player(
         var level: Int = 1,
 
         @get:ElementCollection
-        var items: MutableCollection<Long> = mutableListOf(),
+        var items: MutableSet<Long> = mutableSetOf(),
 
         @get:Id
-        var id: Long
+        @get: GeneratedValue
+        var id: Long? = null
 )

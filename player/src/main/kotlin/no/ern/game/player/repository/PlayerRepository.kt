@@ -4,6 +4,7 @@ import no.ern.game.player.domain.model.Player
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
+import java.lang.Exception
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
@@ -16,52 +17,61 @@ interface PlayerRepository : CrudRepository<Player, Long>, PlayerRepositoryCusto
 @Transactional
 interface PlayerRepositoryCustom {
     fun createPlayer(
+            userId: Long,
             username: String,
             health: Int,
             damage: Int,
             currency: Int,
             experience: Int,
             level: Int,
-            items: MutableCollection<Long>,
+            items: MutableSet<Long>
+    ): Long
+
+    fun updatePlayer(
+            username: String,
+            health: Int,
+            damage: Int,
+            currency: Int,
+            experience: Int,
+            level: Int,
+            items: MutableSet<Long>,
             id: Long): Boolean
 
-    fun updatePlayer(username: String,
-                     health: Int,
-                     damage: Int,
-                     currency: Int,
-                     experience: Int,
-                     level: Int,
-                     items: MutableCollection<Long>,
-                     id: Long): Boolean
-
     fun setCurrency(currency: Int, id: Long): Boolean
+
+    fun addItem(id: Long, itemId: Long): Boolean
 }
 
 open class PlayerRepositoryImpl : PlayerRepositoryCustom {
 
+
     @PersistenceContext
     private lateinit var em: EntityManager
 
-    override fun createPlayer(username: String, health: Int, damage: Int, currency: Int, experience: Int, level: Int, items: MutableCollection<Long>, id: Long): Boolean {
+    override fun createPlayer(userId: Long, username: String, health: Int, damage: Int, currency: Int, experience: Int, level: Int, items: MutableSet<Long>): Long {
+        var id: Long = -1
         val playerEntity = Player(
+                userId,
                 username,
                 health,
                 damage,
                 currency,
                 experience,
                 level,
-                items,
-                id
+                items
         )
-        try {
-            em.persist(playerEntity)
-        } catch (e: Exception) {
-            return false
+
+
+        em.persist(playerEntity)
+
+        if (playerEntity.id != null) {
+            id = playerEntity.id!!
         }
-        return true
+
+        return id
     }
 
-    override fun updatePlayer(username: String, health: Int, damage: Int, currency: Int, experience: Int, level: Int, items: MutableCollection<Long>, id: Long): Boolean {
+    override fun updatePlayer(username: String, health: Int, damage: Int, currency: Int, experience: Int, level: Int, items: MutableSet<Long>, id: Long): Boolean {
         val player = em.find(Player::class.java, id) ?: return false
 
         if (username.isNullOrEmpty() || username.length > 50) {
@@ -95,5 +105,16 @@ open class PlayerRepositoryImpl : PlayerRepositoryCustom {
         player.currency = currency
 
         return true
+    }
+
+    override fun addItem(id: Long, itemId: Long): Boolean {
+        var added = false
+        try {
+            val player = em.find(Player::class.java, id)
+            added = player.items.add(itemId)
+        } catch (e: Exception) {
+
+        }
+        return added
     }
 }
