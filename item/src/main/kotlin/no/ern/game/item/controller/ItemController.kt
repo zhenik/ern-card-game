@@ -36,33 +36,28 @@ class ItemController {
 
 
 
+        val minLevel = requestParams?.get("minLevel")
+        val maxLevel = requestParams?.get("maxLevel")
+        val type = requestParams?.get("type")
+
         // GET ../items?type=passedType
-        return if (requestParams?.get("type") != null) {
-            if(!validEnum(requestParams.get("type")!!)) return ResponseEntity.status(400).build()
-            val type = requestParams.get("type")!!
+        return if (type != null && maxLevel == null && minLevel == null) {
+            if(!validEnum(type)) return ResponseEntity.status(400).build()
             val convertedType = Type.valueOf(type)
             ResponseEntity.ok(ItemConverter.transform(repo.getItemsByType(convertedType)))
         }
-
         // GET ../items?minLevel=passedMinLevel&maxLevel=passedMaxLevel
-        else if(requestParams?.get("minLevel") != null && requestParams?.get("maxLevel") != null)
+        // GET ../items?minLevel=passedMinLevel&maxLevel=paddedMaxLevel&type=passedType
+        else if(minLevel != null && maxLevel!= null)
         {
-            val minLevel = Integer.parseInt(requestParams.get("minLevel"))
-            val maxLevel = Integer.parseInt(requestParams.get("maxLevel"))
-            ResponseEntity.ok(ItemConverter.transform(repo.getItemsByLevel(minLevel, maxLevel)))
+            val convertedMinLevel= Integer.parseInt(minLevel)
+            val convertedMaxLevel= Integer.parseInt(maxLevel)
+            if(type != null){
+                val convertedType = Type.valueOf(type)
+                ResponseEntity.ok(ItemConverter.transform(repo.getItemsByLevelAndType(convertedMinLevel, convertedMaxLevel, convertedType)))
+            }
+            ResponseEntity.ok(ItemConverter.transform(repo.getItemsByLevel(convertedMinLevel, convertedMaxLevel)))
         }
-
-        // GET ../items?minLevel=passedMinLevel&maxLevel=passedMaxLevel&type=passedType
-        else if (requestParams?.get("minLevel") != null && requestParams?.get("maxLevel") != null && requestParams?.get("type") != null)
-        {
-            val minLevel = Integer.parseInt(requestParams.get("minLevel"))
-            val maxLevel = Integer.parseInt(requestParams.get("maxLevel"))
-            val type = requestParams.get("type")!!
-            val convertedType = Type.valueOf(type)
-            ResponseEntity.ok(ItemConverter.transform(repo.getItemsByLevelAndType(minLevel, maxLevel, convertedType)))
-
-        }
-
         // GET ../items
         else
             ResponseEntity.ok(ItemConverter.transform(repo.findAll()))
@@ -98,9 +93,7 @@ class ItemController {
             val id = createItem(itemDto)
             return ResponseEntity.status(201).body(id)
         }catch (e: ConstraintViolationException){
-            // 422 Unprocessable Entity
-            // 409 Conflict (for duplication id)
-            return ResponseEntity.status(422).build()
+            return ResponseEntity.status(409).build()
         }catch (e: Exception){
             return ResponseEntity.status(500).build()
         }
