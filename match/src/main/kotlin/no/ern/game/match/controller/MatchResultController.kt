@@ -61,25 +61,26 @@ class MatchResultController {
             return ResponseEntity.status(400).build()
         }
 
-        try{
+        try {
             val id = registerMatch(resultDto)
             return ResponseEntity.status(201).body(id)
-        }catch (e: ConstraintViolationException){
-            // 422 Unprocessable Entity
+        }
+        catch (e: ConstraintViolationException){
             // 409 Conflict (for duplication id)
             return ResponseEntity.status(409).build()
-        }catch (e: Exception){
-            return ResponseEntity.status(500).build()
+        }
+        catch (e: Exception){
+            return ResponseEntity.status(400).build()
         }
 
     }
 
     @ApiOperation("Get a single match result specified by id")
     @GetMapping(path = arrayOf("/{id}"))
-    fun getMatchResult(@ApiParam(ID_PARAM)
-                       @PathVariable("id")
-                       pathId: String?)
-            : ResponseEntity<MatchResultDto> {
+    fun getMatchResult(
+            @ApiParam(ID_PARAM)
+            @PathVariable("id") pathId: String?
+    ) : ResponseEntity<MatchResultDto> {
 
         val id: Long
         try {
