@@ -207,7 +207,7 @@ class EntityRepositoryImplTest {
         val usersFound = repo.findAllByUsername(username = player1.username)
 
         assertEquals(1, usersFound.count())
-        assertTrue(usersFound.contains(player1))
+        assertTrue(usersFound.any({it.health == player1.health}))
     }
 
 //                  Constraints
@@ -244,6 +244,25 @@ class EntityRepositoryImplTest {
         assertEquals(-1, savedId)
     }
 
+    @Test
+    fun testUsernameConstraint() {
+        var savedId = -1L
+        val player = getValidPlayers()[0]
+        player.username = "invalidUsername".repeat(20)
+
+        try {
+            savedId = createPlayer(player)
+            fail()
+        } catch (e: Exception) {}
+
+        player.username = ""
+        try {
+            createPlayer(player)
+            fail()
+        } catch (e: Exception) {}
+
+        assertEquals(-1, savedId)
+    }
 
     fun getValidPlayers(): List<Player> {
         return listOf(
