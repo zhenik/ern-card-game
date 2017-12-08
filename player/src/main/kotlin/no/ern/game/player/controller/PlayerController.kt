@@ -72,6 +72,7 @@ class PlayerController {
             @RequestBody
             itemDto: ItemDto): ResponseEntity<Void> {
 
+        //TODO test with Wiremock
         var rest: RestTemplate = RestTemplateBuilder().build()
         val player = repo.findOne(id)
 
@@ -95,33 +96,6 @@ class PlayerController {
         }
 
     }
-
-//    @PostMapping(path = arrayOf("/{id}/items"), consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
-//    fun addItemToPlayer( @PathVariable("id")
-//                         id: Long,
-//                         @RequestBody
-//                         itemDto: ItemDto): ResponseEntity<Void> {
-//        var rest : RestTemplate = RestTemplateBuilder().build()
-//
-//        val player = repo.findOne(id)
-//
-//        // check if entity exists
-//        val itemURL = "http://localhost:8081/v1/api/items/"+itemDto.id
-//        val response : ResponseEntity<ItemDto> = try {
-//            rest.getForEntity(itemURL, ItemDto::class.java)
-//        }
-//        catch (e: HttpClientErrorException) {
-//            return ResponseEntity.status(400).build()
-//        }
-//
-//        if (itemDto.id == null || player==null || response.statusCodeValue != 200) { return ResponseEntity.status(400).build() }
-//
-//        if ( repo.addItem(id, itemDto.id!!) ) {
-//            return ResponseEntity.status(200).build()
-//        }
-//        else {
-//            return ResponseEntity.status(400).build()
-//        }
 
 
     @ApiOperation("Get player specified by id")
@@ -164,25 +138,25 @@ class PlayerController {
     fun updatePlayer(
             @ApiParam("Id defining the player.")
             @PathVariable("id")
-            id: String?,
+            pathId: String?,
 
             @ApiParam("Data to replace old player. Id cannot be changed, and must be the same in path and RequestBody")
             @RequestBody
             playerDto: PlayerDto
     ): ResponseEntity<Long> {
-        val dtoId: Long
+
+        val id: Long
         try {
-            // FIXME Should I even care about playerDto id?
-            dtoId = playerDto.id!!.toLong()
+            id = pathId!!.toLong()
         } catch (e: Exception) {
             return ResponseEntity.status(404).build()
         }
 
         // Don't change ID
-        if (playerDto.id != id) {
+        if (playerDto.id != pathId) {
             return ResponseEntity.status(409).build()
         }
-        if (!repo.exists(dtoId)) {
+        if (!repo.exists(id)) {
             return ResponseEntity.status(404).build()
         }
         if (!isDtoFieldsNotNull(playerDto)) {
@@ -218,16 +192,21 @@ class PlayerController {
 
             @ApiParam("New currency for player. Currency cannot be negative.")
             @RequestBody
-            currency: Int
-    ): ResponseEntity<Long> {
+            currency: String
+    ): ResponseEntity<Void> {
 
         if (!repo.exists(id)) {
             return ResponseEntity.status(404).build()
         }
-        if (currency < 0) {
+        val newCurrency = try {
+            currency.toInt()
+        } catch (e: Exception) {
             return ResponseEntity.status(400).build()
         }
-        if (!repo.setCurrency(currency, id)) {
+        if (newCurrency < 0) {
+            return ResponseEntity.status(400).build()
+        }
+        if (!repo.setCurrency(newCurrency, id)) {
             return ResponseEntity.status(400).build()
         }
         return ResponseEntity.status(204).build()
@@ -245,7 +224,7 @@ class PlayerController {
         val id: Long
         try {
             id = pathId!!.toLong()
-            repo.delete(id);
+            repo.delete(id)
         } catch (e: NumberFormatException) {
             return ResponseEntity.status(400).build()
         } catch (e1: java.lang.Exception) {
