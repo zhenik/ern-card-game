@@ -196,6 +196,20 @@ class EntityRepositoryImplTest {
         assertEquals(false, repo.existsByUsername(player2.username))
     }
 
+    @Test
+    fun testFindAllByUsername() {
+        val player1 = getValidPlayers()[0]
+        val player2 = getValidPlayers()[1]
+
+        createPlayer(player1)
+        createPlayer(player2)
+
+        val usersFound = repo.findAllByUsername(username = player1.username)
+
+        assertEquals(1, usersFound.count())
+        assertTrue(usersFound.contains(player1))
+    }
+
 //                  Constraints
 
     @Test
@@ -207,7 +221,8 @@ class EntityRepositoryImplTest {
         try {
             savedId = createPlayer(player)
             fail()
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
 
         // Player should not be persisted
         assertEquals(-1, savedId)
@@ -222,7 +237,8 @@ class EntityRepositoryImplTest {
         try {
             savedId = createPlayer(player)
             fail()
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
 
         // Player should not be persisted
         assertEquals(-1, savedId)

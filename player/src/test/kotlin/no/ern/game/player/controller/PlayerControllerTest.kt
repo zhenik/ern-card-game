@@ -98,6 +98,37 @@ class PlayerControllerTest : TestBase() {
     }
 
     @Test
+    fun getPlayerByUsername() {
+        val playerDto1 = getValidPlayerDtos()[0]
+        postPlayerDto(playerDto1, 201)
+
+        given().get().then().statusCode(200).body("size()", equalTo(1))
+
+
+        // Check username that doesnt exist
+        val firstResult = given().contentType(ContentType.JSON)
+                .param("username", playerDto1.username?.repeat(10))
+                .get()
+                .then()
+                .statusCode(200)
+                .extract()
+                .`as`(Array<PlayerDto>::class.java)
+        assertEquals(0, firstResult.count())
+
+        val secondResult = given().contentType(ContentType.JSON)
+                .param("username", playerDto1.username)
+                .get()
+                .then()
+                .statusCode(200)
+                .extract()
+                .`as`(Array<PlayerDto>::class.java)
+
+        assertEquals(1, secondResult.count())
+        assertEquals(playerDto1.currency, secondResult[0].currency)
+        assertEquals(playerDto1.health, secondResult[0].health)
+    }
+
+    @Test
     fun updatePlayer() {
         val playerDto1 = getValidPlayerDtos()[0]
         val playerDto2 = getValidPlayerDtos()[1]

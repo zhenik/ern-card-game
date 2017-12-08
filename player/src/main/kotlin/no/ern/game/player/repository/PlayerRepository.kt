@@ -13,7 +13,7 @@ import javax.persistence.PersistenceContext
 interface PlayerRepository : CrudRepository<Player, Long>, PlayerRepositoryCustom {
     fun findAllByLevel(level: Int): Iterable<Player>
 
-    fun findFirstByUsername(username: String): Player?
+    fun findAllByUsername(username: String): Iterable<Player>
 
     fun existsByUsername(username: String): Boolean
 }

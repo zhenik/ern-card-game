@@ -47,7 +47,7 @@ class PlayerController {
         }
 
         playerDto.username = playerDto.username!!.toLowerCase()
-        
+
         // Username must be unique
         if (repo.existsByUsername(playerDto.username!!)) {
             return ResponseEntity.status(409).build()
@@ -122,22 +122,32 @@ class PlayerController {
         return ResponseEntity.ok(PlayerConverter.transform(dto))
     }
 
-    @ApiOperation("Get all players by level")
+    @ApiOperation("Get all players by level or by username. Does not support both.")
     @GetMapping
-    fun getAllPlayersByLevel(
+    fun getAllPlayers(
             @ApiParam("Level to find")
             @RequestParam(name = "level", required = false)
-            level: Int?
+            level: Int?,
+
+            @ApiParam("Username of player")
+            @RequestParam(name = "username", required = false)
+            username: String?
     ): ResponseEntity<Iterable<PlayerDto>> {
-        if (level == null) {
-            return ResponseEntity.ok(PlayerConverter.transform(repo.findAll()))
+
+        if (level != null) {
+            if (level < 1) {
+                return ResponseEntity.status(400).build()
+            }
+            return ResponseEntity.ok(PlayerConverter.transform(repo.findAllByLevel(level)))
         }
 
-        if (level < 1) {
-            return ResponseEntity.status(400).build()
+        if (username != null) {
+            val lowercaseUsername = username.toLowerCase()
+            return ResponseEntity.ok(PlayerConverter.transform(repo.findAllByUsername(lowercaseUsername)))
         }
 
-        return ResponseEntity.ok(PlayerConverter.transform(repo.findAllByLevel(level)))
+        return ResponseEntity.ok(PlayerConverter.transform(repo.findAll()))
+
     }
 
     @ApiOperation("Replace the data of a player")
