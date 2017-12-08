@@ -37,13 +37,12 @@ class PlayerControllerWiremockTest : WiremockTestBase() {
                 WireMock.get(urlMatching(".*/game/api/items/1"))
                         .willReturn(
                                 WireMock.aResponse()
-                                        .withStatus(200)
-                                        .withHeader("Content-Type", "application/json; charset=utf-8")))
+                                        .withStatus(200)))
 
         val item = ItemDto(id = "1")
 
         val response = RestAssured.given()
-                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
                 .body(item)
                 .post("/$savedId/items")
 
