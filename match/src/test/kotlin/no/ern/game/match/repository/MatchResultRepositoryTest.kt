@@ -24,6 +24,8 @@ class MatchResultRepositoryTest {
 
     private fun createMatchResultValid() : Long {
         return crud.createMatchResult(
+                1,
+                2,
                 "u1",
                 "u2",
                 25,
@@ -36,7 +38,9 @@ class MatchResultRepositoryTest {
     }
     private fun createMatchForUsername(username: String) : Long {
          return crud.createMatchResult(
-                username,
+                 1,
+                 2,
+                 username,
                 "u2",
                 25,
                 20,
@@ -56,6 +60,8 @@ class MatchResultRepositoryTest {
             // invalid: user fight with himself
         try{
             crud.createMatchResult(
+                    1,
+                    2,
                     "u1",
                     "u1",
                     25,
@@ -72,6 +78,8 @@ class MatchResultRepositoryTest {
             // invalid: 1 vs 2 -> winnerName 3
         try{
             crud.createMatchResult(
+                    1,
+                    2,
                     "1",
                     "2",
                     25,
@@ -119,6 +127,8 @@ class MatchResultRepositoryTest {
         //Act
         try{
             crud.createMatchResult(
+                    1,
+                    2,
                     "u1",
                     "u2",
                     25,
@@ -134,6 +144,8 @@ class MatchResultRepositoryTest {
 
         try{
             crud.createMatchResult(
+                    1,
+                    2,
                     "u1",
                     "u2",
                     25,
@@ -155,6 +167,8 @@ class MatchResultRepositoryTest {
         // 1 Blank
         try{
             crud.createMatchResult(
+                    1,
+                    2,
                     "",
                     "u2",
                     25,
@@ -173,6 +187,8 @@ class MatchResultRepositoryTest {
         assertTrue(longName.length>32)
         try{
             crud.createMatchResult(
+                    1,
+                    2,
                     longName,
                     "u2",
                     25,
@@ -216,6 +232,8 @@ class MatchResultRepositoryTest {
         //Arrange
         val winnerName = "yohohoho"
         val match1= MatchResult(
+                1,
+                2,
                 winnerName,
                 "u1",
                 25,
@@ -226,6 +244,8 @@ class MatchResultRepositoryTest {
                 0,
                 winnerName)
         val match2= MatchResult(
+                1,
+                2,
                 "u1",
                 winnerName,
                 25,
@@ -254,6 +274,8 @@ class MatchResultRepositoryTest {
         //Arrange
         val winnerName = "yohohoho"
         val match1= MatchResult(
+                1,
+                2,
                 winnerName,
                 "u1",
                 25,
@@ -291,6 +313,8 @@ class MatchResultRepositoryTest {
         //Arrange
         val winnerName = "yohohoho"
         val match1= MatchResult(
+                1,
+                2,
                 winnerName,
                 "u1",
                 25,
@@ -331,6 +355,8 @@ class MatchResultRepositoryTest {
         //Arrange
         val winnerName = "u2"
         val match1 = MatchResult(
+                1,
+                2,
                 winnerName,
                 "u1",
                 25,
@@ -360,6 +386,8 @@ class MatchResultRepositoryTest {
         //Arrange
         val winnerName = "u2"
         val match1 = MatchResult(
+                1,
+                2,
                 winnerName,
                 "u1",
                 25,
@@ -390,6 +418,8 @@ class MatchResultRepositoryTest {
         val oldWinner = "u2"
         val newWinner = "u1"
         val match1 = MatchResult(
+                1,
+                2,
                 oldWinner,
                 newWinner,
                 25,
@@ -427,6 +457,8 @@ class MatchResultRepositoryTest {
 
         //Arrange
         val id1 = crud.createMatchResult(
+                1,
+                2,
                 "u1",
                 "u2",
                 25,
@@ -437,6 +469,8 @@ class MatchResultRepositoryTest {
                 0,
                 "u1")
         val id2 = crud.createMatchResult(
+                1,
+                2,
                 "u1",
                 "u3",
                 25,
@@ -447,6 +481,8 @@ class MatchResultRepositoryTest {
                 0,
                 "u3")
         val id3 = crud.createMatchResult(
+                1,
+                2,
                 "u1",
                 "u4",
                 25,

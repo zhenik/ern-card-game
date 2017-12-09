@@ -6,12 +6,17 @@ import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.validation.constraints.Min
+import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
 @Entity
 @MatchResultConstraint
 data class MatchResult(
 
+        @get: NotNull
+        var attackerId: Long,
+        @get: NotNull
+        var defenderId: Long,
         @get: NotBlank @get:Size(max = 32)
         var attackerUsername: String,
         @get: NotBlank @get:Size(max = 32)

@@ -5,16 +5,15 @@ import no.ern.game.match.domain.model.MatchResult
 import org.junit.Assert.*
 import org.junit.Test
 
-/**
- * game
- * NIK on 27/10/2017
- */
+
 class MatchResultResultConverterTest {
     @Test
     fun testTransform(){
 
         //Arrange
         val match1= MatchResult(
+                1,
+                2,
                 "u1",
                 "u2",
                 25,
@@ -25,6 +24,8 @@ class MatchResultResultConverterTest {
                 0,
                 "u1")
         val match2= MatchResult(
+                3,
+                4,
                 "u22",
                 "u11",
                 25,

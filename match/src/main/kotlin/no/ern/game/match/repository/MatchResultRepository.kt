@@ -18,6 +18,8 @@ interface MatchResultRepository : CrudRepository<MatchResult, Long>, MatchResult
 @Transactional
 interface MatchResultRepositoryCustom {
     fun createMatchResult(
+            attackerId: Long,
+            defenderId: Long,
             attackerUsername: String,
             defenderUsername: String,
             attackerHealth: Int,
@@ -88,6 +90,8 @@ open class MatchResultRepositoryImpl : MatchResultRepositoryCustom {
     private lateinit var em: EntityManager
 
     override fun createMatchResult(
+            attackerId: Long,
+            defenderId: Long,
             attackerUsername: String,
             defenderUsername: String,
             attackerHealth: Int,
@@ -104,6 +108,8 @@ open class MatchResultRepositoryImpl : MatchResultRepositoryCustom {
 //        if (winnerName != attackerUsername && winnerName != defenderUsername) return id
 
         val match = MatchResult(
+                attackerId,
+                defenderId,
                 attackerUsername,
                 defenderUsername,
                 attackerHealth,

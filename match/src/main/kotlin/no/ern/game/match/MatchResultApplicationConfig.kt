@@ -50,9 +50,4 @@ class MatchResultApplicationConfig {
                 .build()
     }
 
-    @Bean
-    fun restTemplate(restTemplateBuilder: RestTemplateBuilder): RestTemplate {
-        return restTemplateBuilder.build()
-    }
-
 }

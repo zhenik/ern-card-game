@@ -10,11 +10,13 @@ class MatchResultConverter {
             return MatchResultDto(
                     id = entity.id?.toString(),
                     attacker = PlayerResultDto(
+                            entity.attackerId.toString(),
                             entity.attackerUsername,
                             entity.attackerHealth,
                             entity.attackerTotalDamage,
                             entity.attackerRemainingHealth),
                     defender = PlayerResultDto(
+                            entity.defenderId.toString(),
                             entity.defenderUsername,
                             entity.defenderHealth,
                             entity.defenderTotalDamage,

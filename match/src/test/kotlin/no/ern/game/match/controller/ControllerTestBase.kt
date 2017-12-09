@@ -41,16 +41,12 @@ abstract class ControllerTestBase{
         logger.log(Level.INFO, contextPath)
 
 
-        // RestAssured configs shared by all the tests
+
         RestAssured.baseURI = "http://localhost"
         RestAssured.port = port
         RestAssured.basePath = contextPath + "/matches"
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
-        /*
-           Here, we read each resource (GET), and then delete them
-           one by one (DELETE)
-         */
         val list = RestAssured.given().accept(ContentType.JSON).get()
                 .then()
                 .statusCode(200)
@@ -59,10 +55,7 @@ abstract class ControllerTestBase{
                 .toList()
 
 
-        /*
-            Code 204: "No Content". The server has successfully processed the request,
-            but the return HTTP response will have no body.
-         */
+
         list.stream().forEach {
             RestAssured.given().pathParam("id", it.id)
                     .delete("/{id}")
@@ -77,8 +70,8 @@ abstract class ControllerTestBase{
     }
 
     fun getValidMatchResultDto(): MatchResultDto {
-        val attackerWinner = PlayerResultDto("u1", 30, 28, 5)
-        val defender  = PlayerResultDto("u2", 25, 25, -3)
+        val attackerWinner = PlayerResultDto("1","u1", 30, 28, 5)
+        val defender  = PlayerResultDto("2","u2", 25, 25, -3)
         return MatchResultDto(attackerWinner, defender, attackerWinner.username)
     }
 

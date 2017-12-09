@@ -28,12 +28,6 @@ class MatchResultController {
     @Autowired
     private lateinit var crud: MatchResultRepository
 
-    // TODO: remove later, when finish with wiremock
-    @GetMapping(path = arrayOf("/string"), produces = arrayOf(MediaType.TEXT_PLAIN_VALUE))
-    fun check() : ResponseEntity<String>{
-        return ResponseEntity.ok("this is string from Match result")
-    }
-
     @ApiOperation("Fetch all match results by default or with specific username if provided in request parameters")
     @GetMapping
     fun getMatchesResults(@ApiParam("The specific username as parameter")
@@ -133,22 +127,15 @@ class MatchResultController {
         }
 
         if (dto.id!! != pathId) {
-            // In this case, 409 (Conflict) sounds more appropriate than the generic 400
             return ResponseEntity.status(409).build()
         }
 
         if (!crud.exists(dtoId)) {
-            //Here, in this API, made the decision to not allow to create a news with PUT.
-            // So, if we cannot find it, should return 404 instead of creating it
             return ResponseEntity.status(404).build()
         }
 
-//        if (dto.text == null || dto.authorId == null || dto.country == null || dto.creationTime == null) {
-//            return ResponseEntity.status(400).build()
-//        }
         if(!updateMatch(dto))
             return ResponseEntity.status(400).build()
-
 
         return ResponseEntity.status(204).build()
     }
@@ -184,6 +171,15 @@ class MatchResultController {
 
     fun validDto(resultDto: MatchResultDto): Boolean{
 
+
+        try {
+            resultDto.attacker!!.id!!.toLong()
+            resultDto.defender!!.id!!.toLong()
+        }
+        catch (e: Exception){
+            return false
+        }
+
         if (
         resultDto.attacker?.username!=null &&
                 resultDto.defender?.username!=null &&
@@ -193,16 +189,18 @@ class MatchResultController {
                 resultDto.defender?.damage!= null &&
                 resultDto.attacker?.remainingHealth!= null &&
                 resultDto.defender?.remainingHealth!= null &&
-
                 resultDto.winnerName!=null &&
                 // check if id is present than false
                 resultDto.id==null)
-            return true
+        { return true }
+
         return false
     }
 
     fun registerMatch(resultDto: MatchResultDto): Long{
         return crud.createMatchResult(
+                resultDto.attacker!!.id!!.toLong(),
+                resultDto.defender!!.id!!.toLong(),
                 resultDto.attacker!!.username!!,
                 resultDto.defender!!.username!!,
                 resultDto.attacker!!.health!!,

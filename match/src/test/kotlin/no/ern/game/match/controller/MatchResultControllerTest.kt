@@ -157,8 +157,8 @@ class MatchResultControllerTest : ControllerTestBase(){
         // Arrange
         val id = postNewMatchResultValid(getValidMatchResultDto())
         val dto2 = MatchResultDto(
-                PlayerResultDto("superman", 30, 28, 5),
-                PlayerResultDto("batman", 25, 25, -3),
+                PlayerResultDto("1","superman", 30, 28, 5),
+                PlayerResultDto("2","batman", 25, 25, -3),
                 "superman",null,
                 id.toString())
 
@@ -189,8 +189,8 @@ class MatchResultControllerTest : ControllerTestBase(){
         // Arrange
         val id = postNewMatchResultValid(getValidMatchResultDto())
         val dto = MatchResultDto(
-                PlayerResultDto("superman", 30, 28, 5),
-                PlayerResultDto("batman", 25, 25, -3),
+                PlayerResultDto("1","superman", 30, 28, 5),
+                PlayerResultDto("2","batman", 25, 25, -3),
                 "superman",null,
                 id.toString())
 
@@ -247,8 +247,8 @@ class MatchResultControllerTest : ControllerTestBase(){
     fun testUpdateWinnerName(){
         // Arrange
         val dto = MatchResultDto(
-                PlayerResultDto("superman", 30, 28, 5),
-                PlayerResultDto("batman", 25, 25, -3),
+                PlayerResultDto("1","superman", 30, 28, 5),
+                PlayerResultDto("2","batman", 25, 25, -3),
                 "superman")
         val id = postNewMatchResultValid(dto)
         val newWinnerName = "batman"
