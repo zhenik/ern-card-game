@@ -5,10 +5,6 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
 
-server:
-  contextPath: /game/api
-  port: 8081
-
 spring:
   application:
     name: player-server
@@ -19,3 +15,7 @@ spring:
     database: "h2"
     hibernate:
       ddl-auto: "create-drop"
+
+server:
+  contextPath: /game/api
+  port: 8081

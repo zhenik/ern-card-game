@@ -5,7 +5,7 @@ eureka:
     healthcheck:
       enabled: true
     serviceUrl:
-      defaultZone: http://eureka/8761/eureka
+      defaultZone: http://eureka:8761/eureka/
 spring:
   application:
     name: player-server
@@ -17,8 +17,7 @@ spring:
   jpa:
     database: "postgresql"
     hibernate:
-      ddl-auto: update
-
+      ddl-auto: "update"
 server:
   contextPath: /game/api
   port: 8080
