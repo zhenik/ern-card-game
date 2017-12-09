@@ -1,69 +1,20 @@
-# default profile
-spring:
-  profiles:
-    active: "dev"
-
-#  add more for default
-
-# HOW TO RUN specific profile
-# java -jar -Dspring.profiles.active=docker target/gamelogic.jar
-
----
-
-spring:
-  profiles: dev
 server:
   contextPath: /game/api
   port: 8084
-gameApis:
+
+gameApi:
   player:
     host: http://localhost
     port: 8081
     api: /game/api
-    controllers:
-      players: /players
-    path: ${gameApis.player.host}:${gameApis.player.port}${gameApis.player.api}${gameApis.player.controllers.players}
+    path: ${gameApis.player.host}:${gameApis.player.port}${gameApis.player.api}
   item:
     host: http://localhost
     port: 8083
     api: /game/api
-    controllers:
-      items: /items
-    path: ${gameApis.item.host}:${gameApis.item.port}${gameApis.item.api}${gameApis.item.controllers.items}
+    path: ${gameApis.item.host}:${gameApis.item.port}${gameApis.item.api}
   match:
     host: http://localhost
     port: 8082
     api: /game/api
-    controllers:
-      matches: /matches
-    path: ${gameApis.match.host}:${gameApis.match.port}${gameApis.match.api}${gameApis.match.controllers.matches}
-
-
----
-
-spring:
-  profiles: docker
-server:
-  contextPath: /whatever # docker service host & port
-gameApis:
-  player:
-    host: http://localhost
-    port: 8081
-    api: /game/api
-    controllers:
-      players: /users
-    path: ${gameApis.player.host}:${gameApis.player.port}${gameApis.player.api}${gameApis.player.controllers.players}
-  item:
-    host: http://localhost
-    port: 8083
-    api: /game/api
-    controllers:
-      items: /items
-    path: ${gameApis.item.host}:${gameApis.item.port}${gameApis.item.api}${gameApis.item.controllers.items}
-  match:
-    host: http://localhost
-    port: 8082
-    api: /game/api
-    controllers:
-      matches: /matches
-    path: ${gameApis.match.host}:${gameApis.match.port}${gameApis.match.api}${gameApis.match.controllers.matches}
+    path: ${gameApis.match.host}:${gameApis.match.port}${gameApis.match.api}

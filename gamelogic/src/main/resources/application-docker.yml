@@ -1,0 +1,25 @@
+server:
+  contextPath: /game/api
+  port: 8080
+gameApis:
+  player:
+    host: http://localhost
+    port: 8081
+    api: /game/api
+    controllers:
+      players: /users
+    path: ${gameApis.player.host}:${gameApis.player.port}${gameApis.player.api}${gameApis.player.controllers.players}
+  item:
+    host: http://localhost
+    port: 8083
+    api: /game/api
+    controllers:
+      items: /items
+    path: ${gameApis.item.host}:${gameApis.item.port}${gameApis.item.api}${gameApis.item.controllers.items}
+  match:
+    host: http://localhost
+    port: 8082
+    api: /game/api
+    controllers:
+      matches: /matches
+    path: ${gameApis.match.host}:${gameApis.match.port}${gameApis.match.api}${gameApis.match.controllers.matches}
