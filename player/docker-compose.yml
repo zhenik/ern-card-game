@@ -2,8 +2,7 @@ version: '3.3'
 
 services:
 
-  postgres-player:
-    image: "postgres:10"
+
 
   eureka:
     build:
@@ -11,6 +10,12 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8761:8761"
+
+  postgres-player:
+    image: "postgres:10"
+
+  postgres-item:
+    image: "postgres:10"
 
   player_0:
      build:
@@ -21,3 +26,23 @@ services:
      depends_on:
         - postgres-player
         - eureka
+
+  item_0:
+    build:
+      context: ../item
+      dockerfile: Dockerfile
+    ports:
+      - "9001:8080"
+    depends_on:
+      - postgres-item
+      - eureka
+
+  item_1:
+    build:
+      context: ../item
+      dockerfile: Dockerfile
+    ports:
+      - "9002:8080"
+    depends_on:
+      - postgres-item
+      - eureka
