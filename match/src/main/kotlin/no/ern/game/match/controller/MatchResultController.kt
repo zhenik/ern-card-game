@@ -1,9 +1,6 @@
 package no.ern.game.match.controller
 
-import io.swagger.annotations.Api
-import io.swagger.annotations.ApiOperation
-import io.swagger.annotations.ApiParam
-import io.swagger.annotations.ApiResponse
+import io.swagger.annotations.*
 import no.ern.game.match.domain.converters.MatchResultConverter
 import no.ern.game.schema.dto.MatchResultDto
 import no.ern.game.match.repository.MatchResultRepository
@@ -29,10 +26,12 @@ class MatchResultController {
     private lateinit var crud: MatchResultRepository
 
     @ApiOperation("Fetch all match results by default or with specific username if provided in request parameters")
+    @ApiResponse(code = 200, message = "List of match results")
     @GetMapping
-    fun getMatchesResults(@ApiParam("The specific username as parameter")
-                          @RequestParam("username", required = false)
-                          username: String?
+    fun getMatchesResults(
+            @ApiParam("The specific username as parameter")
+            @RequestParam("username", required = false)
+            username: String?
     ): ResponseEntity<List<MatchResultDto>> {
 
         when(username.isNullOrBlank()){
@@ -46,10 +45,15 @@ class MatchResultController {
 
     @ApiOperation("Create a match result")
     @PostMapping(consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
-    @ApiResponse(code = 201, message = "The id of newly match result")
+    @ApiResponses(
+            ApiResponse(code = 201, message = "Match result created, return id of new resource"),
+            ApiResponse(code = 409, message = "Conflict: given dto's properties does not follow constraints"),
+            ApiResponse(code = 400, message = "Given dto does not have required properties")
+    )
     fun createMatchResult(
             @ApiParam("The match result model")
-            @RequestBody resultDto: MatchResultDto) : ResponseEntity<Long>{
+            @RequestBody resultDto: MatchResultDto
+    ) : ResponseEntity<Long> {
 
         if (!validDto(resultDto)){
             return ResponseEntity.status(400).build()
@@ -70,50 +74,58 @@ class MatchResultController {
     }
 
     @ApiOperation("Get a single match result specified by id")
+    @ApiResponses(
+            ApiResponse(code = 400, message = "Given path param is invalid, can not be parsed to long"),
+            ApiResponse(code = 404, message = "Match result with given id not found"),
+            ApiResponse(code = 200, message = "Return match result with given id")
+    )
     @GetMapping(path = arrayOf("/{id}"))
     fun getMatchResult(
             @ApiParam(ID_PARAM)
-            @PathVariable("id") pathId: String?
+            @PathVariable("id") pathId: Long
     ) : ResponseEntity<MatchResultDto> {
-
-        val id: Long
-        try {
-            id = pathId!!.toLong()
-        } catch (e: Exception) {
-            return ResponseEntity.status(400).build()
-        }
-
-        val dto = crud.findOne(id) ?: return ResponseEntity.status(404).build()
+//        val id: Long
+//        try {
+//            id = pathId!!.toLong()
+//        } catch (e: Exception) {
+//            return ResponseEntity.status(400).build()
+//        }
+        val dto = crud.findOne(pathId) ?: return ResponseEntity.status(404).build()
         return ResponseEntity.ok(MatchResultConverter.transform(dto))
     }
 
     @ApiOperation("Delete a match result entity with the given id")
+    @ApiResponses(
+            ApiResponse(code = 400, message = "Given path param is invalid, can not be parsed to long"),
+            ApiResponse(code = 404, message = "Match result with given id not found"),
+            ApiResponse(code = 204, message = "Match result with given id was deleted")
+    )
     @DeleteMapping(path = arrayOf("/{id}"))
-    fun delete(@ApiParam(ID_PARAM)
-               @PathVariable("id")
-               pathId: String?): ResponseEntity<Any> {
+    fun delete(
+            @ApiParam(ID_PARAM)
+            @PathVariable("id")
+            pathId: Long
+    ): ResponseEntity<Any> {
 
-        val id: Long
-        try {
-            id = pathId!!.toLong()
-        } catch (e: Exception) {
-            return ResponseEntity.status(400).build()
-        }
-
-        if (!crud.exists(id)) {
+        if (!crud.exists(pathId)) {
             return ResponseEntity.status(404).build()
         }
-        crud.delete(id)
+        crud.delete(pathId)
         return ResponseEntity.status(204).build()
     }
 
     @ApiOperation("Update an existing matchResult")
+    @ApiResponses(
+            ApiResponse(code = 400, message = "Given path param is invalid, can not be parsed to long or updating fail while processing"),
+            ApiResponse(code = 409, message = "Conflict: given dto's id is not the same that in path parameter"),
+            ApiResponse(code = 404, message = "Match result with given path parameter id not found"),
+            ApiResponse(code = 204, message = "Match result with given id was deleted")
+    )
     @PutMapping(path = arrayOf("/{id}"), consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
     fun update(
             @ApiParam(ID_PARAM)
             @PathVariable("id")
-            pathId: String?,
-            //
+            pathId: Long,
             @ApiParam("The matchResult that will replace the old one. Cannot change its id though.")
             @RequestBody
             dto: MatchResultDto
@@ -123,10 +135,10 @@ class MatchResultController {
         try {
             dtoId = dto.id!!.toLong()
         } catch (e: Exception) {
-            return ResponseEntity.status(404).build()
+            return ResponseEntity.status(400).build()
         }
 
-        if (dto.id!! != pathId) {
+        if (dtoId != pathId) {
             return ResponseEntity.status(409).build()
         }
 
@@ -140,21 +152,24 @@ class MatchResultController {
         return ResponseEntity.status(204).build()
     }
 
-    @ApiOperation("Modify the winnername of given matchResult ID")
-    @PatchMapping(path = arrayOf("/{id}"),
-            // could have had a custom type here, but then would need an unmarshaller for it
-            consumes = arrayOf(MediaType.TEXT_PLAIN_VALUE))
-    fun updateWinnerName(@ApiParam("The unique id of the MatchResult")
-              @PathVariable("id")
-              id: Long,
-            //
-              @ApiParam("""
+    @ApiOperation("Modify the winner name of given matchResult Id")
+    @ApiResponses(
+            ApiResponse(code = 404, message = "Match result not found"),
+            ApiResponse(code = 400, message = "Updating process fail while processing"),
+            ApiResponse(code = 204, message = "Winner name in match result, with given id, was updated")
+    )
+    @PatchMapping(path = arrayOf("/{id}"), consumes = arrayOf(MediaType.TEXT_PLAIN_VALUE))
+    fun updateWinnerName(
+            @ApiParam("The unique id of the MatchResult")
+            @PathVariable("id")
+            id: Long,
+            @ApiParam("""
                   The instructions on how to modify the winnername.
                   In this specific matchResult, it should be a single string value
               """)
               @RequestBody
-              winnerName: String)
-            : ResponseEntity<Void> {
+              winnerName: String
+    ) : ResponseEntity<Void> {
 
         // not exist
         if (!crud.exists(id)) {
@@ -170,8 +185,6 @@ class MatchResultController {
     }
 
     fun validDto(resultDto: MatchResultDto): Boolean{
-
-
         try {
             resultDto.attacker!!.id!!.toLong()
             resultDto.defender!!.id!!.toLong()

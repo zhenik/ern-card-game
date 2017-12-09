@@ -205,7 +205,7 @@ class MatchResultControllerTest : ControllerTestBase(){
                 .body(dto)
                 .put("/{id}")
                 .then()
-                .statusCode(404)
+                .statusCode(400)
 
 
         // dto.id != pathParam
