@@ -79,22 +79,20 @@ class PlayerController {
             @RequestBody
             itemDto: ItemDto): ResponseEntity<Void> {
 
-        //TODO test with Wiremock
         var rest: RestTemplate = RestTemplateBuilder().build()
-        val player = repo.findOne(id)
+        val player = repo.findOne(id) ?: return ResponseEntity.status(404).build()
 
-        // check if entity exists
+        // check if item id exists
         val itemURL = "http://localhost:8083/game/api/items/" + itemDto.id
         val response: ResponseEntity<ItemDto> = try {
             rest.getForEntity(itemURL, ItemDto::class.java)
         } catch (e: HttpClientErrorException) {
-            return ResponseEntity.status(400).build()
+            return ResponseEntity.status(404).build()
         }
 
-        if (itemDto.id == null || player == null || response.statusCodeValue != 200) {
+        if (itemDto.id == null || response.statusCodeValue != 200) {
             return ResponseEntity.status(400).build()
         }
-
 
         if (repo.addItem(id, itemDto.id!!.toLong())) {
             return ResponseEntity.status(200).build()

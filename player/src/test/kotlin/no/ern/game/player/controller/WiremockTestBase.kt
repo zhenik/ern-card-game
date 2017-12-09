@@ -4,7 +4,12 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.common.ConsoleNotifier
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import io.restassured.RestAssured
+import io.restassured.http.ContentType
+import no.ern.game.player.domain.model.Player
+import org.hamcrest.CoreMatchers
+import org.junit.After
 import org.junit.AfterClass
+import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.runner.RunWith
 import org.springframework.boot.test.context.SpringBootTest
@@ -32,6 +37,7 @@ abstract class WiremockTestBase {
             wiremockServerItem = WireMockServer(WireMockConfiguration.wireMockConfig().port(8083).notifier(ConsoleNotifier(true)))
 
             wiremockServerItem.start()
+
         }
 
         @AfterClass
@@ -39,5 +45,30 @@ abstract class WiremockTestBase {
         fun tearDown() {
             wiremockServerItem.stop()
         }
+    }
+
+    @Before
+    @After
+    fun cleanDatabase() {
+
+        val list = RestAssured.given().accept(ContentType.JSON).get()
+                .then()
+                .statusCode(200)
+                .extract()
+                .`as`(Array<Player>::class.java)
+                .toList()
+
+
+        list.stream().forEach {
+            RestAssured.given().pathParam("id", it.id)
+                    .delete("/{id}")
+                    .then()
+                    .statusCode(204)
+        }
+
+        RestAssured.given().get()
+                .then()
+                .statusCode(200)
+                .body("size()", CoreMatchers.equalTo(0))
     }
 }
