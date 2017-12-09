@@ -94,6 +94,24 @@ class MatchResultControllerTest : ICTestBase() {
                 .get().then().statusCode(200)
                 .body("size()", CoreMatchers.equalTo(1))
 
+        // Add 2 more items
+        postNewItem(item)
+        postNewItem(item)
+
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .param("ids", 1, 2)
+                .get().then().statusCode(200)
+                .body("size()", CoreMatchers.equalTo(2))
+        // Ignores items it does not find
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .param("ids", 1, 2, 7, 8, 9)
+                .get().then().statusCode(200)
+                .body("size()", CoreMatchers.equalTo(2))
+
     }
 
     @Test
