@@ -1,9 +1,6 @@
 package no.ern.game.player.controller
 
-import io.swagger.annotations.Api
-import io.swagger.annotations.ApiOperation
-import io.swagger.annotations.ApiParam
-import io.swagger.annotations.ApiResponse
+import io.swagger.annotations.*
 import no.ern.game.player.domain.converters.PlayerConverter
 import no.ern.game.player.repository.PlayerRepository
 import no.ern.game.schema.dto.ItemDto
@@ -32,7 +29,11 @@ class PlayerController {
 
     @ApiOperation("Create new player")
     @PostMapping(consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
-    @ApiResponse(code = 201, message = "Id of created player")
+    @ApiResponses(
+            ApiResponse(code = 201, message = "Id of created player"),
+            ApiResponse(code = 400, message = "Something wrong with the player-body"),
+            ApiResponse(code = 409, message = "Username is not unique")
+    )
     fun createPlayer(
             @ApiParam("Player to save")
             @RequestBody
@@ -73,6 +74,12 @@ class PlayerController {
 
     @ApiOperation("Adds item to player")
     @PostMapping(path = arrayOf("/{id}/items"), consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
+    @ApiResponses(
+            ApiResponse(code = 200, message = "Item was successfully added to Player"),
+            ApiResponse(code = 400, message = "Item-id sent in body is not correct"),
+            ApiResponse(code = 404, message = "Could not find player or item with specified id")
+
+    )
     fun addItemToPlayer(
             @PathVariable("id")
             id: Long,
@@ -108,6 +115,10 @@ class PlayerController {
 
     @ApiOperation("Get player specified by id")
     @GetMapping(path = arrayOf("/{id}"))
+    @ApiResponses(
+            ApiResponse(code = 400, message = "Id isn't a number"),
+            ApiResponse(code = 404, message = "Could not find player")
+    )
     fun getPlayerById(@ApiParam("Id of Player")
                       @PathVariable("id")
                       pathId: String?)
@@ -150,6 +161,11 @@ class PlayerController {
 
     @ApiOperation("Replace the data of a player")
     @PutMapping(path = arrayOf("/{id}"), consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
+    @ApiResponses(
+            ApiResponse(code = 400, message = "Something wrong player-body sent in this request"),
+            ApiResponse(code = 404, message = "Could not find player by this id"),
+            ApiResponse(code = 409, message = "Cannot change the id of player in the body!")
+    )
     fun updatePlayer(
             @ApiParam("Id defining the player.")
             @PathVariable("id")
@@ -200,6 +216,11 @@ class PlayerController {
 
     @ApiOperation("Replace the currency of a player")
     @PatchMapping(path = arrayOf("/{id}"), consumes = arrayOf(MediaType.TEXT_PLAIN_VALUE))
+    @ApiResponses(
+            ApiResponse(code = 204, message = "Currency successfully update. No content to return"),
+            ApiResponse(code = 400, message = "Something wrong with new currency value"),
+            ApiResponse(code = 404, message = "Could not find player to update currency for.")
+    )
     fun updateCurrency(
             @ApiParam("Id defining the player.")
             @PathVariable("id")
@@ -228,10 +249,15 @@ class PlayerController {
     }
 
 
-    @ApiOperation("Delete user by id")
+    @ApiOperation("Delete player by id")
     @DeleteMapping(path = arrayOf("/{id}"))
-    fun deleteUserById(
-            @ApiParam("Id of user to delete")
+    @ApiResponses(
+            ApiResponse(code = 204, message = "No content, player successfully deleted"),
+            ApiResponse(code = 400, message = "Id is not a number"),
+            ApiResponse(code = 404, message = "Could not find player")
+    )
+    fun deletePlayerById(
+            @ApiParam("Id of player to delete")
             @PathVariable("id")
             pathId: Long?
     ): ResponseEntity<Any> {
