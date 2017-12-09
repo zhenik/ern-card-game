@@ -8,6 +8,7 @@ import no.ern.game.schema.dto.ItemDto
 import no.ern.game.item.domain.enum.Type
 import no.ern.game.item.repository.ItemRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.repository.query.Param
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -31,7 +32,9 @@ class ItemController {
     @GetMapping
     fun getItems(@ApiParam("The type of the item")
                  @RequestParam
-                 requestParams: Map<String, String>?
+                 requestParams: Map<String, String>?,
+                 @RequestParam ("ids", required = false)
+                 ids: List<Long>?
                     ): ResponseEntity<Iterable<ItemDto>> {
 
 
@@ -57,6 +60,10 @@ class ItemController {
                 ResponseEntity.ok(ItemConverter.transform(repo.getItemsByLevelAndType(convertedMinLevel, convertedMaxLevel, convertedType)))
             }
             ResponseEntity.ok(ItemConverter.transform(repo.getItemsByLevel(convertedMinLevel, convertedMaxLevel)))
+        }
+        //GET ../items/?ids=id,id,id...
+        else if(ids != null){
+            return ResponseEntity.ok(ItemConverter.transform(repo.findAll(ids)))
         }
         // GET ../items
         else
