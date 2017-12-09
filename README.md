@@ -29,3 +29,14 @@ Jaeger UI
 
 ### Test coverage
 `mvn clean install -Pcov-cobertura`
+
+
+## Different emails inside the git log:
+During the project, one of the members(Eirik) made a mistake when commiting. He forgot to properly set the Git config
+on different computers and inside IntelliJ. Therefore it sometimes looks like more than 3 people have worked on the project.
+
+However, all the commits were pushed from one Github user: [EirikSkogstad](https://github.com/EirikSkogstad)
+All the different emails from this user are listed below, and is also registered on this Github account.
+ - ze9ix@live.no
+ - Skogeir15@student.westerdals.no
+ - eirikskogstad13@gmail.com
