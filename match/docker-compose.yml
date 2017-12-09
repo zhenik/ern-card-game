@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
 
-  postgres:
+  postgres-match:
     image: "postgres:10"
 
   eureka:
@@ -19,5 +19,5 @@ services:
      ports:
         - "9000:8080"
      depends_on:
-        - postgres
+        - postgres-match
         - eureka

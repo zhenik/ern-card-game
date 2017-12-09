@@ -34,7 +34,7 @@ class MatchResultController {
         return ResponseEntity.ok("this is string from Match result")
     }
 
-    @ApiOperation("Retrieve all match results. Fetch all match results by default. Fetch all match results for specific user if username provided in request parameters")
+    @ApiOperation("Fetch all match results by default or with specific username if provided in request parameters")
     @GetMapping
     fun getMatchesResults(@ApiParam("The specific username as parameter")
                           @RequestParam("username", required = false)
