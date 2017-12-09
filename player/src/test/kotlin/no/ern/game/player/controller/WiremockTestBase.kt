@@ -30,7 +30,7 @@ abstract class WiremockTestBase {
         @JvmStatic
         fun initClass() {
             RestAssured.baseURI = "http://localhost"
-            RestAssured.port = 8081
+            RestAssured.port = 7081
             RestAssured.basePath = "/game/api/players"
             RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
