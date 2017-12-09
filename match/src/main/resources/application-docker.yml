@@ -8,7 +8,7 @@ eureka:
       defaultZone: http://eureka:8761/eureka/
 spring:
   application:
-    name: match-service
+    name: match-server
   datasource:
     url: "jdbc:postgresql://postgres-match:5432/postgres"
     username: "postgres"
