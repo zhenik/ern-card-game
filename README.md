@@ -40,3 +40,6 @@ All the different emails from this user are listed below, and is also registered
  - ze9ix@live.no
  - Skogeir15@student.westerdals.no
  - eirikskogstad13@gmail.com
+ 
+### Remove all images 
+docker rmi $(docker images -a -q)

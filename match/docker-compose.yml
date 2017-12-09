@@ -12,7 +12,7 @@ services:
     ports:
       - "8761:8761"
 
-  service:
+  natch_0:
      build:
         context: ./
         dockerfile: Dockerfile
