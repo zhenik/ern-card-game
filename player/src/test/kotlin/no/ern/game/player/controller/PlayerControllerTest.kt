@@ -79,7 +79,15 @@ class PlayerControllerTest : TestBase() {
                 .statusCode(200)
                 .body("size()", equalTo(1))
 
+        // Level that does not exist
         given().param("level", unusedLevel)
+                .get()
+                .then()
+                .statusCode(200)
+                .body("size()", equalTo(0))
+
+        // Negative level
+        given().param("level", -1)
                 .get()
                 .then()
                 .statusCode(200)

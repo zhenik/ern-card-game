@@ -101,7 +101,23 @@ class PlayerControllerWiremockTest : WiremockTestBase() {
                 .then()
                 .statusCode(404)
 
+        // Try to add item without an id
+        val itemWithoutId = ItemDto(id = "")
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(itemWithoutId)
+                .post("/$savedId/items")
+                .then()
+                .statusCode(404)
 
+        // Try to add item with text as an id
+        val itemWithTextId = ItemDto(id = "asdasd")
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(itemWithTextId)
+                .post("/$savedId/items")
+                .then()
+                .statusCode(404)
 
         // Try to add same item twice
         RestAssured.given()

@@ -80,7 +80,10 @@ class PlayerController {
             itemDto: ItemDto): ResponseEntity<Void> {
 
         var rest: RestTemplate = RestTemplateBuilder().build()
-        val player = repo.findOne(id) ?: return ResponseEntity.status(404).build()
+
+        if(!repo.exists(id)) {
+            return ResponseEntity.status(404).build()
+        }
 
         // check if item id exists
         val itemURL = "http://localhost:8083/game/api/items/" + itemDto.id
@@ -120,7 +123,7 @@ class PlayerController {
         return ResponseEntity.ok(PlayerConverter.transform(dto))
     }
 
-    @ApiOperation("Get all players by level or by username. Does not support both.")
+    @ApiOperation("Fetch all players. Can be filtered by level or username, but not both at the same time.")
     @GetMapping
     fun getAllPlayers(
             @ApiParam("Level to find")
@@ -133,9 +136,6 @@ class PlayerController {
     ): ResponseEntity<Iterable<PlayerDto>> {
 
         if (level != null) {
-            if (level < 1) {
-                return ResponseEntity.status(400).build()
-            }
             return ResponseEntity.ok(PlayerConverter.transform(repo.findAllByLevel(level)))
         }
 
