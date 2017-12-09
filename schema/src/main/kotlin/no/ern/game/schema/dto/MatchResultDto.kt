@@ -25,6 +25,8 @@ data class MatchResultDto(
 ): Serializable
 
 data class PlayerResultDto(
+        @ApiModelProperty("Id")
+        var id: String?=null,
         @ApiModelProperty("Username")
         var username: String?=null,
         @ApiModelProperty("Total health")
@@ -35,22 +37,48 @@ data class PlayerResultDto(
         var remainingHealth: Int?=null
 ): Serializable
 
-/**
+/** GET
  * example
       {
          "attacker":
          {
+             "id": 1,
              "username":"u1",
              "health": 30,
              "damage": 28,
              "remainingHealth": 15
          },
          "defender":{
+             "id": 2,
              "username":"u2",
-              "health": 25,
-              "damage": 15,
-              "remainingHealth": -3
+             "health": 25,
+             "damage": 15,
+             "remainingHealth": -3
          },
-        "winnerName": "u1"
+        "creationTime": "2017-12-09T21:46:49.374+01:00",
+        "winnerName": "u1",
+        "id": "1"
       }
+ */
+
+/** POST
+ * example
+    {
+    "attacker":
+        {
+            "id": 1,
+            "username":"u1",
+            "health": 30,
+            "damage": 28,
+            "remainingHealth": 15
+        },
+            "defender":{
+            "id": 2,
+            "username":"u2",
+            "health": 25,
+            "damage": 15,
+            "remainingHealth": -3
+        },
+        "winnerName": "u1"
+    }
  */
