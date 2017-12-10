@@ -15,8 +15,8 @@ class GameProcessorServiceTest {
 
     @Before
     fun init() {
-        hero1 = Character("A",100, 10, 100)
-        hero2 = Character("B",80, 8, 80)
+        hero1 = Character("1","A",100, 10, 100)
+        hero2 = Character("2","B",80, 8, 80)
     }
 
     @After

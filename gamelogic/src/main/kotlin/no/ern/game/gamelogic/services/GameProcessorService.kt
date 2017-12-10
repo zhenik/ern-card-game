@@ -10,7 +10,7 @@ class GameProcessorService {
 
     fun fight(attacker: Character, defender: Character):FightResultLogDto{
 
-        val gameLog : MutableMap<Int,String> = HashMap()
+        val gameLog : MutableMap<Int,String> = mutableMapOf()
         var counter = 1
 
         // game loop
