@@ -46,3 +46,4 @@ services:
     depends_on:
       - postgres-item
       - eureka
+      - item_0
