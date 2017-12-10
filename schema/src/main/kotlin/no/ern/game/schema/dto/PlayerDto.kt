@@ -39,12 +39,14 @@ data class PlayerDto(
 /**
  * example
     {
-        "id":"1",
-        "health":100,
-        "damage":10,
-        "currency":100,
-        "experience":0,
-        "level":3,
-        "equipment":[]
+        "userId": "1",
+        "username": "name",
+        "id": "1",
+        "health": 100,
+        "damage": 10,
+        "currency": 100,
+        "experience": 0,
+        "level": 1,
+        "items": []
     }
 */
