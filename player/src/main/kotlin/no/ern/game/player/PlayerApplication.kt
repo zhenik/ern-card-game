@@ -9,9 +9,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 @SpringBootApplication(scanBasePackages = arrayOf("no.ern.game.player"))
 @EnableEurekaClient
-@RibbonClient(name = "player-server")
-class Application : WebMvcConfigurerAdapter() {}
+@RibbonClient(name = "item-server")
+class PlayerApplication : WebMvcConfigurerAdapter() {}
 
 fun main(args: Array<String>) {
-    SpringApplication.run(Application::class.java, *args)
+    SpringApplication.run(PlayerApplication::class.java, *args)
 }

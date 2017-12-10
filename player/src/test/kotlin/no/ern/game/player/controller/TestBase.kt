@@ -1,7 +1,7 @@
 package no.ern.game.player.controller
 
 
-import no.ern.game.player.Application
+import no.ern.game.player.PlayerApplication
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import no.ern.game.player.domain.model.Player
@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
-@SpringBootTest(classes = arrayOf(Application::class),
+@SpringBootTest(classes = arrayOf(PlayerApplication::class),
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 abstract class TestBase {
 

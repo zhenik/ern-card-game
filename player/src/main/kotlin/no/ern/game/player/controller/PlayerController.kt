@@ -6,6 +6,8 @@ import no.ern.game.player.repository.PlayerRepository
 import no.ern.game.schema.dto.ItemDto
 import no.ern.game.schema.dto.PlayerDto
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -26,6 +28,12 @@ class PlayerController {
 
     @Autowired
     private lateinit var repo: PlayerRepository
+
+    @Autowired
+    private lateinit var rest: RestTemplate
+
+    @Value("\${itemServerName}")
+    private lateinit var itemHost : String
 
     @ApiOperation("Create new player")
     @PostMapping(consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -86,14 +94,14 @@ class PlayerController {
             @RequestBody
             itemDto: ItemDto): ResponseEntity<Void> {
 
-        var rest: RestTemplate = RestTemplateBuilder().build()
+//        var rest: RestTemplate = RestTemplateBuilder().build()
 
         if(!repo.exists(id)) {
             return ResponseEntity.status(404).build()
         }
 
         // check if item id exists
-        val itemURL = "http://localhost:8083/game/api/items/" + itemDto.id
+        val itemURL = "${itemHost}/game/api/items/${itemDto.id}"
         val response: ResponseEntity<ItemDto> = try {
             rest.getForEntity(itemURL, ItemDto::class.java)
         } catch (e: HttpClientErrorException) {
