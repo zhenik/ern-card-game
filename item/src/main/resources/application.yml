@@ -16,6 +16,6 @@ spring:
     hibernate:
       ddl-auto: "create-drop"
 
-server:
-  contextPath: /game/api
-  port: 8083
+#server:
+#  contextPath: /game/api
+#  port: 8083

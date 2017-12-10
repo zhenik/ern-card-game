@@ -1,0 +1,14 @@
+#Needs to be called zuul
+gateway:
+  routes:
+    item-server:
+      path: /item-server/**
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://eureka:8761/eureka/
