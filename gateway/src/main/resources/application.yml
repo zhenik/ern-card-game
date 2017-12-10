@@ -3,6 +3,7 @@ zuul:
   routes:
     player:
       path: /players/**
+#      url: http://localhost/player-server/game/api/players
 
 eureka:
   instance:
