@@ -84,13 +84,17 @@ class GameLogicController {
 
     @ApiOperation("Initiate match")
     @PostMapping(path = arrayOf("/fight"),consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
-    @ApiResponse(code = 200, message = "The fight log of match, represents as FightResultLogDto")
+    @ApiResponses(
+            ApiResponse(code = 200, message = "The fight log of match, represents as FightResultLogDto"),
+            ApiResponse(code = 404, message = "Opponent(s) not found"),
+            ApiResponse(code = 400, message = "Given payload is invalid, check request body")
+    )
     fun startFight(
             @ApiParam("Model represent ids of users who are going to fight against each other")
             @RequestBody resultIdsDto: PlayersFightIdsDto
     ) : ResponseEntity<FightResultLogDto>{
 
-        // 0 TODO: validate this attacker initiate that call (possible only with Security)
+        // 0 TODO: validate this attacker initiate request (possible only with Security)
 
         // 1 validate that all fields are present (PlayersFightIdsDto) and ids are Long and ids are different
         if( ! isPlayersFightIdsDtoValid(resultIdsDto)) {
@@ -154,7 +158,7 @@ class GameLogicController {
 
         val fightResultGameLog = gameService.fight(attacker,defender)
 //
-        // 5 send matchResult to MatchResult processor (if use rabbitMq || persist directly via HTTP)
+        // 5 send matchResult to MatchResult processor
         val matchResult = getMatchResult(attacker,defender,fightResultGameLog.winner!!)
         val matchUrl = "$matchesPath/game/api/matches"
         val responseMatchApi : ResponseEntity<Long> = restTemplate.postForEntity(matchUrl,matchResult,Long::class.java)
@@ -177,7 +181,7 @@ class GameLogicController {
                 builder.append("$it,")
             })
             line = builder.toString()
-            line = builder.toString().substring(0, line.length - 1)
+            line = line.substring(0, line.length - 1)
         }
         return line
     }
@@ -192,17 +196,6 @@ class GameLogicController {
     }
 
 
-    // TODO: remove later mock items
-    private fun getMockListOfItems():List<ItemDto>{
-        // 1 weapon
-        // 1 armor
-        return listOf(
-                ItemDto(null,null,null,(Math.random()*15).toInt(),0),
-                ItemDto(null,null,null,0,(Math.random()*15).toInt())
-                )
-    }
-
-    // TODO: test it
     private fun isPlayersFightIdsDtoValid(dto: PlayersFightIdsDto):Boolean{
         try {
             val attackerId = dto.attackerId!!.toLong()
