@@ -105,21 +105,19 @@ class GameLogicController {
         if( ! isPlayersFightIdsDtoValid(resultIdsDto)) {
             return ResponseEntity.status(400).build()
         }
-        println("1  : VALIDATION PASSED")
+
 
         /** 2 fetch players*/
         var attackerPlayerDto : PlayerDto
         var defenderPlayerDto : PlayerDto
         try{
-            println("2  : ENTER TRY CATCH")
+
             val urlAttacker = "$playersPath/game/api/players/${resultIdsDto.attackerId!!.toLong()}"
             val urlDefender = "$playersPath/game/api/players/${resultIdsDto.defenderId!!.toLong()}"
 
-            println("3  : before calls")
             val responseAttacker : ResponseEntity<PlayerDto> = restTemplate.getForEntity(urlAttacker, PlayerDto::class.java)
-            println("3  : 1 Call finished")
             val responseDefender : ResponseEntity<PlayerDto> = restTemplate.getForEntity(urlDefender, PlayerDto::class.java)
-            println("3  : 2 Call finished")
+
 
             // player(s) not found
             if (responseAttacker.statusCodeValue!=200 || responseDefender.statusCodeValue!=200){
@@ -130,10 +128,10 @@ class GameLogicController {
             defenderPlayerDto = responseDefender.body
         }
         catch (e: HttpClientErrorException){
-            println("4  : FIRST EXCEPTION")
+
             return ResponseEntity.status(e.rawStatusCode).build()
         }
-        println("5  : Players are fetched")
+
 
         /** 3 fetch players items */
         var attackerItemsDto: List<ItemDto> = listOf()
@@ -162,7 +160,7 @@ class GameLogicController {
                 return ResponseEntity.status(e.rawStatusCode).build()
             }
         }
-        println("6  : Items are fetched")
+
 
 
         /** 4 call GameProcessorService.fight(attacker,defender) -> return GameLogDto */
@@ -186,7 +184,7 @@ class GameLogicController {
             return ResponseEntity.status(responseMatchApi.statusCode.value()).build()
         }
 
-        println("8  : Match result saved")
+
 
         /** 6 Improvements todo: generate experience for player(s) and persist it (if use rabbitMq || persist directly via HTTP) */
         // How to rollback if this fail (? delete on responseMatch ?)
