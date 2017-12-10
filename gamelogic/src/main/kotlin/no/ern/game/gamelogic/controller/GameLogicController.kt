@@ -14,6 +14,7 @@ import no.ern.game.schema.dto.gamelogic.PlayerSearchDto
 import no.ern.game.schema.dto.gamelogic.PlayersFightIdsDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpEntity
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -22,6 +23,10 @@ import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
 import java.lang.Exception
 import java.util.*
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+import org.springframework.util.LinkedMultiValueMap
+
+
 
 @Api(value = "/play", description = "API for game logic processes.")
 @RequestMapping(
@@ -100,15 +105,21 @@ class GameLogicController {
         if( ! isPlayersFightIdsDtoValid(resultIdsDto)) {
             return ResponseEntity.status(400).build()
         }
+        println("1  : VALIDATION PASSED")
 
         /** 2 fetch players*/
         var attackerPlayerDto : PlayerDto
         var defenderPlayerDto : PlayerDto
         try{
+            println("2  : ENTER TRY CATCH")
             val urlAttacker = "$playersPath/game/api/players/${resultIdsDto.attackerId!!.toLong()}"
             val urlDefender = "$playersPath/game/api/players/${resultIdsDto.defenderId!!.toLong()}"
+
+            println("3  : before calls")
             val responseAttacker : ResponseEntity<PlayerDto> = restTemplate.getForEntity(urlAttacker, PlayerDto::class.java)
+            println("3  : 1 Call finished")
             val responseDefender : ResponseEntity<PlayerDto> = restTemplate.getForEntity(urlDefender, PlayerDto::class.java)
+            println("3  : 2 Call finished")
 
             // player(s) not found
             if (responseAttacker.statusCodeValue!=200 || responseDefender.statusCodeValue!=200){
@@ -119,8 +130,10 @@ class GameLogicController {
             defenderPlayerDto = responseDefender.body
         }
         catch (e: HttpClientErrorException){
+            println("4  : FIRST EXCEPTION")
             return ResponseEntity.status(e.rawStatusCode).build()
         }
+        println("5  : Players are fetched")
 
         /** 3 fetch players items */
         var attackerItemsDto: List<ItemDto> = listOf()
@@ -149,27 +162,36 @@ class GameLogicController {
                 return ResponseEntity.status(e.rawStatusCode).build()
             }
         }
+        println("6  : Items are fetched")
 
 
         /** 4 call GameProcessorService.fight(attacker,defender) -> return GameLogDto */
         val attacker: Character = PlayerFightConverter.transform(attackerPlayerDto,attackerItemsDto)
         val defender: Character = PlayerFightConverter.transform(defenderPlayerDto,defenderItemsDto)
 
-
         val fightResultGameLog = gameService.fight(attacker,defender)
-//
-        // 5 send matchResult to MatchResult processor
+
+        /** 5 send matchResult to MatchResult processor */
         val matchResult = getMatchResult(attacker,defender,fightResultGameLog.winner!!)
         val matchUrl = "$matchesPath/game/api/matches"
-        val responseMatchApi : ResponseEntity<Long> = restTemplate.postForEntity(matchUrl,matchResult,Long::class.java)
+        // its work in local env without specifying headers, but doesnt in distributed env with docker
+        // so I had to specify header for payload
+        val headers = LinkedMultiValueMap<String, String>()
+        headers.add("Content-Type", "application/json")
+        restTemplate.messageConverters.add(MappingJackson2HttpMessageConverter())
+        val request = HttpEntity<MatchResultDto>(matchResult, headers)
+        val responseMatchApi : ResponseEntity<Long> = restTemplate.postForEntity(matchUrl, request, Long::class.java)
+
         if (responseMatchApi.statusCode.value()!=201){
             return ResponseEntity.status(responseMatchApi.statusCode.value()).build()
         }
 
-        // 6 Improvements todo: generate experience for player(s) and persist it (if use rabbitMq || persist directly via HTTP)
+        println("8  : Match result saved")
+
+        /** 6 Improvements todo: generate experience for player(s) and persist it (if use rabbitMq || persist directly via HTTP) */
         // How to rollback if this fail (? delete on responseMatch ?)
 
-        // 7 return FightResultLogDto
+        /** 7 return FightResultLogDto */
         return ResponseEntity.ok(fightResultGameLog)
     }
 

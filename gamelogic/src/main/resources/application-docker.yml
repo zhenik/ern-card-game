@@ -6,6 +6,11 @@ eureka:
       enabled: true
     serviceUrl:
       defaultZone: http://eureka:8761/eureka/
+ribbon:
+  eager-load:
+    enabled: true
+    clients: item-server, player-server, match-server
+
 spring:
   application:
     name: gamelogic-server
