@@ -1,9 +1,6 @@
 package no.ern.game.gamelogic.controller
 
-import io.swagger.annotations.Api
-import io.swagger.annotations.ApiOperation
-import io.swagger.annotations.ApiParam
-import io.swagger.annotations.ApiResponse
+import io.swagger.annotations.*
 import no.ern.game.gamelogic.domain.converters.PlayerFightConverter
 import no.ern.game.gamelogic.domain.converters.PlayerSearchConverter
 import no.ern.game.gamelogic.domain.model.Character
@@ -50,8 +47,11 @@ class GameLogicController {
     @ApiOperation("""
         Find opponent, which is closest to hunter level (+/- 1 level).
         If level not defined, find opponent in limit from 0 to 2 level""")
-    @ApiResponse(code = 200, message = "The opponent found")
-    @GetMapping(path = arrayOf("/hunting"), produces = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
+    @ApiResponses(
+            ApiResponse(code = 200, message = "The opponent found"),
+            ApiResponse(code = 404, message = "No opponent found")
+    )
+    @GetMapping(path = arrayOf("/enemy"), produces = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
     fun findEnemy() : ResponseEntity<PlayerSearchDto>? {
 
 
