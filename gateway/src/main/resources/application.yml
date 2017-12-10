@@ -1,0 +1,14 @@
+
+zuul:
+  routes:
+    player:
+      path: /players/**
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://eureka:8761/eureka/
