@@ -16,7 +16,7 @@ data class FightResultLogDto(
         @ApiModelProperty("The winner of the match(fight)")
         var winner: String? = null,
 
-        @ApiModelProperty("User's current level")
+        @ApiModelProperty("Fight log")
         var gameLog: MutableMap<Int,String>? = null
 )
 
