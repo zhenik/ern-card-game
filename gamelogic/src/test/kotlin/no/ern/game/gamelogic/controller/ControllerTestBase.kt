@@ -13,7 +13,6 @@ import java.util.logging.Logger
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-//@ActiveProfiles("test") //to override properties
 abstract class ControllerTestBase {
 
     private val logger : Logger = Logger.getLogger(ControllerTestBase::class.java.canonicalName)
@@ -21,7 +20,7 @@ abstract class ControllerTestBase {
     companion object {
         lateinit var wiremockServerMatch: WireMockServer
         lateinit var wiremockServerPlayer: WireMockServer
-        private lateinit var wiremockServerItem: WireMockServer
+        lateinit var wiremockServerItem: WireMockServer
 
         @BeforeClass
         @JvmStatic
@@ -70,8 +69,77 @@ abstract class ControllerTestBase {
         return json
     }
 
-    fun getMockedJson_Empty(): String {
+    fun getMockedJson_EmptyArray(): String {
         var json = "[]"
+        return json
+    }
+
+    // only for tests
+    fun getPlayerDto(id: String, username: String, items: String): String {
+        var json = """
+        {
+            "userId": "$id",
+            "username": "$username",
+            "id": "1",
+            "health": 100,
+            "damage": 10,
+            "currency": 100,
+            "experience": 0,
+            "level": 1,
+            "items": [$items]
+        }
+        """
+        return json
+    }
+
+    fun getEmptyObject(): String {
+        var json = "{}"
+        return json
+    }
+
+    fun getJsonOneItems():String {
+        var json = """
+            [
+                {
+                    "name": "Test",
+                    "description": "blabla",
+                    "type": "Weapon",
+                    "damageBonus": 5,
+                    "healthBonus": 0,
+                    "price": 0,
+                    "levelRequirement": 0,
+                    "id": "1"
+                }
+            ]
+            """
+        return json
+    }
+
+    fun getJsonTwoItems():String {
+        var json = """
+            [
+                {
+                    "name": "Test",
+                    "description": "blabla",
+                    "type": "Weapon",
+                    "damageBonus": 5,
+                    "healthBonus": 0,
+                    "price": 0,
+                    "levelRequirement": 0,
+                    "id": "1"
+                },
+                {
+                    "name": "Test",
+                    "description": "blabla",
+                    "type": "Weapon",
+                    "damageBonus": 0,
+                    "healthBonus": 12,
+                    "price": 0,
+                    "levelRequirement": 0,
+                    "id": "2"
+                }
+            ]
+            """
         return json
     }
 
