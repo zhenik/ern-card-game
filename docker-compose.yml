@@ -1,0 +1,48 @@
+version: '3.3'
+
+services:
+
+  # The Gateway Zuul will be the ONLY Docker instance
+  # that does open a port accessible from outside the
+  # Docker network.
+
+  zuul:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    ports:
+      - "80:8080"
+    depends_on:
+        - eureka
+
+  eureka:
+    build:
+      context: ./eureka
+      dockerfile: Dockerfile
+
+  # Note that here I am using a real database.
+  # Cannot use embedded H2 as done so far, because
+  # all the different instances of the replicated services
+  # need to work on the same data
+  postgres:
+    image: "postgres:10"
+
+  item_0:
+     build:
+        context: ./item
+        dockerfile: Dockerfile
+     environment:
+        - ITEM_ID=A
+     depends_on:
+        - zuul
+        - postgres
+
+  service_1:
+     build:
+        context: ./item
+        dockerfile: Dockerfile
+     environment:
+        - ITEM_ID=B
+     depends_on:
+        - zuul
+        - postgres
