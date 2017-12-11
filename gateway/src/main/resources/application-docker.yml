@@ -3,12 +3,16 @@ zuul:
   routes:
     player:
       path: /players/**
+      sensitive-headers:
     item:
       path: /items/**
+      sensitive-headers:
     match:
       path: /matches/**
+      sensitive-headers:
     gamelogic:
       path: /play/**
+      sensitive-headers:
 
 spring:
   application:
