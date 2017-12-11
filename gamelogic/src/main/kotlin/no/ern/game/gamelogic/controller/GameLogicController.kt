@@ -12,8 +12,11 @@ import no.ern.game.schema.dto.PlayerDto
 import no.ern.game.schema.dto.gamelogic.FightResultLogDto
 import no.ern.game.schema.dto.gamelogic.PlayerSearchDto
 import no.ern.game.schema.dto.gamelogic.PlayersFightIdsDto
+import org.springframework.amqp.core.FanoutExchange
+import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Bean
 import org.springframework.http.HttpEntity
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -49,6 +52,25 @@ class GameLogicController {
     private lateinit var itemsPath: String
     @Value("\${matchServerName}")
     private lateinit var matchesPath: String
+
+
+
+    @Autowired
+    private lateinit var rabbitTemplate: RabbitTemplate
+
+    @Autowired
+    private lateinit var fanout: FanoutExchange
+
+    /*
+        Dummy endpoint for testing rabbitMq
+     */
+    @PostMapping(path = arrayOf("/level"))
+    fun sendLevelAmqp(@RequestBody levelMsg: String): ResponseEntity<Void> {
+
+        rabbitTemplate.convertAndSend(fanout.name, "", levelMsg)
+        return ResponseEntity.status(204).build()
+    }
+
 
     @ApiOperation("""
         Find opponent, which is closest to hunter level (+/- 1 level).

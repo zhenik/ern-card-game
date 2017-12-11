@@ -5,6 +5,7 @@ import no.ern.game.player.domain.converters.PlayerConverter
 import no.ern.game.player.repository.PlayerRepository
 import no.ern.game.schema.dto.ItemDto
 import no.ern.game.schema.dto.PlayerDto
+import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
@@ -34,6 +35,12 @@ class PlayerController {
 
     @Value("\${itemServerName}")
     private lateinit var itemHost : String
+
+
+    @RabbitListener(queues = arrayOf("#{queue.name}"))
+    fun receiveFromAMQP(msg: String) {
+        print(msg)
+    }
 
     @ApiOperation("Create new player")
     @PostMapping(consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))

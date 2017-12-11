@@ -18,6 +18,8 @@ spring:
     database: "postgresql"
     hibernate:
       ddl-auto: "update"
+  rabbitmq:
+    host: rabbitmq
 server:
 #  contextPath: /game/api
   port: 8080

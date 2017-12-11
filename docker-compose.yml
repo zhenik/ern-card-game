@@ -27,6 +27,7 @@ services:
     depends_on:
       - postgres-player
       - eureka
+      - rabbitmq
 
   match_0:
     build:
@@ -73,6 +74,7 @@ services:
       - player_0
       - match_0
       - item_1
+      - rabbitmq
 
   gateway:
     build:
@@ -82,3 +84,6 @@ services:
       - "10000:8080"
     depends_on:
       - eureka
+
+  rabbitmq:
+    image: "rabbitmq:3"
