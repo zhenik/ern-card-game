@@ -1,16 +1,21 @@
 package no.ern.game.item.controller
 
+import com.netflix.hystrix.HystrixCommandGroupKey
+import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand
 import io.swagger.annotations.*
 import no.ern.game.item.domain.converters.ItemConverter
 import no.ern.game.schema.dto.ItemDto
 import no.ern.game.item.domain.enum.Type
 import no.ern.game.item.repository.ItemRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.repository.query.Param
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker
+import org.springframework.cloud.netflix.hystrix.EnableHystrix
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import javax.transaction.TransactionRequiredException
 import javax.validation.ConstraintViolationException
 
 @Api(value = "/items", description = "API for items.")
@@ -19,6 +24,7 @@ import javax.validation.ConstraintViolationException
         produces = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE)
 )
 @RestController
+@DefaultProperties(defaultFallback = "fallback")
 @Validated
 class ItemController {
 
@@ -29,6 +35,7 @@ class ItemController {
     @ApiOperation("Get all items or get items by type or get items by maxlevel&minlevel or get items by list of ids")
     @ApiResponse(code = 200, message = "List of items")
     @GetMapping
+    @HystrixCommand
     fun getItems(@ApiParam("The type of the item, and/or maxlevel&minlevel")
                  @RequestParam
                  requestParams: Map<String, String>?,
@@ -212,6 +219,14 @@ class ItemController {
         }
     }
 
+    @GetMapping(path = arrayOf("/fail"))
+    @HystrixCommand
+    fun failItem()
+            : String {
+        throw Exception()
+        return "This will never be reached"
+    }
+
 
 
     fun createItem(resultDto: ItemDto): Long{
@@ -236,6 +251,10 @@ class ItemController {
                 resultDto.levelRequirement!!,
                 resultDto.id!!.toLong()
         )
+    }
+
+     fun fallback(): String{
+        return "Something went wrong"
     }
 
     fun validEnum(enum: String): Boolean{
