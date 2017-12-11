@@ -10,6 +10,10 @@ zuul:
     gamelogic:
       path: /play/**
 
+spring:
+  application:
+    name: gateway
+
 eureka:
   instance:
     preferIpAddress: true

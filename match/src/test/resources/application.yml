@@ -2,4 +2,4 @@ spring:
   application:
     name: match-server
 server:
-  contextPath: /game/api
+#  contextPath: /game/api

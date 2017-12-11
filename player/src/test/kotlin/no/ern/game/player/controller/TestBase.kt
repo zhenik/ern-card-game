@@ -22,8 +22,8 @@ abstract class TestBase {
     @LocalServerPort
     protected var port = 0
 
-    @Value("\${server.contextPath}")
-    private lateinit var contextPath : String
+//    @Value("\${server.contextPath}")
+//    private lateinit var contextPath : String
 
     @Before
     @After
@@ -32,7 +32,7 @@ abstract class TestBase {
         // RestAssured configs shared by all the tests
         RestAssured.baseURI = "http://localhost"
         RestAssured.port = port
-        RestAssured.basePath = contextPath + "/players"
+        RestAssured.basePath = "/players"
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
 

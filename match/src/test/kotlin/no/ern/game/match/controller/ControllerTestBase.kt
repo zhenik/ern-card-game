@@ -30,21 +30,21 @@ abstract class ControllerTestBase{
      * if we do not provide application.yml for tests,
      * Spring automatically load it from source root
      * */
-    @Value("\${server.contextPath}")
-    private lateinit var contextPath : String
+//    @Value("\${server.contextPath}")
+//    private lateinit var contextPath : String
 
     @Before
     @After
     fun clean() {
 
         logger.log(Level.INFO, port.toString())
-        logger.log(Level.INFO, contextPath)
+//        logger.log(Level.INFO, contextPath)
 
 
 
         RestAssured.baseURI = "http://localhost"
         RestAssured.port = port
-        RestAssured.basePath = contextPath + "/matches"
+        RestAssured.basePath = "/matches"
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
         val list = RestAssured.given().accept(ContentType.JSON).get()

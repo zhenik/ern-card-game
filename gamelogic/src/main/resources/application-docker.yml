@@ -15,7 +15,7 @@ spring:
   application:
     name: gamelogic-server
 server:
-  contextPath: /game/api
+#  contextPath: /game/api
   port: 8080
 
 itemServerName: http://item-server

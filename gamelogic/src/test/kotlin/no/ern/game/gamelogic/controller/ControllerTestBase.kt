@@ -27,7 +27,7 @@ abstract class ControllerTestBase {
         fun initClass() {
             RestAssured.baseURI = "http://localhost"
             RestAssured.port = 9084
-            RestAssured.basePath = "/game/api/play"
+            RestAssured.basePath = "/play"
             RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
             wiremockServerMatch = WireMockServer(WireMockConfiguration.wireMockConfig().port(8082).notifier(ConsoleNotifier(true)))

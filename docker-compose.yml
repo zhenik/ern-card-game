@@ -58,6 +58,9 @@ services:
       - postgres-item
       - eureka
       - item_0
+      - player_0
+      - match_0
+      - gateway
 
   gamelogic_0:
     build:

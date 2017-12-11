@@ -32,21 +32,21 @@ abstract class ICTestBase {
      * if we do not provide application.yml for tests,
      * Spring automatically load it from source root
      * */
-    @Value("\${server.contextPath}")
-    private lateinit var contextPath: String
+//    @Value("\${server.contextPath}")
+//    private lateinit var contextPath: String
 
     @Before
     @After
     fun clean() {
 
         logger.log(Level.INFO, port.toString())
-        logger.log(Level.INFO, contextPath)
+//        logger.log(Level.INFO, contextPath)
 
 
         // RestAssured configs shared by all the tests
         RestAssured.baseURI = "http://localhost"
         RestAssured.port = port
-        RestAssured.basePath = contextPath + "/items"
+        RestAssured.basePath = "/items"
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
         /*

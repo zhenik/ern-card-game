@@ -63,7 +63,7 @@ class GameLogicController {
 
         // 1 make request to player module.
         val response : ResponseEntity<Array<PlayerDto>> = try {
-            val url = "$playersPath/game/api/players"
+            val url = "$playersPath/players"
             restTemplate.getForEntity(url, Array<PlayerDto>::class.java)
         } catch (e: HttpClientErrorException) {
             return ResponseEntity.status(e.statusCode.value()).build()
@@ -112,8 +112,8 @@ class GameLogicController {
         var defenderPlayerDto : PlayerDto
         try{
 
-            val urlAttacker = "$playersPath/game/api/players/${resultIdsDto.attackerId!!.toLong()}"
-            val urlDefender = "$playersPath/game/api/players/${resultIdsDto.defenderId!!.toLong()}"
+            val urlAttacker = "$playersPath/players/${resultIdsDto.attackerId!!.toLong()}"
+            val urlDefender = "$playersPath/players/${resultIdsDto.defenderId!!.toLong()}"
 
             val responseAttacker : ResponseEntity<PlayerDto> = restTemplate.getForEntity(urlAttacker, PlayerDto::class.java)
             val responseDefender : ResponseEntity<PlayerDto> = restTemplate.getForEntity(urlDefender, PlayerDto::class.java)
@@ -140,7 +140,7 @@ class GameLogicController {
         if (playerHasItems(attackerPlayerDto)){
             try {
                 val query = queryItemBuilder(attackerPlayerDto.items!!)
-                val urlAttackerItem = "$itemsPath/game/api/items?ids=$query"
+                val urlAttackerItem = "$itemsPath/items?ids=$query"
                 val responseAttackerItems: ResponseEntity<Array<ItemDto>> = restTemplate.getForEntity(urlAttackerItem, Array<ItemDto>::class.java)
                 attackerItemsDto = responseAttackerItems.body.toList()
             }
@@ -152,7 +152,7 @@ class GameLogicController {
         if (playerHasItems(defenderPlayerDto)){
             try {
                 val query = queryItemBuilder(defenderPlayerDto.items!!)
-                val urlDefenderItem = "$itemsPath/game/api/items?ids=$query"
+                val urlDefenderItem = "$itemsPath/items?ids=$query"
                 val responseDefenderItems: ResponseEntity<Array<ItemDto>> = restTemplate.getForEntity(urlDefenderItem, Array<ItemDto>::class.java)
                 defenderItemsDto = responseDefenderItems.body.toList()
             }
@@ -171,7 +171,7 @@ class GameLogicController {
 
         /** 5 send matchResult to MatchResult processor */
         val matchResult = getMatchResult(attacker,defender,fightResultGameLog.winner!!)
-        val matchUrl = "$matchesPath/game/api/matches"
+        val matchUrl = "$matchesPath/matches"
         // its work in local env without specifying headers, but doesnt in distributed env with docker
         // so I had to specify header for payload
         val headers = LinkedMultiValueMap<String, String>()
