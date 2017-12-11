@@ -70,3 +70,12 @@ services:
       - player_0
       - match_0
       - item_1
+
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    ports:
+      - "10000:8080"
+    depends_on:
+      - eureka
