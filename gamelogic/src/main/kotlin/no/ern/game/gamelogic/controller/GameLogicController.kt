@@ -1,9 +1,11 @@
 package no.ern.game.gamelogic.controller
 
+import com.netflix.discovery.converters.Auto
 import io.swagger.annotations.*
 import no.ern.game.gamelogic.domain.converters.PlayerFightConverter
 import no.ern.game.gamelogic.domain.converters.PlayerSearchConverter
 import no.ern.game.gamelogic.domain.model.Character
+import no.ern.game.gamelogic.services.ExperienceService
 import no.ern.game.gamelogic.services.GameProcessorService
 import no.ern.game.schema.dto.ItemDto
 import no.ern.game.schema.dto.MatchResultDto
@@ -46,6 +48,9 @@ class GameLogicController {
     @Autowired
     lateinit var gameService: GameProcessorService
 
+    @Autowired
+    lateinit var experienceService: ExperienceService
+
     @Value("\${playerServerName}")
     private lateinit var playersPath: String
     @Value("\${itemServerName}")
@@ -53,21 +58,15 @@ class GameLogicController {
     @Value("\${matchServerName}")
     private lateinit var matchesPath: String
 
-
-
-    @Autowired
-    private lateinit var rabbitTemplate: RabbitTemplate
-
-    @Autowired
-    private lateinit var fanout: FanoutExchange
-
     /*
         Dummy endpoint for testing rabbitMq
      */
     @PostMapping(path = arrayOf("/level"))
-    fun sendLevelAmqp(@RequestBody levelMsg: String): ResponseEntity<Void> {
+    fun sendLevelAmqp(@RequestBody levelMsg: PlayerDto): ResponseEntity<Void> {
+        if (levelMsg != null) {
+            experienceService.levelUpPlayer(levelMsg)
+        }
 
-        rabbitTemplate.convertAndSend(fanout.name, "", levelMsg)
         return ResponseEntity.status(204).build()
     }
 

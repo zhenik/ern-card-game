@@ -7,9 +7,7 @@ import no.ern.game.schema.dto.ItemDto
 import no.ern.game.schema.dto.PlayerDto
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -36,10 +34,49 @@ class PlayerController {
     @Value("\${itemServerName}")
     private lateinit var itemHost : String
 
-
     @RabbitListener(queues = arrayOf("#{queue.name}"))
-    fun receiveFromAMQP(msg: String) {
-        print(msg)
+    fun increaseLevelOfPlayer(player: PlayerDto) {
+
+        println("Received" + player)
+        if (player == null) {
+            return
+        }
+        val playerId: Long
+        try {
+            playerId = player.id!!.toLong()
+        } catch (e: Exception) {
+            return
+        }
+
+        if (!repo.exists(playerId)) {
+            println("Could not find user by " + playerId)
+            return
+        }
+
+        if (!isDtoFieldsNotNull(player)) {
+            println("Invalid Dto, cannot contain nulls")
+            return
+        }
+
+        val newLevel = player.level?.plus(1)
+
+        println("Prevlevel: ${player.level} Newlevel: $newLevel")
+        repo.updatePlayer(
+                player.username!!,
+                player.health!!,
+                player.damage!!,
+                player.currency!!,
+                player.experience!!,
+                newLevel!!,
+                player.items!!.toMutableSet(),
+                player.id!!.toLong()
+        )
+
+
+        // FIXME doesn't work, cannot fetch username this way.
+        //val allPlayers = repo.findAllByUsername(playerName).toList()
+
+
     }
 
     @ApiOperation("Create new player")
