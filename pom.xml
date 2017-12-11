@@ -228,6 +228,12 @@
         <scope>test</scope>
       </dependency>
 
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-security</artifactId>
+        <version>${version.springboot}</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
