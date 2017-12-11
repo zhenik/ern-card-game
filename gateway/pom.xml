@@ -33,29 +33,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-
-
-<!--<<<<<<< HEAD-->
-            <!--<version>1.5.7.RELEASE</version>-->
-        <!--</dependency>-->
-
-        <!--&lt;!&ndash; TODO move versions and dependencies to parent &ndash;&gt;-->
-        <!--<dependency>-->
-            <!--<groupId>ch.qos.logback</groupId>-->
-            <!--<artifactId>logback-classic</artifactId>-->
-            <!--<version>1.2.3</version>-->
-<!--=======-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>ch.qos.logback</groupId>-->
-            <!--<artifactId>logback-classic</artifactId>-->
-<!--&gt;>>>>>> develop-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.slf4j</groupId>-->
-            <!--<artifactId>jcl-over-slf4j</artifactId>-->
-<!--<<<<<<< HEAD-->
-            <!--<version>1.7.25</version>-->
         </dependency>
     </dependencies>
 
@@ -65,13 +42,11 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <finalName>zuul</finalName>
+                    <finalName>gateway</finalName>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-        <!--</dependency>-->
-    <!--</dependencies>-->
 
 
 

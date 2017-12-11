@@ -1,5 +1,5 @@
 FROM openjdk:8
 
-ADD target/zuul.jar .
+ADD target/gateway.jar .
 
-CMD java -jar zuul.jar
+CMD java -jar gateway.jar --spring.profiles.active=docker
