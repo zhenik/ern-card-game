@@ -1,6 +1,6 @@
 package no.ern.game.gateway.repository
 
-import no.ern.game.gateway.domain.model.User
+import no.ern.game.gateway.domain.model.UserEntity
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -8,8 +8,8 @@ import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
 @Repository
-interface UserRepository : CrudRepository<User, Long>, UserRepositoryCustom {
-    fun findUserByUsername(username: String):User?
+interface UserRepository : CrudRepository<UserEntity, Long>, UserRepositoryCustom {
+    fun findUserByUsername(username: String): UserEntity?
 }
 
 @Transactional
@@ -28,7 +28,7 @@ open class UserRepositoryImpl : UserRepositoryCustom {
 
     override fun createUser(username: String, password: String): Long {
         var id : Long = 0
-        val user = User(username,password)
+        val user = UserEntity(username,password)
 
         em.persist(user)
 

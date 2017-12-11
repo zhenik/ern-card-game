@@ -3,7 +3,7 @@ package no.ern.game.gateway.domain.model
 class UserConverter {
     companion object {
 
-        fun transform(entity: User): UserDto {
+        fun transform(entity: UserEntity): UserDto {
             return UserDto(
                     username = entity.username,
                     id = entity.id,
@@ -13,7 +13,7 @@ class UserConverter {
             )
         }
 
-        fun transform(entities: Iterable<User>): Iterable<UserDto> {
+        fun transform(entities: Iterable<UserEntity>): Iterable<UserDto> {
             return entities.map { transform(it) }
         }
     }

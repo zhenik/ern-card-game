@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull
 
 @Entity
 @Table(name="USERS")
-class User(
+class UserEntity(
 
         @get:NotBlank
         @get: Column (unique = true)
@@ -27,3 +27,30 @@ class User(
         @get: GeneratedValue
         var id: Long? = null
 )
+
+
+
+//SELECT x.username, y.roles
+//FROM users x, user_entity_roles y
+//WHERE x.username=? and y.user_entity_username=x.username
+
+
+//@Entity
+//@Table(name="USERS")
+//class UserEntity(
+//
+//        @get:Id
+//        @get:NotBlank
+//        var username: String?,
+//
+//        @get:NotBlank
+//        var password: String?,
+//
+//        @get:ElementCollection
+//        @get:NotNull
+//        var roles: Set<String>? = setOf(),
+//
+//        @get:NotNull
+//        var enabled: Boolean? = true
+//)
+

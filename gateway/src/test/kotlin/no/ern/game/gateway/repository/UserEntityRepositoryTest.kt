@@ -1,6 +1,6 @@
 package no.ern.game.gateway.repository
 
-import no.ern.game.gateway.domain.model.User
+import no.ern.game.gateway.domain.model.UserEntity
 import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Before
@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
 @DataJpaTest
-class UserRepositoryTest {
+class UserEntityRepositoryTest {
 
     @Autowired
     private lateinit var repo: UserRepository
@@ -25,7 +25,7 @@ class UserRepositoryTest {
 
     @Test
     fun createUser() {
-        val user = User("name","password")
+        val user = UserEntity("name","password")
 
         repo.save(user)
 

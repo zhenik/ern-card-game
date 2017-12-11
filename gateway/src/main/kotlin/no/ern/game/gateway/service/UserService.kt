@@ -1,6 +1,6 @@
 package no.ern.game.gateway.service
 
-import no.ern.game.gateway.domain.model.User
+import no.ern.game.gateway.domain.model.UserEntity
 import no.ern.game.gateway.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -24,7 +24,7 @@ class UserService{
                 return false
             }
 
-            val user = User(username, hash, roles.map{"ROLE_$it"}.toSet())
+            val user = UserEntity(username, hash, roles.map{"ROLE_$it"}.toSet())
 
             repo.save(user)
 

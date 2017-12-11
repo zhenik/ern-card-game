@@ -3,7 +3,6 @@ package no.ern.game.gateway.controller
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
-import no.ern.game.gateway.domain.model.User
 import no.ern.game.gateway.domain.model.UserConverter
 import no.ern.game.gateway.domain.model.UserDto
 import no.ern.game.gateway.repository.UserRepository
@@ -32,18 +31,18 @@ class PlayerController {
 
     @PostMapping(consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
     fun createPlayer(
-            @ApiParam("User to save")
+            @ApiParam("UserEntity to save")
             @RequestBody
             userDto: UserDto
     ): ResponseEntity<Long> {
 
-//        if (userDto.id!=null || userDto.password!!.isNullOrEmpty() || userDto.username!!.isNullOrEmpty()) {
-//            return ResponseEntity.status(400).build()
-//        }
+        if (userDto.id!=null || userDto.password!!.isNullOrEmpty() || userDto.username!!.isNullOrEmpty()) {
+            return ResponseEntity.status(400).build()
+        }
 
-//        if (repo.findUserByUsername(userDto.username!!) != null) {
-//            return ResponseEntity.status(409).build()
-//        }
+        if (repo.findUserByUsername(userDto.username!!) != null) {
+            return ResponseEntity.status(409).build()
+        }
 
         userService.createUserWithHashedPassword(userDto.username!!.toLowerCase(), userDto.password!!)
 

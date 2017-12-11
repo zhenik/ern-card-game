@@ -1,6 +1,27 @@
 version: '3.3'
 
 services:
+
+  # "Redis is an open-source in-memory database project implementing a distributed,
+  # in-memory key-value store with optional durability."
+  # We use it here to store session tokens, in a way in which all services can
+  # quickly access it for authentication purposes.
+  # Think about it like a hash-map that you can access remotely.
+  redis:
+    image: "redis:latest"
+
+
+  # Note: for simplicity I am not starting any real database in this example.
+  # I am going to use embedded H2 databases.
+  # However, ideally I should start here on Postgres per service that needs
+  # a database (eg, zuul and user-service here)
+#  eureka:
+#    build:
+#      context: ../eureka
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8761:8761"
+
   gateway:
     build:
       context: ./
@@ -8,31 +29,25 @@ services:
     ports:
       - "10000:8080"
     depends_on:
-      - eureka
-  eureka:
-    build:
-      context: ../eureka
-      dockerfile: Dockerfile
-    ports:
-      - "8761:8761"
+      - redis
+#      - eureka
 
-  postgres-player:
-    image: "postgres:10"
 
-  player_0:
-     build:
-        context: ../player
-        dockerfile: Dockerfile
-#     ports:
-#        - "9000:8080"
-     depends_on:
-        - postgres-player
-        - eureka
+#  user-service:
+#    build:
+#      context: ./user-service
+#      dockerfile: Dockerfile
+#    ports:
+#      - "10001:8080"
+#    depends_on:
+#      - redis
 
-  player_1:
-     build:
-        context: ../player
-        dockerfile: Dockerfile
-     depends_on:
-        - postgres-player
-        - eureka
+
+#  greetings:
+#    build:
+#      context: ./greetings
+#      dockerfile: Dockerfile
+#    ports:
+#      - "10002:8080"
+#    depends_on:
+#      - redis
