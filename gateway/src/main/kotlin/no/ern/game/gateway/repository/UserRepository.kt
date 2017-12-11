@@ -8,35 +8,37 @@ import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
 @Repository
-interface UserRepository : CrudRepository<UserEntity, Long>, UserRepositoryCustom {
+interface UserRepository : CrudRepository<UserEntity, String>
+//        , UserRepositoryCustom
+{
     fun findUserByUsername(username: String): UserEntity?
 }
 
-@Transactional
-interface UserRepositoryCustom {
+//@Transactional
+//interface UserRepositoryCustom {
+//
+//    fun createUser(
+//            username: String,
+//            password: String
+//    ): Long
+//}
 
-    fun createUser(
-            username: String,
-            password: String
-    ): Long
-}
-
-open class UserRepositoryImpl : UserRepositoryCustom {
-
-    @PersistenceContext
-    private lateinit var em: EntityManager
-
-    override fun createUser(username: String, password: String): Long {
-        var id : Long = 0
-        val user = UserEntity(username,password)
-
-        em.persist(user)
-
-        if (user.id != null) {
-            id = user.id!!
-        }
-        return id
-    }
-}
+//open class UserRepositoryImpl : UserRepositoryCustom {
+//
+//    @PersistenceContext
+//    private lateinit var em: EntityManager
+//
+//    override fun createUser(username: String, password: String): String {
+//        var id : Long = 0
+//        val user = UserEntity(username,password)
+//
+//        em.persist(user)
+//
+//        if (user.id != null) {
+//            id = user.id!!
+//        }
+//        return id
+//    }
+//}
 
 

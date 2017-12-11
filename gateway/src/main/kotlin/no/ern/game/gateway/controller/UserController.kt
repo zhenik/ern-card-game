@@ -13,9 +13,10 @@ import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
-@Api(value = "/users", description = "API for user entities")
+//TODO: fix pathes
+@Api(value = "/entities", description = "API for user entities")
 @RequestMapping(
-        path = arrayOf("/users"),
+        path = arrayOf("/entities"),
         produces = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE)
 )
 @RestController
@@ -36,7 +37,9 @@ class PlayerController {
             userDto: UserDto
     ): ResponseEntity<Long> {
 
-        if (userDto.id!=null || userDto.password!!.isNullOrEmpty() || userDto.username!!.isNullOrEmpty()) {
+        if (
+//        userDto.id!=null ||
+                userDto.password!!.isNullOrEmpty() || userDto.username!!.isNullOrEmpty()) {
             return ResponseEntity.status(400).build()
         }
 

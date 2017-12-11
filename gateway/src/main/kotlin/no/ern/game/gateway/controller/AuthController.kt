@@ -18,10 +18,6 @@ import org.springframework.web.bind.annotation.RestController
 import java.security.Principal
 
 
-@RequestMapping(
-        path = arrayOf("/auth")
-//        produces = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE)
-)
 @RestController
 @Validated
 class AuthController(

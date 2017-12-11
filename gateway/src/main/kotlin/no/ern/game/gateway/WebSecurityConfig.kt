@@ -2,6 +2,7 @@ package no.ern.game.gateway
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -32,10 +33,12 @@ class WebSecurityConfig(
                 .and()
                 //
                 .authorizeRequests()
+                .antMatchers(HttpMethod.POST,"/entities").authenticated()
+                .antMatchers(HttpMethod.GET,"/entities").permitAll()
                 .antMatchers("/user").authenticated()
-                .antMatchers("/auth/signIn").permitAll()
+                .antMatchers("/signIn").permitAll()
 //                .antMatchers("/user-service/usersInfoCount").permitAll()
-                .antMatchers("/users").authenticated()
+
 //                .antMatchers("/greetings/**").authenticated()
                 .anyRequest().denyAll()
                 .and()
@@ -61,8 +64,13 @@ class WebSecurityConfig(
                      FROM users
                      WHERE username=?
                      """)
-                .authoritiesByUsernameQuery(
-                        "SELECT x.username, y.roles FROM users x, user_entity_roles y WHERE x.username=? and y.user_entity_username=x.username")
+                .authoritiesByUsernameQuery("""
+                     SELECT x.username, y.roles
+                     FROM users x, user_entity_roles y
+                     WHERE x.username=? and y.user_entity_username=x.username
+                     """)
                 .passwordEncoder(passwordEncoder)
+
+//        "SELECT x.username, y.roles FROM users x, user_entity_roles y WHERE x.username=? and y.user_entity_username=x.username")
     }
 }

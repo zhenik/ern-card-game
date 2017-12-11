@@ -16,7 +16,5 @@ class UserDto(
     var username: String?=null,
     var password: String?=null,
     var roles: Set<String>? = null,
-    var enabled: Boolean? = null,
-    var id: Long? = null
-
+    var enabled: Boolean? = null
 ):Serializable

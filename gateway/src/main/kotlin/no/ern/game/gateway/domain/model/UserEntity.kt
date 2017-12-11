@@ -4,13 +4,12 @@ import org.hibernate.validator.constraints.NotBlank
 import javax.persistence.*
 import javax.validation.constraints.NotNull
 
-
 @Entity
 @Table(name="USERS")
 class UserEntity(
 
+        @get:Id
         @get:NotBlank
-        @get: Column (unique = true)
         var username: String?,
 
         @get:NotBlank
@@ -21,26 +20,15 @@ class UserEntity(
         var roles: Set<String>? = setOf(),
 
         @get:NotNull
-        var enabled: Boolean? = true,
-
-        @get: Id
-        @get: GeneratedValue
-        var id: Long? = null
+        var enabled: Boolean? = true
 )
-
-
-
-//SELECT x.username, y.roles
-//FROM users x, user_entity_roles y
-//WHERE x.username=? and y.user_entity_username=x.username
-
 
 //@Entity
 //@Table(name="USERS")
 //class UserEntity(
 //
-//        @get:Id
 //        @get:NotBlank
+//        @get: Column (unique = true)
 //        var username: String?,
 //
 //        @get:NotBlank
@@ -51,6 +39,10 @@ class UserEntity(
 //        var roles: Set<String>? = setOf(),
 //
 //        @get:NotNull
-//        var enabled: Boolean? = true
+//        var enabled: Boolean? = true,
+//
+//        @get: Id
+//        @get: GeneratedValue
+//        var id: Long? = null
 //)
 
