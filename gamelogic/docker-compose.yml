@@ -17,3 +17,19 @@ services:
         - "9004:8080"
      depends_on:
         - eureka
+
+  player_0:
+    build:
+      context: ../player
+      dockerfile: Dockerfile
+    ports:
+      - "9001:8080"
+    depends_on:
+      - eureka
+      - postgres-player
+
+  rabbitmq:
+    image: "rabbitmq:3"
+
+  postgres-player:
+    image: "postgres:10"
