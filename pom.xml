@@ -219,6 +219,15 @@
         <version>${version.springboot}</version>
       </dependency>
 
+      <!-- test -->
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <!-- JUnit 5 is out, but still not in a stable / widely supported state -->
+        <version>4.12</version>
+        <scope>test</scope>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
