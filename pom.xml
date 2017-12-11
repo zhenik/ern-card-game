@@ -72,6 +72,8 @@
     <version.wiremock>2.2.1</version.wiremock>
     <version.springcloud>Dalston.SR3</version.springcloud>
     <version.postgres>42.1.4</version.postgres>
+    <version.logback-classic>1.2.3</version.logback-classic>
+    <version.jcl-over-slf4j>1.7.25</version.jcl-over-slf4j>
   </properties>
   <dependencyManagement>
 
@@ -155,6 +157,22 @@
         <artifactId>resteasy-client</artifactId>
         <version>${resteasy-client.version}</version>
         <scope>test</scope>
+      </dependency>
+      <!--Eureka dependecies-->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-actuator</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${version.logback-classic}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>${version.jcl-over-slf4j}</version>
       </dependency>
 
       <!--TRACING-->

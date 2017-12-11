@@ -1,8 +1,6 @@
 package no.ern.game.item.controller
 
-import io.swagger.annotations.Api
-import io.swagger.annotations.ApiOperation
-import io.swagger.annotations.ApiParam
+import io.swagger.annotations.*
 import no.ern.game.item.domain.converters.ItemConverter
 import no.ern.game.schema.dto.ItemDto
 import no.ern.game.item.domain.enum.Type
@@ -28,11 +26,13 @@ class ItemController {
     private lateinit var repo: ItemRepository
 
 
-    @ApiOperation("Get all items")
+    @ApiOperation("Get all items or get items by type or get items by maxlevel&minlevel or get items by list of ids")
+    @ApiResponse(code = 200, message = "List of items")
     @GetMapping
-    fun getItems(@ApiParam("The type of the item")
+    fun getItems(@ApiParam("The type of the item, and/or maxlevel&minlevel")
                  @RequestParam
                  requestParams: Map<String, String>?,
+                 @ApiParam("List of ids")
                  @RequestParam ("ids", required = false)
                  ids: List<Long>?
                     ): ResponseEntity<Iterable<ItemDto>> {
@@ -72,6 +72,11 @@ class ItemController {
     }
 
     @ApiOperation("Get a single item specified by id")
+    @ApiResponses(
+            ApiResponse(code = 400, message = "Could not parse the id"),
+            ApiResponse(code = 404, message = "No items on this id exists"),
+            ApiResponse(code = 200, message = "Item with this id")
+    )
     @GetMapping(path = arrayOf("/{id}"))
     fun getItem(@ApiParam("The ID of the item")
                        @PathVariable("id")
@@ -90,6 +95,11 @@ class ItemController {
     }
 
     @ApiOperation("Create a new item")
+    @ApiResponses(
+            ApiResponse(code = 201, message = "Id of the created item"),
+            ApiResponse(code = 409, message = "Constraint Violation: Given DTO does not follow the constraints"),
+            ApiResponse(code = 400, message = "Invalid DTO")
+    )
     @PostMapping
     fun createNewItem(
             @ApiParam("Item to create")
@@ -102,12 +112,17 @@ class ItemController {
         }catch (e: ConstraintViolationException){
             return ResponseEntity.status(409).build()
         }catch (e: Exception){
-            return ResponseEntity.status(500).build()
+            return ResponseEntity.status(400).build()
         }
 
     }
 
-    @ApiOperation("Create a new item")
+    @ApiOperation("Remove an item")
+    @ApiResponses(
+            ApiResponse(code = 204, message = "Item has been deleted"),
+            ApiResponse(code = 400, message = "Invalid ID, could not be parsed"),
+            ApiResponse(code = 404, message = "This item does not exist")
+    )
     @DeleteMapping(path = arrayOf("/{id}"))
     fun deleteItemById(
             @ApiParam("The ID of the item")
@@ -129,6 +144,12 @@ class ItemController {
     }
 
     @ApiOperation("Replace an existing item by ID")
+    @ApiResponses(
+            ApiResponse(code = 201, message = "Item did not exist of this item, but a new one has been created. Returned id of new item"),
+            ApiResponse(code = 204, message = "Successfully replaced the item, but has nothing to return"),
+            ApiResponse(code = 400, message = "Invalid ID in path or invalid DTO"),
+            ApiResponse(code = 409, message = "The path ID and DTO ID do not match")
+    )
     @PutMapping(path = arrayOf("/{id}"), consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
     fun replace(
             @ApiParam("The ID of the item to replace")
@@ -144,11 +165,10 @@ class ItemController {
         try {
             dtoId = dto.id!!.toLong()
         } catch (e: Exception) {
-            return ResponseEntity.status(404).build()
+            return ResponseEntity.status(400).build()
         }
 
         if (dto.id!! != pathId) {
-            // In this case, 409 (Conflict) sounds more appropriate than the generic 400
             return ResponseEntity.status(409).build()
         }
 
@@ -164,14 +184,19 @@ class ItemController {
         return ResponseEntity.status(204).build()
     }
 
-    @ApiOperation("Change the bonus attributes that the item gives")
+    @ApiOperation("Change the name of the item")
+    @ApiResponses(
+            ApiResponse(code = 204, message = "Successfully updated the item name"),
+            ApiResponse(code = 400, message = "Could not update the name"),
+            ApiResponse(code = 404, message = "Item does not exist on this id")
+    )
     @PatchMapping(path = arrayOf("/{id}"),
             // could have had a custom type here, but then would need an unmarshaller for it
             consumes = arrayOf(MediaType.TEXT_PLAIN_VALUE))
     fun updateItemName(@ApiParam("The ID of the item to patch")
                          @PathVariable("id")
                          id: Long,
-                         @ApiParam("The damage the item should give")
+                         @ApiParam("The name to change to")
                          @RequestBody
                          name: String)
             : ResponseEntity<Void> {
@@ -180,7 +205,6 @@ class ItemController {
             return ResponseEntity.status(404).build()
         }
 
-        // not valid winnerName
         if(!repo.updateItemName(id, name)){
             return ResponseEntity.status(400).build()
         } else {

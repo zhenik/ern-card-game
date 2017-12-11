@@ -10,6 +10,7 @@ class PlayerFightConverter {
             val healthBonus = items.sumBy { it.healthBonus!!.toInt() }
             val damageBonus = items.sumBy { it.damageBonus!!.toInt() }
             return Character(
+                    playerId = player.id.toString(),
                     username = player.username.toString(),
                     health = player.health!!.plus(healthBonus),
                     damage = player.damage!!.plus(damageBonus),
