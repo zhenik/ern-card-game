@@ -17,6 +17,7 @@
     <module>schema</module>
     <module>gamelogic</module>
     <module>gateway</module>
+    <module>hystrix</module>
   </modules>
 
   <contributors>
