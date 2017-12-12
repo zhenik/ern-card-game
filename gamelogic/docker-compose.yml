@@ -9,6 +9,16 @@ services:
     ports:
       - "8761:8761"
 
+  gateway:
+    build:
+      context: ../gateway
+      dockerfile: Dockerfile
+    ports:
+      - "10000:8080"
+    depends_on:
+      - eureka
+
+
 # dbs
   postgres-match:
     image: "postgres:10"
@@ -50,6 +60,18 @@ services:
     depends_on:
       - postgres-item
       - eureka
+
+  item_1:
+    build:
+      context: ../item
+      dockerfile: Dockerfile
+    ports:
+      - "9033:8080"
+    depends_on:
+      - postgres-item
+      - eureka
+      - item_0
+      - gateway
 
   player_0:
     build:
