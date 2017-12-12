@@ -7,7 +7,7 @@ MASTER
 
 
 
-
+### Minimum requirements for grade C are fulfilled
 
 ### SWAGER
 HOST:PORT/${path}/swagger-ui.html
