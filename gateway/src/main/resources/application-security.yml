@@ -1,0 +1,34 @@
+zuul:
+  routes:
+    player:
+      path: /players/**
+      sensitive-headers:
+    item:
+      path: /items/**
+      sensitive-headers:
+    match:
+      path: /matches/**
+      sensitive-headers:
+    gamelogic:
+      path: /play/**
+      sensitive-headers:
+
+server:
+  port: 8080
+  contextPath: /api/v1
+
+spring:
+  jpa:
+    show-sql: true
+  session:
+    store-type: redis
+  redis:
+    host: redis
+    port: 6379
+
+security:
+  sessions: ALWAYS
+
+logging:
+  level:
+    org.springframework.security: debug
