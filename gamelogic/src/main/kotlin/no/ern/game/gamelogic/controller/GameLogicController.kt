@@ -4,6 +4,7 @@ import io.swagger.annotations.*
 import no.ern.game.gamelogic.domain.converters.PlayerFightConverter
 import no.ern.game.gamelogic.domain.converters.PlayerSearchConverter
 import no.ern.game.gamelogic.domain.model.Character
+import no.ern.game.gamelogic.services.AmqpService
 import no.ern.game.gamelogic.services.GameProcessorService
 import no.ern.game.schema.dto.ItemDto
 import no.ern.game.schema.dto.MatchResultDto
@@ -43,12 +44,24 @@ class GameLogicController {
     @Autowired
     lateinit var gameService: GameProcessorService
 
+    @Autowired
+    lateinit var amqpService : AmqpService
+
     @Value("\${playerServerName}")
     private lateinit var playersPath: String
     @Value("\${itemServerName}")
     private lateinit var itemsPath: String
     @Value("\${matchServerName}")
     private lateinit var matchesPath: String
+
+
+    @PostMapping(path = arrayOf("/match"))
+    fun testEnd(@ApiParam("The match result model")
+                @RequestBody resultDto: MatchResultDto
+    ) : ResponseEntity<Any>{
+        amqpService.sendMatchResultCreated(resultDto)
+        return ResponseEntity.status(204).build()
+    }
 
     @ApiOperation("""
         Find opponent, which is closest to hunter level (+/- 1 level).

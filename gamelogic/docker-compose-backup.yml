@@ -1,0 +1,19 @@
+version: '3.3'
+
+services:
+
+  eureka:
+    build:
+      context: ../eureka
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+
+  gamelogic_0:
+     build:
+        context: ./
+        dockerfile: Dockerfile
+     ports:
+        - "9004:8080"
+     depends_on:
+        - eureka

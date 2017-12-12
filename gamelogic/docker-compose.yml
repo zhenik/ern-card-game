@@ -9,6 +9,11 @@ services:
     ports:
       - "8761:8761"
 
+  postgres-match:
+    image: "postgres:10"
+  rabbitmq:
+    image: "rabbitmq:3"
+
   gamelogic_0:
      build:
         context: ./
@@ -17,3 +22,15 @@ services:
         - "9004:8080"
      depends_on:
         - eureka
+        - rabbitmq
+
+  match_0:
+    build:
+      context: ../match
+      dockerfile: Dockerfile
+    ports:
+      - "9002:8080"
+    depends_on:
+      - eureka
+      - postgres-match
+      - rabbitmq

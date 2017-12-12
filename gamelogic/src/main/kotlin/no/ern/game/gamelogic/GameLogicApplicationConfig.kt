@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import org.springframework.amqp.core.FanoutExchange
 import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.cloud.client.loadbalancer.LoadBalanced
@@ -51,6 +52,11 @@ class GameLogicApplicationConfig {
                 .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                 .modules(JavaTimeModule())
                 .build()
+    }
+
+    @Bean
+    fun fanout() : FanoutExchange {
+        return FanoutExchange("match-result-created")
     }
 
     @LoadBalanced
