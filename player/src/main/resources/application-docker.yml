@@ -9,6 +9,8 @@ eureka:
 spring:
   application:
     name: player-server
+  rabbitmq:
+    host: rabbitmq
   datasource:
     url: "jdbc:postgresql://postgres-player:5432/postgres"
     username: "postgres"

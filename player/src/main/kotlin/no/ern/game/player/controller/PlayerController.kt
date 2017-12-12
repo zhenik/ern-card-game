@@ -5,6 +5,7 @@ import no.ern.game.player.domain.converters.PlayerConverter
 import no.ern.game.player.repository.PlayerRepository
 import no.ern.game.schema.dto.ItemDto
 import no.ern.game.schema.dto.PlayerDto
+import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
@@ -34,6 +35,22 @@ class PlayerController {
 
     @Value("\${itemServerName}")
     private lateinit var itemHost : String
+
+    @RabbitListener(queues = arrayOf("#{queue.name}"))
+    fun createPlayerRabbit(playerDto: PlayerDto) {
+
+        try {
+            repo.createPlayer(
+                    username = playerDto.username!!,
+                    health = playerDto.health!!,
+                    damage = playerDto.damage!!,
+                    currency = playerDto.currency!!,
+                    experience = playerDto.experience!!,
+                    level = playerDto.level!!,
+                    items = mutableSetOf()
+            )
+        } catch (e: Exception) { }
+    }
 
     @ApiOperation("Create new player")
     @PostMapping(consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))

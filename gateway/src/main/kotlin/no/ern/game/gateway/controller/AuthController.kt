@@ -1,6 +1,9 @@
 package no.ern.game.gateway.controller
 
+import no.ern.game.gateway.service.AmqpService
 import no.ern.game.gateway.service.UserService
+import no.ern.game.schema.dto.PlayerDto
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
@@ -24,6 +27,8 @@ class AuthController(
         private val authenticationManager: AuthenticationManager,
         private val userDetailsService: UserDetailsService
 ){
+    @Autowired
+    private lateinit var amqpService: AmqpService
 
     @RequestMapping("/user")
     fun user(user: Principal): ResponseEntity<Map<String, Any>> {
@@ -43,6 +48,23 @@ class AuthController(
 
         if (!registered) {
             return ResponseEntity.status(400).build()
+        }
+        else {
+            try {
+                val playerDto = PlayerDto(
+                        username,
+                        null,
+                        100,
+                        5,
+                        20,
+                        20,
+                        1,
+                        setOf()
+                )
+                amqpService.sendPlayer(playerDto)
+            } catch (e: Exception) {
+                println("!!! IT'S FUCKED UP !!!")
+            }
         }
 
         val userDetails = userDetailsService.loadUserByUsername(username)

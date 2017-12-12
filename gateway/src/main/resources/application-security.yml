@@ -1,3 +1,12 @@
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://eureka:8761/eureka/
+
 zuul:
   routes:
     player:
@@ -19,7 +28,9 @@ server:
 
 spring:
   application:
-    name: user-server
+    name: gateway
+  rabbitmq:
+    host: rabbitmq
   datasource:
     url: "jdbc:postgresql://postgres-user:5432/postgres"
     username: "postgres"

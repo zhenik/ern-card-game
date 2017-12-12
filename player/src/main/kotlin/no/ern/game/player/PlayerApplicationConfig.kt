@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import org.springframework.amqp.core.*
 import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.cloud.client.loadbalancer.LoadBalanced
 import org.springframework.context.annotation.Bean
@@ -61,6 +62,21 @@ class PlayerApplicationConfig {
     @Profile("!docker")
     fun restTemplate() : RestTemplate {
         return RestTemplate()
+    }
+
+    @Bean
+    fun fanout(): FanoutExchange {
+        return FanoutExchange("player-created")
+    }
+
+    @Bean
+    fun queue() : Queue {
+        return AnonymousQueue()
+    }
+
+    @Bean
+    fun binding(fanout: FanoutExchange, queue: Queue) : Binding {
+        return BindingBuilder.bind(queue).to(fanout)
     }
 
 }

@@ -2,6 +2,7 @@ package no.ern.game.gateway.service
 
 import no.ern.game.gateway.domain.model.UserEntity
 import no.ern.game.gateway.repository.UserRepository
+import no.ern.game.schema.dto.PlayerDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
