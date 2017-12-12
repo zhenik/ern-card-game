@@ -14,8 +14,9 @@ ribbon:
 spring:
   application:
     name: gamelogic-server
+  rabbitmq:
+    host: rabbitmq
 server:
-#  contextPath: /game/api
   port: 8080
 
 itemServerName: http://item-server

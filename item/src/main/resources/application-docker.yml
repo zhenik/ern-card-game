@@ -19,5 +19,4 @@ spring:
     hibernate:
       ddl-auto: "update"
 server:
-#  contextPath: /game/api
   port: 8080

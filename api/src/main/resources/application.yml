@@ -1,3 +1,0 @@
-server:
-  contextPath: /game/api
-  port: 9090

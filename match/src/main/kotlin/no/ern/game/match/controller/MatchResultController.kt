@@ -4,6 +4,7 @@ import io.swagger.annotations.*
 import no.ern.game.match.domain.converters.MatchResultConverter
 import no.ern.game.schema.dto.MatchResultDto
 import no.ern.game.match.repository.MatchResultRepository
+import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -24,6 +25,12 @@ class MatchResultController {
 
     @Autowired
     private lateinit var crud: MatchResultRepository
+
+
+    @RabbitListener(queues = arrayOf("#{queue.name}"))
+    fun createMatchResultRabbit(matchResultDto: MatchResultDto){
+        registerMatch(matchResultDto)
+    }
 
     @ApiOperation("Fetch all match results by default or with specific username if provided in request parameters")
     @ApiResponse(code = 200, message = "List of match results")

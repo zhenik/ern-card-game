@@ -4,6 +4,7 @@ import io.swagger.annotations.*
 import no.ern.game.gamelogic.domain.converters.PlayerFightConverter
 import no.ern.game.gamelogic.domain.converters.PlayerSearchConverter
 import no.ern.game.gamelogic.domain.model.Character
+import no.ern.game.gamelogic.services.AmqpService
 import no.ern.game.gamelogic.services.GameProcessorService
 import no.ern.game.schema.dto.ItemDto
 import no.ern.game.schema.dto.MatchResultDto
@@ -43,12 +44,24 @@ class GameLogicController {
     @Autowired
     lateinit var gameService: GameProcessorService
 
+    @Autowired
+    lateinit var amqpService : AmqpService
+
     @Value("\${playerServerName}")
     private lateinit var playersPath: String
     @Value("\${itemServerName}")
     private lateinit var itemsPath: String
     @Value("\${matchServerName}")
     private lateinit var matchesPath: String
+
+
+    @PostMapping(path = arrayOf("/match"))
+    fun testEnd(@ApiParam("The match result model")
+                @RequestBody resultDto: MatchResultDto
+    ) : ResponseEntity<Any>{
+        amqpService.sendMatchResultCreated(resultDto)
+        return ResponseEntity.status(204).build()
+    }
 
     @ApiOperation("""
         Find opponent, which is closest to hunter level (+/- 1 level).
@@ -169,20 +182,27 @@ class GameLogicController {
 
         val fightResultGameLog = gameService.fight(attacker,defender)
 
-        /** 5 send matchResult to MatchResult processor */
+        /** 5 send matchResult to MatchResult processor rabbitMQ send */
+        // In try catch because be able run local wireMock tests
         val matchResult = getMatchResult(attacker,defender,fightResultGameLog.winner!!)
-        val matchUrl = "$matchesPath/matches"
-        // its work in local env without specifying headers, but doesnt in distributed env with docker
-        // so I had to specify header for payload
-        val headers = LinkedMultiValueMap<String, String>()
-        headers.add("Content-Type", "application/json")
-        restTemplate.messageConverters.add(MappingJackson2HttpMessageConverter())
-        val request = HttpEntity<MatchResultDto>(matchResult, headers)
-        val responseMatchApi : ResponseEntity<Long> = restTemplate.postForEntity(matchUrl, request, Long::class.java)
-
-        if (responseMatchApi.statusCode.value()!=201){
-            return ResponseEntity.status(responseMatchApi.statusCode.value()).build()
+        try {
+            amqpService.sendMatchResultCreated(matchResult)
         }
+        catch (e: Exception){}
+
+
+//        /** 5 send matchResult to MatchResult processor HTTP call */
+//        val matchUrl = "$matchesPath/matches"
+//        // its work in local env without specifying headers, but doesnt in distributed env with docker
+//        // so I had to specify header for payload
+//        val headers = LinkedMultiValueMap<String, String>()
+//        headers.add("Content-Type", "application/json")
+//        restTemplate.messageConverters.add(MappingJackson2HttpMessageConverter())
+//        val request = HttpEntity<MatchResultDto>(matchResult, headers)
+//        val responseMatchApi : ResponseEntity<Long> = restTemplate.postForEntity(matchUrl, request, Long::class.java)
+//        if (responseMatchApi.statusCode.value()!=201){
+//            return ResponseEntity.status(responseMatchApi.statusCode.value()).build()
+//        }
 
 
 

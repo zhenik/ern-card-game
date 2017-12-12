@@ -136,10 +136,11 @@ class GameLogicControllerTest : ControllerTestBase() {
                                 .withBody(playerDto2)))
 
         // new match result created
-        wiremockServerMatch.stubFor(
-                WireMock.post(
-                        urlMatching(".*/matches"))
-                        .willReturn(WireMock.aResponse().withStatus(201)))
+//        wiremockServerMatch.stubFor(
+//                WireMock.post(
+//                        urlMatching(".*/matches"))
+//                        .willReturn(WireMock.aResponse().withStatus(201)))
+
 
 
         // Act
@@ -149,6 +150,9 @@ class GameLogicControllerTest : ControllerTestBase() {
                 .accept(ContentType.JSON)
                 .body(playersFightIdsDto)
                 .post("/fight")
+
+        println("HERE MAZZAFAKKA")
+        println(response.body.print())
         // get fight log
         val fightResultLogDto = response.then().extract().`as`(FightResultLogDto::class.java)
 
@@ -204,10 +208,10 @@ class GameLogicControllerTest : ControllerTestBase() {
 
 
         // new match result created
-        wiremockServerMatch.stubFor(
-                WireMock.post(
-                        urlMatching(".*/matches"))
-                        .willReturn(WireMock.aResponse().withStatus(201)))
+//        wiremockServerMatch.stubFor(
+//                WireMock.post(
+//                        urlMatching(".*/matches"))
+//                        .willReturn(WireMock.aResponse().withStatus(201)))
 
 
         // Act

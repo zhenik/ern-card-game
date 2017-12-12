@@ -33,7 +33,7 @@ class PlayerControllerWiremockTest : WiremockTestBase() {
                 .extract().`as`(Long::class.java)
 
         wiremockServerItem.stubFor(
-                WireMock.get(urlMatching(".*/game/api/items/1"))
+                WireMock.get(urlMatching(".*/items/1"))
                         .willReturn(
                                 WireMock.aResponse()
                                         .withStatus(200)))
@@ -72,7 +72,7 @@ class PlayerControllerWiremockTest : WiremockTestBase() {
 
         // Stub 200, item with 1 should exist
         wiremockServerItem.stubFor(
-                WireMock.get(urlMatching(".*/game/api/items/1"))
+                WireMock.get(urlMatching(".*/items/1"))
                         .willReturn(
                                 WireMock.aResponse()
                                         .withStatus(200)))
@@ -90,7 +90,7 @@ class PlayerControllerWiremockTest : WiremockTestBase() {
         // Add item with id that does not exist
         val itemWithInvalidId = ItemDto(id = "2")
         wiremockServerItem.stubFor(
-                WireMock.get(urlMatching(".*/game/api/items/2"))
+                WireMock.get(urlMatching(".*/items/2"))
                         .willReturn(
                                 WireMock.aResponse()
                                         .withStatus(404)))
