@@ -1,6 +1,9 @@
 version: '3.3'
 
 services:
+  postgres-user:
+    image: "postgres:10"
+
   redis:
     image: "redis:latest"
 

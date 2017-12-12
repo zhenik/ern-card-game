@@ -18,8 +18,18 @@ server:
   contextPath: /api/v1
 
 spring:
+  application:
+    name: user-server
+  datasource:
+    url: "jdbc:postgresql://postgres-user:5432/postgres"
+    username: "postgres"
+    password: ""
+    driver-class-name: "org.postgresql.Driver"
   jpa:
     show-sql: true
+    database: "postgresql"
+    hibernate:
+      ddl-auto: "update"
   session:
     store-type: redis
   redis:
