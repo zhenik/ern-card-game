@@ -9,8 +9,14 @@ services:
     ports:
       - "8761:8761"
 
+# dbs
   postgres-match:
     image: "postgres:10"
+  postgres-item:
+    image: "postgres:10"
+  postgres-player:
+    image: "postgres:10"
+
   rabbitmq:
     image: "rabbitmq:3"
 
@@ -34,3 +40,23 @@ services:
       - eureka
       - postgres-match
       - rabbitmq
+
+  item_0:
+    build:
+      context: ../item
+      dockerfile: Dockerfile
+    ports:
+      - "9003:8080"
+    depends_on:
+      - postgres-item
+      - eureka
+
+  player_0:
+    build:
+      context: ../player
+      dockerfile: Dockerfile
+    ports:
+      - "9001:8080"
+    depends_on:
+      - postgres-player
+      - eureka

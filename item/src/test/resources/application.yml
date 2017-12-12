@@ -1,3 +1,2 @@
 server:
-#  contextPath: /game/api
   port: 7083

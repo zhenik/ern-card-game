@@ -14,7 +14,7 @@ HOST:PORT/${path}/swagger-ui.html
 
 ### Gateway
 GET & POST  
-`localhost:8080/game/api/entities`  
+`localhost:8080/entities`  
 Jaeger UI  
 `localhost:16686`
 

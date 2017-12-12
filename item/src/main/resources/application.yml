@@ -17,5 +17,4 @@ spring:
       ddl-auto: "create-drop"
 
 server:
-#  contextPath: /game/api
   port: 8083
