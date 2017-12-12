@@ -7,7 +7,6 @@ import org.junit.Test
 
 class PlayerSearchConverterTest{
     val playerDto = PlayerDto(
-            "1",
             "username1",
             "1",
             100,

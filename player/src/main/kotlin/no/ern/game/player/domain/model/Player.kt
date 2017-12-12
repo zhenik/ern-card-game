@@ -10,10 +10,10 @@ import javax.validation.constraints.Size
 @Entity
 data class Player(
 
-        @get:Column(unique = true)
-        @get:NotNull
-        @get:Min(0)
-        var userId: Long,
+//        @get:Column(unique = true)
+//        @get:NotNull
+//        @get:Min(0)
+//        var userId: Long,
 
         @get:NotBlank
         @get:Size(max = 50)

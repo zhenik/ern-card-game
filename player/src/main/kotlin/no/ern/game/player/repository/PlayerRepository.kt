@@ -21,7 +21,6 @@ interface PlayerRepository : CrudRepository<Player, Long>, PlayerRepositoryCusto
 @Transactional
 interface PlayerRepositoryCustom {
     fun createPlayer(
-            userId: Long,
             username: String,
             health: Int,
             damage: Int,
@@ -52,10 +51,9 @@ open class PlayerRepositoryImpl : PlayerRepositoryCustom {
     @PersistenceContext
     private lateinit var em: EntityManager
 
-    override fun createPlayer(userId: Long, username: String, health: Int, damage: Int, currency: Int, experience: Int, level: Int, items: MutableSet<Long>): Long {
+    override fun createPlayer(username: String, health: Int, damage: Int, currency: Int, experience: Int, level: Int, items: MutableSet<Long>): Long {
         var id: Long = -1
         val playerEntity = Player(
-                userId,
                 username,
                 health,
                 damage,

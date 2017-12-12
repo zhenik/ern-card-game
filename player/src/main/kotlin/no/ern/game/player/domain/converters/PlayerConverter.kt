@@ -10,7 +10,7 @@ class PlayerConverter {
 
         fun transform(entity: Player): PlayerDto {
             return PlayerDto(
-                    userId = entity.userId.toString(),
+//                    userId = entity.userId.toString(),
                     username = entity.username,
                     id = entity.id.toString(),
                     health = entity.health,

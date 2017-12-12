@@ -64,7 +64,6 @@ class PlayerController {
 
         try {
             val savedId = repo.createPlayer(
-                    userId = playerDto.userId!!.toLong(),
                     username = playerDto.username!!,
                     health = playerDto.health!!,
                     damage = playerDto.damage!!,
@@ -94,7 +93,6 @@ class PlayerController {
             @RequestBody
             itemDto: ItemDto): ResponseEntity<Void> {
 
-//        var rest: RestTemplate = RestTemplateBuilder().build()
 
         if(!repo.exists(id)) {
             return ResponseEntity.status(404).build()
@@ -291,8 +289,7 @@ class PlayerController {
                 playerDto.damage != null &&
                 playerDto.currency != null &&
                 playerDto.experience != null &&
-                playerDto.level != null &&
-                playerDto.userId != null
+                playerDto.level != null
                 ) {
             return true
         }

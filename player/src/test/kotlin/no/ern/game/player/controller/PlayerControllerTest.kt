@@ -246,7 +246,6 @@ class PlayerControllerTest : TestBase() {
     private fun getValidPlayerDtos(): List<PlayerDto> {
         return listOf(
                 PlayerDto(
-                        "1",
                         "Bob",
                         null,
                         120,
@@ -257,7 +256,6 @@ class PlayerControllerTest : TestBase() {
                         listOf(1L, 2L, 3L)
                 ),
                 PlayerDto(
-                        "5",
                         "Robert",
                         null,
                         122,
@@ -268,7 +266,6 @@ class PlayerControllerTest : TestBase() {
                         listOf(1L, 3L, 2L)
                 ),
                 PlayerDto(
-                        "10",
                         "Carl the man",
                         null,
                         132,

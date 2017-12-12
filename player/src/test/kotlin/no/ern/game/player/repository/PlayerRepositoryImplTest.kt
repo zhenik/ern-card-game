@@ -26,7 +26,6 @@ class EntityRepositoryImplTest {
         val player = getValidPlayers()[0]
 
         val savedId = repo.createPlayer(
-                player.userId,
                 player.username,
                 player.health,
                 player.damage,
@@ -51,7 +50,6 @@ class EntityRepositoryImplTest {
 
         try {
             repo.createPlayer(
-                    player.userId,
                     player.username,
                     player.health,
                     player.damage,
@@ -267,7 +265,6 @@ class EntityRepositoryImplTest {
     fun getValidPlayers(): List<Player> {
         return listOf(
                 Player(
-                        1,
                         "Bob",
                         120,
                         44,
@@ -277,7 +274,6 @@ class EntityRepositoryImplTest {
                         mutableSetOf(1L, 3L, 2L)
                 ),
                 Player(
-                        5,
                         "Robert",
                         122,
                         46,
@@ -287,7 +283,6 @@ class EntityRepositoryImplTest {
                         mutableSetOf(10L, 25L, 17L)
                 ),
                 Player(
-                        13,
                         "someone",
                         240,
                         96,
@@ -302,7 +297,6 @@ class EntityRepositoryImplTest {
 
     fun createPlayer(player: Player): Long {
         val savedId = repo.createPlayer(
-                player.userId,
                 player.username,
                 player.health,
                 player.damage,
@@ -315,18 +309,6 @@ class EntityRepositoryImplTest {
         return savedId
     }
 
-    /*fun createPlayer(player: Player): Boolean {
-        return repo.createPlayer(
-                userId = player.userId,
-                username = player.username,
-                health = player.health,
-                damage = player.damage,
-                currency = player.currency,
-                experience = player.experience,
-                level = player.level,
-                items = player.items
-        )
-    }*/
 
     fun updatePlayer(player: Player, id: Long): Boolean {
         return repo.updatePlayer(

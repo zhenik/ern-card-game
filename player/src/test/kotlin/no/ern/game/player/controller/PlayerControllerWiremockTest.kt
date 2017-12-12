@@ -15,7 +15,6 @@ class PlayerControllerWiremockTest : WiremockTestBase() {
     fun testAddItemToPlayer_Valid() {
 
         val playerDto1 = PlayerDto(
-                "1",
                 "Bob",
                 null,
                 120,
@@ -52,7 +51,6 @@ class PlayerControllerWiremockTest : WiremockTestBase() {
     @Test
     fun testAddItemToPlayer_Invalid() {
         val playerDto1 = PlayerDto(
-                "1",
                 "Bob",
                 null,
                 120,
