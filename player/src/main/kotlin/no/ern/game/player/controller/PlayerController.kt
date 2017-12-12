@@ -101,7 +101,7 @@ class PlayerController {
         }
 
         // check if item id exists
-        val itemURL = "${itemHost}/game/api/items/${itemDto.id}"
+        val itemURL = "${itemHost}/items/${itemDto.id}"
         val response: ResponseEntity<ItemDto> = try {
             rest.getForEntity(itemURL, ItemDto::class.java)
         } catch (e: HttpClientErrorException) {
