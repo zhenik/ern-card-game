@@ -5,7 +5,11 @@ services:
   postgres-user:
     image: "postgres:10"
   postgres-player:
-      image: "postgres:10"
+    image: "postgres:10"
+  postgres-item:
+    image: "postgres:10"
+  postgres-match:
+    image: "postgres:10"
 
   redis:
     image: "redis:latest"
@@ -42,3 +46,23 @@ services:
       - eureka
       - rabbitmq
 
+  match_0:
+    build:
+      context: ../match
+      dockerfile: Dockerfile
+    ports:
+      - "9002:8080"
+    depends_on:
+      - eureka
+      - postgres-match
+      - rabbitmq
+
+  item_0:
+    build:
+      context: ../item
+      dockerfile: Dockerfile
+    ports:
+      - "9003:8080"
+    depends_on:
+      - postgres-item
+      - eureka
