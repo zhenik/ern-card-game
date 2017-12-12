@@ -1,5 +1,8 @@
 package no.ern.game.gamelogic.controller
 
+import com.netflix.config.ConfigurationManager
+import com.netflix.hystrix.HystrixCommand
+import com.netflix.hystrix.HystrixCommandGroupKey
 import io.swagger.annotations.*
 import no.ern.game.gamelogic.domain.converters.PlayerFightConverter
 import no.ern.game.gamelogic.domain.converters.PlayerSearchConverter
@@ -14,6 +17,8 @@ import no.ern.game.schema.dto.gamelogic.PlayerSearchDto
 import no.ern.game.schema.dto.gamelogic.PlayersFightIdsDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker
+import org.springframework.cloud.netflix.hystrix.EnableHystrix
 import org.springframework.http.HttpEntity
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -34,8 +39,17 @@ import org.springframework.util.LinkedMultiValueMap
 //        produces = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE)
 )
 @RestController
+@EnableCircuitBreaker
 @Validated
 class GameLogicController {
+
+    init {
+        val conf = ConfigurationManager.getConfigInstance()
+        conf.setProperty("hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds", 500) //timeout time
+        conf.setProperty("hystrix.command.default.circuitBreaker.requestVolumeThreshold", 2) //How many fails before activate circuitbreak
+        conf.setProperty("hystrix.command.default.circuitBreaker.errorThresholdPercentage", 50) //How high percent treshold for errors
+        conf.setProperty("hystrix.command.default.circuitBreaker.sleepWindowInMilliseconds", 10000) //How long circuit break stops requests
+    }
 
     @Autowired
     lateinit var restTemplate : RestTemplate
@@ -62,12 +76,7 @@ class GameLogicController {
 
 
         // 1 make request to player module.
-        val response : ResponseEntity<Array<PlayerDto>> = try {
-            val url = "$playersPath/players"
-            restTemplate.getForEntity(url, Array<PlayerDto>::class.java)
-        } catch (e: HttpClientErrorException) {
-            return ResponseEntity.status(e.statusCode.value()).build()
-        }
+        val response : ResponseEntity<Array<PlayerDto>> = GetEnemyList().execute()
 
         // 3 get list. If list is empty return bad request
         val players = response.body.asList()
@@ -244,6 +253,19 @@ class GameLogicController {
                 ),
                 winner
         )
+    }
+    // Fail fast (https://github.com/Netflix/Hystrix/wiki/How-To-Use#Common-Patterns-FailFast)
+    private inner class GetEnemyList
+        : HystrixCommand<ResponseEntity<Array<PlayerDto>>>(HystrixCommandGroupKey.Factory.asKey("Fetching list of enemies")) {
+
+        override fun run(): ResponseEntity<Array<PlayerDto>> {
+            try {
+                val url = "$playersPath/players"
+                return restTemplate.getForEntity(url, Array<PlayerDto>::class.java)
+            } catch (e: HttpClientErrorException) {
+                return ResponseEntity.status(e.statusCode.value()).build()
+            }
+        }
     }
 
 }

@@ -3,7 +3,6 @@ package no.ern.game.hystrix
 import com.netflix.config.ConfigurationManager
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 import org.springframework.cloud.netflix.hystrix.EnableHystrix
 import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboard
 import org.springframework.context.annotation.Bean
@@ -13,19 +12,9 @@ import springfox.documentation.spring.web.plugins.Docket
 import springfox.documentation.swagger2.annotations.EnableSwagger2
 
 @SpringBootApplication
-@EnableEurekaClient
-@EnableHystrix
 @EnableHystrixDashboard
 @EnableSwagger2
 class HystrixApplication {
-
-    init {
-        val conf = ConfigurationManager.getConfigInstance()
-        conf.setProperty("hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds", 500) //timeout time
-        conf.setProperty("hystrix.command.default.circuitBreaker.requestVolumeThreshold", 2) //How many fails before activate circuitbreak
-        conf.setProperty("hystrix.command.default.circuitBreaker.errorThresholdPercentage", 50) //How high percent treshold for errors
-        conf.setProperty("hystrix.command.default.circuitBreaker.sleepWindowInMilliseconds", 10000) //How long circuit break stops requests
-    }
 
     @Bean
     fun swaggerApi(): Docket {
