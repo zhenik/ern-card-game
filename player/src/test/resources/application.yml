@@ -1,0 +1,4 @@
+server:
+#  contextPath: /game/api
+  port: 7081
+itemServerName: http://localhost:8083

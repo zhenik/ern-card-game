@@ -1,0 +1,23 @@
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://eureka:8761/eureka/
+spring:
+  application:
+    name: match-server
+  datasource:
+    url: "jdbc:postgresql://postgres-match:5432/postgres"
+    username: "postgres"
+    password: ""
+    driver-class-name: "org.postgresql.Driver"
+  jpa:
+    database: "postgresql"
+    hibernate:
+      ddl-auto: "update"
+server:
+#  contextPath: /game/api
+  port: 8080

@@ -1,0 +1,6 @@
+server:
+#  contextPath: /game/api
+  port: 9084
+itemServerName: http://localhost:8083
+playerServerName: http://localhost:8081
+matchServerName: http://localhost:8082

@@ -9,10 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>api</artifactId>
+    <artifactId>item</artifactId>
 
     <dependencies>
-
         <dependency>
             <groupId>no.ern.game</groupId>
             <artifactId>schema</artifactId>
@@ -43,6 +42,11 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
         </dependency>
+        <!--DBs-->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
@@ -71,21 +75,20 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-eureka-server</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
             <scope>test</scope>
         </dependency>
-        <!--TRACING-->
-        <!-- https://mvnrepository.com/artifact/com.uber.jaeger/jaeger-core -->
-        <dependency>
-            <groupId>com.uber.jaeger</groupId>
-            <artifactId>jaeger-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
-            <version>${version.jwt}</version>
-        </dependency>
+        <!--&lt;!&ndash;TRACING&ndash;&gt;-->
+        <!--&lt;!&ndash; https://mvnrepository.com/artifact/com.uber.jaeger/jaeger-core &ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>com.uber.jaeger</groupId>-->
+            <!--<artifactId>jaeger-core</artifactId>-->
+        <!--</dependency>-->
     </dependencies>
 
     <build>
@@ -94,9 +97,11 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <finalName>api</finalName>
+                    <finalName>item</finalName>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
+
 </project>

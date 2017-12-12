@@ -22,6 +22,6 @@ class EntityConverterTest{
         //Assert
         assertEquals(entity.field1,entDto.field1)
         assertEquals(entity.field2,entDto.field2)
-        assertNull(entDto.id) // that's tricky, check converter `?`
+        assertNull(entDto.id) // that's tricky, check converters `?`
     }
 }

@@ -1,0 +1,23 @@
+version: '3.3'
+
+services:
+
+  postgres-match:
+    image: "postgres:10"
+
+  eureka:
+    build:
+      context: ../eureka
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+
+  match_0:
+     build:
+        context: ./
+        dockerfile: Dockerfile
+     ports:
+        - "9000:8080"
+     depends_on:
+        - postgres-match
+        - eureka

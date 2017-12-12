@@ -1,0 +1,27 @@
+
+zuul:
+  routes:
+    player:
+      path: /players/**
+    item:
+      path: /items/**
+    match:
+      path: /matches/**
+    gamelogic:
+      path: /play/**
+
+spring:
+  application:
+    name: gateway
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://eureka:8761/eureka/
+server:
+  port: 8080
+  contextPath: /api/v1
