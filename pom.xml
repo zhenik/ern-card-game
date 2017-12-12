@@ -216,7 +216,7 @@
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-amqp</artifactId>
-        <version>1.5.4.RELEASE</version> <!-- Needs to be a different version, does not work with 1.5.7.RELEASE -->
+        <version>${spring.version}</version>
       </dependency>
 
     </dependencies>
