@@ -13,6 +13,8 @@ will attack the other one. If both dice from one player is equal, it will be a "
 After the match is over, a log will be returned.
 
 ### How is the game implemented?
+
+#### Gamelogic
 The main part of the game, the logic and execution for it is defined in the "Gamelogic" API. This API has two endpoints, one for finding 
 and opponent and one for starting the fight. 
 
@@ -26,6 +28,14 @@ This endpoint is supposed to be called after finding an opponent/enemy
 from the GET /enemy endpoint. This endpoint then starts the game, executes all the dice throws and calculates damage. When one of the Players lose all their health, 
 the match is over. After this, the method will persists a log of the match, to a seperate API, the MatchService. This is done using AMQP(RabbitMQ).
 When everything else is done, the endpoint returns a "FightResultLogDto" containing the result of the match.
+
+#### "Entity-repositories"
+There are also three other API's that are required for the game to work: Match, Player and Item. 
+Each of these repositories are the responsibility of one player. 
+
+The Match API was developed and is the responsibility of Nikita. This API provides POST, PUT, PATCH, GET and DELETE methods for MatchResults. 
+The purpose of this API is to store result from matches.
+
 
 ### Further improvments
 
