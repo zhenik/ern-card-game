@@ -14,11 +14,41 @@ ribbon:
 spring:
   application:
     name: gamelogic-server
+  session:
+    # specify that session tokes should be stored in Redis
+    store-type: redis
+  redis:
+    host: redis
+    port: 6379
   rabbitmq:
     host: rabbitmq
 server:
   port: 8080
 
+# Only the gateway should create a session.
+security:
+  sessions: NEVER
+
 itemServerName: http://item-server
 playerServerName: http://player-server
 matchServerName: http://match-server
+
+
+#spring:
+#  # specify where Redis can be found.
+#  # Note: the IP address is based on Docker-Compose
+#  redis:
+#    host: redis
+#    port: 6379
+#  session:
+#    # specify that session tokes should be stored in Redis
+#    store-type: redis
+#
+## Only the gateway should create a session.
+#security:
+#  sessions: NEVER
+#
+#
+#logging:
+#  level:
+#    org.springframework.security: debug
