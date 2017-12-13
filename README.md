@@ -41,5 +41,17 @@ All the different emails from this user are listed below, and is also registered
  - Skogeir15@student.westerdals.no
  - eirikskogstad13@gmail.com
  
+ 
+## Docker
+
+### Problems with Docker/Docker-compose
+Due to the large amount of nodes we have in the projects, we sometimes encountered problems.
+When we upped everything in Docker-compose, sometimes a few of the nodes/images would crash. 
+After inspecting the logs and testing, we fixed the problem by upping the amount of memory Docker was allowed to use.
+Having so many images packaged as FatJAR's will of course have a huge memory fotprint, so keep this in mind.
+
+If some of the nodes crash, try to increase memory if you're using a MAC.
+For Nikita 4GB on his MAC was too low, so we suggest increasing to higher than this. (8 GB perhaps)
+ 
 ### Remove all images 
 docker rmi $(docker images -a -q)
