@@ -118,11 +118,12 @@ class GameLogicController {
             ApiResponse(code = 400, message = "Given payload is invalid, check request body")
     )
     fun startFight(
+            authentication: Authentication,
             @ApiParam("Model represent ids of users who are going to fight against each other")
             @RequestBody resultIdsDto: PlayersFightIdsDto
-    ) : ResponseEntity<FightResultLogDto>{
+    ) : ResponseEntity<FightResultLogDto> {
 
-        // 0 TODO: validate this attacker initiate request (possible only with Security)
+
 
         // 1 validate that all fields are present (PlayersFightIdsDto) and ids are Long and ids are different
         if( ! isPlayersFightIdsDtoValid(resultIdsDto)) {
@@ -149,6 +150,13 @@ class GameLogicController {
 
             attackerPlayerDto = responseAttacker.body
             defenderPlayerDto = responseDefender.body
+
+            // 0 validate this attacker initiate request (possible only with Security)
+            val callerUsername = authentication.name
+            if(callerUsername.toLowerCase() != attackerPlayerDto.username!!.toLowerCase()) {
+                return ResponseEntity.status(400).build()
+            }
+
         }
         catch (e: HttpClientErrorException){
 
