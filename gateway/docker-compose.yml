@@ -28,7 +28,7 @@ services:
       - eureka
       - postgres-user
 
-  user-service:
+  user-service_0:
     build:
       context: ../userservice
       dockerfile: Dockerfile
@@ -76,17 +76,15 @@ services:
 #      - postgres-item
 #      - eureka
 
-#  gamelogic_0:
-#    build:
-#      context: ../gamelogic
-#      dockerfile: Dockerfile
-#    ports:
-#      - "9004:8080"
-#    depends_on:
-#      - eureka
-#      - rabbitmq
-#      - gateway
-#      - redis
-#      - item_0
-#      - player_0
-#      - match_0
+  gamelogic-server:
+    build:
+      context: ../gamelogic
+      dockerfile: Dockerfile
+    ports:
+      - "9004:8080"
+    depends_on:
+      - eureka
+      - rabbitmq
+      - gateway
+      - redis
+      - player_0

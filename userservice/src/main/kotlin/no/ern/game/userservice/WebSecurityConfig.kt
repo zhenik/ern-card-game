@@ -26,24 +26,24 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
                  */
                 .antMatchers("/usersInfoCount").permitAll()
                 .antMatchers("/username").permitAll()
-                .antMatchers("/usersInfo").hasRole("ADMIN")
+//                .antMatchers("/usersInfo").hasRole("ADMIN")
                 //
-                .antMatchers("/usersInfo/{id}/**")
+//                .antMatchers("/usersInfo/{id}/**")
                 /*
                     the "#" resolves the variable in the path, "{id}" in this case.
                     the "@" resolves a current bean.
                   */
-                .access("hasRole('USER') and @userSecurity.checkId(authentication, #id)")
+//                .access("hasRole('USER') and @userSecurity.checkId(authentication, #id)")
                 //
                 .anyRequest().denyAll()
                 .and()
                 .csrf().disable()
     }
 
-    @Bean
-    fun userSecurity() : UserSecurity{
-        return UserSecurity()
-    }
+//    @Bean
+//    fun userSecurity() : UserSecurity{
+//        return UserSecurity()
+//    }
 }
 
 /**
@@ -51,12 +51,12 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
  * need to make sure that a user can only access his/her data, and not the
  * one of the other users
  */
-class UserSecurity{
-
-    fun checkId(authentication: Authentication, id: String) : Boolean {
-
-        val current = (authentication.principal as UserDetails).username
-
-        return current == id
-    }
-}
+//class UserSecurity{
+//
+//    fun checkId(authentication: Authentication, id: String) : Boolean {
+//
+//        val current = (authentication.principal as UserDetails).username
+//
+//        return current == id
+//    }
+//}

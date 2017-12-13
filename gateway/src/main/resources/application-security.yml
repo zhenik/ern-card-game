@@ -20,6 +20,7 @@ zuul:
       sensitive-headers:
     gamelogic:
       path: /play/**
+      url: http://gamelogic-server:8080/
       sensitive-headers:
     user-service:
       path: /user-service/**

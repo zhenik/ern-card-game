@@ -26,6 +26,8 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
                  */
 //                .antMatchers("/usersInfoCount").permitAll()
                 .antMatchers("/play/**").permitAll()
+                .antMatchers("/play/username").permitAll()
+                .antMatchers("/username1").permitAll()
 //                .antMatchers("/usersInfo").hasRole("ADMIN")
                 //
 //                .antMatchers("/play/**").hasRole("USER")
