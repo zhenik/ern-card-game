@@ -267,3 +267,14 @@ class GameLogicController {
     }
 
 }
+
+
+fun excludeFromListByUsername(players: List<PlayerDto>, username: String): MutableList<PlayerDto> {
+    val result = mutableListOf<PlayerDto>()
+    players
+        .filter { it.username != null }
+        .filter { it.username!!.toLowerCase() != username.toLowerCase()}
+        .toCollection(result)
+
+    return result
+}
