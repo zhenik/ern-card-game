@@ -126,40 +126,63 @@ class GameLogicController {
 
 
         // 1 validate that all fields are present (PlayersFightIdsDto) and ids are Long and ids are different
-        if( ! isPlayersFightIdsDtoValid(resultIdsDto)) {
-            return ResponseEntity.status(400).build()
-        }
+//        if( ! isPlayersFightIdsDtoValid(resultIdsDto)) {
+//            println("1 HERE -------> 1 dtos not valid")
+//            return ResponseEntity.status(400).build()
+//        }
 
 
+        val callerUsername = authentication.name
         /** 2 fetch players*/
         var attackerPlayerDto : PlayerDto
         var defenderPlayerDto : PlayerDto
         try{
+            println("2 HERE -------> $callerUsername")
+//            val urlAttacker = "$playersPath/players/${resultIdsDto.attackerId!!.toLong()}"
+            val urlAttacker = "$playersPath/players?username=${authentication.name}"
+            println("3 HERE -------> ${urlAttacker}")
 
-            val urlAttacker = "$playersPath/players/${resultIdsDto.attackerId!!.toLong()}"
             val urlDefender = "$playersPath/players/${resultIdsDto.defenderId!!.toLong()}"
 
-            val responseAttacker : ResponseEntity<PlayerDto> = restTemplate.getForEntity(urlAttacker, PlayerDto::class.java)
+//            val responseAttacker : ResponseEntity<PlayerDto> = restTemplate.getForEntity(urlAttacker, PlayerDto::class.java)
+            val responseAttacker: ResponseEntity<Array<PlayerDto>> = restTemplate.getForEntity(urlAttacker, Array<PlayerDto>::class.java)
+            println("4 HERE -------> ${responseAttacker.body.toList()}")
+            if(responseAttacker.body.toList().size != 1){
+                println("5 HERE -------> 400")
+                return ResponseEntity.status(400).build()
+            } else {
+                attackerPlayerDto = responseAttacker.body.toList().first()
+            }
+
             val responseDefender : ResponseEntity<PlayerDto> = restTemplate.getForEntity(urlDefender, PlayerDto::class.java)
 
 
             // player(s) not found
             if (responseAttacker.statusCodeValue!=200 || responseDefender.statusCodeValue!=200){
+                println("6 HERE -------> 404")
                 return ResponseEntity.status(404).build()
             }
 
-            attackerPlayerDto = responseAttacker.body
+
             defenderPlayerDto = responseDefender.body
 
             // 0 validate this attacker initiate request (possible only with Security)
-            val callerUsername = authentication.name
-            if(callerUsername.toLowerCase() != attackerPlayerDto.username!!.toLowerCase()) {
+            println("6.5 HERE ------->|${callerUsername.toLowerCase()}|${attackerPlayerDto.username!!.toLowerCase()}|")
+            if( callerUsername.toLowerCase() != (attackerPlayerDto.username!!.toLowerCase()) ) {
+                println("7 HERE -------> 400")
+                return ResponseEntity.status(400).build()
+            }
+            println("9 HERE ------->|${callerUsername.toLowerCase()}|${attackerPlayerDto.username!!.toLowerCase()}|")
+
+            // validate that
+            if(callerUsername.toLowerCase() == defenderPlayerDto.username!!.toLowerCase()){
+                println("10 HERE -------> 400")
                 return ResponseEntity.status(400).build()
             }
 
+
         }
         catch (e: HttpClientErrorException){
-
             return ResponseEntity.status(e.rawStatusCode).build()
         }
 

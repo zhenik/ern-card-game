@@ -41,7 +41,7 @@ class PlayerController {
 
         try {
             repo.createPlayer(
-                    username = playerDto.username!!,
+                    username = playerDto.username!!.toLowerCase(),
                     health = playerDto.health!!,
                     damage = playerDto.damage!!,
                     currency = playerDto.currency!!,
