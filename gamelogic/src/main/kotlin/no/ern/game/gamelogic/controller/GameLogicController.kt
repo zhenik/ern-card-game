@@ -120,11 +120,15 @@ class GameLogicController {
     fun startFight(
             authentication: Authentication,
             @ApiParam("Model represent ids of users who are going to fight against each other")
-            @RequestBody resultIdsDto: PlayersFightIdsDto
+            @RequestBody playerSearchDto: PlayerSearchDto
     ) : ResponseEntity<FightResultLogDto> {
 
 
 
+        if(!isPlayersFightDtoIdValid(playerSearchDto)){
+            println("1 HERE -------> 1 dtos not valid")
+            return ResponseEntity.status(400).build()
+        }
         // 1 validate that all fields are present (PlayersFightIdsDto) and ids are Long and ids are different
 //        if( ! isPlayersFightIdsDtoValid(resultIdsDto)) {
 //            println("1 HERE -------> 1 dtos not valid")
@@ -142,7 +146,7 @@ class GameLogicController {
             val urlAttacker = "$playersPath/players?username=${authentication.name}"
             println("3 HERE -------> ${urlAttacker}")
 
-            val urlDefender = "$playersPath/players/${resultIdsDto.defenderId!!.toLong()}"
+            val urlDefender = "$playersPath/players/${playerSearchDto.id!!.toLong()}"
 
 //            val responseAttacker : ResponseEntity<PlayerDto> = restTemplate.getForEntity(urlAttacker, PlayerDto::class.java)
             val responseAttacker: ResponseEntity<Array<PlayerDto>> = restTemplate.getForEntity(urlAttacker, Array<PlayerDto>::class.java)
@@ -287,6 +291,16 @@ class GameLogicController {
         }catch (e: Exception){}
         return false
     }
+
+    private fun isPlayersFightDtoIdValid(dto: PlayerSearchDto):Boolean{
+        try {
+            val id = dto.id!!.toLong()
+            return true
+        }catch (e: Exception){}
+        return false
+    }
+
+
 
     private fun getMatchResult(attacker: Character, defender: Character, winner: String):MatchResultDto{
         return MatchResultDto(
