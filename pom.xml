@@ -16,7 +16,6 @@
     <module>schema</module>
     <module>gamelogic</module>
     <module>gateway</module>
-      <module>userservice</module>
   </modules>
 
   <contributors>
