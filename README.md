@@ -30,11 +30,16 @@ the match is over. After this, the method will persists a log of the match, to a
 When everything else is done, the endpoint returns a "FightResultLogDto" containing the result of the match.
 
 #### "Entity-repositories"
-There are also three other API's that are required for the game to work: Match, Player and Item. 
-Each of these repositories are the responsibility of one player. 
+There are also three other APIs that are required for the game to work: Match, Player and Item. 
+Each of these APIs are the responsibility of one member on our group.
+All of these APIs provide POST, PUT, PATCH, GET and DELETE methods to modify Entities.
 
-The Match API was developed and is the responsibility of Nikita. This API provides POST, PUT, PATCH, GET and DELETE methods for MatchResults. 
-The purpose of this API is to store result from matches.
+The Match API was developed and is the responsibility of Nikita. The purpose of this API is to store result from matches.
+
+The Item API was developed and is responsibility of Robert. Items are used for changing the damage and health of the Players. 
+
+Player API was developed and and is responsibility of Eirik. The Player has a collection of Items. 
+The API contains fields about player that is useful for fights, but not sensitive information like password(This is located inside Gateway module)
 
 
 ### Further improvments
