@@ -1,17 +1,26 @@
-//package no.ern.game.gamelogic.controller
-//
-//import com.github.tomakehurst.wiremock.client.WireMock
-//import com.github.tomakehurst.wiremock.client.WireMock.*
-//import io.restassured.RestAssured
-//import io.restassured.http.ContentType
-//import no.ern.game.schema.dto.gamelogic.FightResultLogDto
-//import no.ern.game.schema.dto.gamelogic.PlayerSearchDto
-//import no.ern.game.schema.dto.gamelogic.PlayersFightIdsDto
-//import org.junit.Assert.*
-//import org.junit.Test
-//
-//class GameLogicControllerTest : ControllerTestBase() {
-//
+package no.ern.game.gamelogic.controller
+
+import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.client.WireMock.*
+import io.restassured.RestAssured
+import io.restassured.http.ContentType
+import no.ern.game.schema.dto.gamelogic.FightResultLogDto
+import no.ern.game.schema.dto.gamelogic.PlayerSearchDto
+import no.ern.game.schema.dto.gamelogic.PlayersFightIdsDto
+import org.junit.Assert.*
+import org.junit.Before
+import org.junit.Test
+
+class GameLogicControllerTest : ControllerTestBase() {
+
+
+
+    @Test
+    fun testPathNotExist() {
+        RestAssured.given().get("/endpointThatDoesNotExist")
+                .then()
+                .statusCode(401)
+    }
 //    @Test
 //    fun testFindOpponent_Valid() {
 //        // Arrange
@@ -288,6 +297,6 @@
 //        assertEquals(404, response.statusCode)
 //
 //    }
-//
-//
-//}
+
+
+}

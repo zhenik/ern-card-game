@@ -3,3 +3,9 @@ server:
 itemServerName: http://localhost:8083
 playerServerName: http://localhost:8081
 matchServerName: http://localhost:8082
+
+spring:
+  session:
+    # during testing for this service in isolation,
+    # do not use Redis
+    store-type: hash_map
