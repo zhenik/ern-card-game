@@ -6,10 +6,10 @@ import io.swagger.annotations.ApiModelProperty
 @ApiModel("DTO representing player. It uses for searching(hunting) opponent")
 data class PlayerSearchDto(
 
-        @ApiModelProperty("The id of the User")
+        @ApiModelProperty("The id of the Player")
         var id: String? = null,
 
-        @ApiModelProperty("Username of the user")
+        @ApiModelProperty("Username of the Player")
         var username: String? = null,
 
         @ApiModelProperty("User's current level")
