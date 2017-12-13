@@ -57,18 +57,23 @@ class GameLogicController {
     private lateinit var matchesPath: String
 
 
-    @PostMapping(path = arrayOf("/match"))
-    fun testEnd(@ApiParam("The match result model")
-                @RequestBody resultDto: MatchResultDto
-    ) : ResponseEntity<Any>{
-        amqpService.sendMatchResultCreated(resultDto)
-        return ResponseEntity.status(204).build()
-    }
+//    @PostMapping(path = arrayOf("/match"))
+//    fun testEnd(@ApiParam("The match result model")
+//                @RequestBody resultDto: MatchResultDto
+//    ) : ResponseEntity<Any>{
+//        amqpService.sendMatchResultCreated(resultDto)
+//        return ResponseEntity.status(204).build()
+//    }
+//    // TODO: remove in prod
+//    @GetMapping(path = arrayOf("/test"))
+//    fun testMe():String {
+//        return "A"
+//    }
 
-
+    // TODO: remove in prod
     @GetMapping(path = arrayOf("/username"))
     fun currentUserName(authentication: Authentication): String {
-        println(authentication)
+//        println(authentication)
         return authentication.toString()
     }
 
@@ -96,8 +101,7 @@ class GameLogicController {
             return ResponseEntity.status(404).build()
         }
 
-        // 3.1 TODO: make list filter => to exclude /me when Security works
-        // TODO: test it
+
         val callerUsername = authentication.name
         val playersFiltered = excludeFromListByUsername(players,callerUsername)
 //        val playersFiltered = players
