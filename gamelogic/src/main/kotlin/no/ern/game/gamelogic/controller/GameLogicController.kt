@@ -80,8 +80,7 @@ class GameLogicController {
             ApiResponse(code = 404, message = "No opponent found")
     )
     @GetMapping(path = arrayOf("/enemy"), produces = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
-    fun findEnemy() : ResponseEntity<PlayerSearchDto>? {
-
+    fun findEnemy(authentication: Authentication) : ResponseEntity<PlayerSearchDto>? {
 
         // 1 make request to player module.
         val response : ResponseEntity<Array<PlayerDto>> = try {
@@ -98,8 +97,10 @@ class GameLogicController {
         }
 
         // 3.1 TODO: make list filter => to exclude /me when Security works
-//        val playersFiltered = players.filter { searchLevel-1<=it.level!!.toInt() && it.level!!.toInt()<=searchLevel+1 }
-        val playersFiltered = players
+        // TODO: test it
+        val callerUsername = authentication.name
+        val playersFiltered = excludeFromListByUsername(players,callerUsername)
+//        val playersFiltered = players
 
         // 4 get random from list
         if(playersFiltered.isNotEmpty()){
