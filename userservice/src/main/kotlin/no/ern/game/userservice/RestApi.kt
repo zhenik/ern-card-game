@@ -57,8 +57,9 @@ class RestApi {
             ApiResponse(code = 404, message = "No opponent found")
     )
     @GetMapping(path = arrayOf("/enemy"), produces = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
-    fun findEnemy() : ResponseEntity<PlayerSearchDto>? {
+    fun findEnemy(authentication: Authentication) : ResponseEntity<PlayerSearchDto>? {
 
+        println("ITS HERE ----------> "+authentication.name)
 
         // 1 make request to player module.
         val response : ResponseEntity<Array<PlayerDto>> = try {
