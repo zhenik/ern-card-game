@@ -5,18 +5,42 @@ MASTER
 [![Build Status](https://travis-ci.com/NikitaZhevnitskiy/ern-card-game.svg?token=6FYqXrfAk2ZHo34Tq8Gp&branch=master)](https://travis-ci.com/NikitaZhevnitskiy/ern-card-game)  
 
 
+## About the game:
+Our game can be described as an turn based dice game. The main functioniality is finding other players, and initiating fights
+with them. The fight is executed by both players throwing two dice.(This is done by the computer) The player with the highest score
+will attack the other one. If both dice from one player is equal, it will be a "critical hit." 
+(Meaning the damage is increased)
+After the match is over, a log will be returned.
 
-### SWAGGER
-HOST:PORT/${path}/swagger-ui.html
+### How is the game implemented?
+The main part of the game, the logic and execution for it is defined in the "Gamelogic" API. This API has two endpoints, one for finding 
+and opponent and one for starting the fight. 
 
-### Gateway
-GET & POST  
-`localhost:8080/entities`  
-Swagger UI  
-`http://localhost:8080/game/api/swagger-ui.html`  
+GET /enemy is the endpoint for finding opponent:
+It does this by querying the Player API for all players, and filters out itself. It then returns a "PlayerSearchDTO", which is an Dto
+containing username, id and level of a potential opponent. This endpoint is made to be called multiple times by to until the 
+User/"Consumer" of the API is satisfied with the opponent.
+
+POST /fight is the endpoint starting the match:
+This endpoint is supposed to be called after finding an opponent/enemy
+from the GET /enemy endpoint. This endpoint then starts the game, executes all the dice throws and calculates damage. When one of the Players lose all their health, 
+the match is over. After this, the method will persists a log of the match, to a seperate API, the MatchService. This is done using AMQP(RabbitMQ).
+When everything else is done, the endpoint returns a "FightResultLogDto" containing the result of the match.
+
+### Further improvments
+
+Further improvements would be to create a shop for the player to buy items. The items could increase the player's
+health, or boost his damage. Items could also in the future be implemented to have more exciting effects different damage 
+types and resistances.
+
+Another improvement would be to implement another service for handling experience and level up for player. One way we considered
+to implement this was by using AMQP to notify the ExperienceService when a match is over, and send the logs. The service
+would then increase the experience- or level- field on PlayerEntity, based on the MatchResult.
+
+
+
 
 ## How to test the application
-
 1. Run `mvn package`
 2. Run Docker-compose in main folder(Be sure to also read Docker section further down this document)
 3. Use the included Postman collection for testing, or manually test the endpoints.
