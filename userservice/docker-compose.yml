@@ -40,6 +40,9 @@ services:
     depends_on:
       - redis
       - eureka
+      - gateway
+      - player_0
+      - rabbitmq
 
   player_0:
     build:
