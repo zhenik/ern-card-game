@@ -13,9 +13,12 @@ import no.ern.game.schema.dto.PlayerDto
 import no.ern.game.schema.dto.gamelogic.FightResultLogDto
 import no.ern.game.schema.dto.gamelogic.PlayerSearchDto
 import no.ern.game.schema.dto.gamelogic.PlayersFightIdsDto
+
+import org.springframework.security.core.Authentication
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpEntity
+
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -24,8 +27,7 @@ import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
 import java.lang.Exception
 import java.util.*
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
-import org.springframework.util.LinkedMultiValueMap
+
 
 
 
@@ -61,6 +63,13 @@ class GameLogicController {
     ) : ResponseEntity<Any>{
         amqpService.sendMatchResultCreated(resultDto)
         return ResponseEntity.status(204).build()
+    }
+
+
+    @GetMapping(path = arrayOf("/username"))
+    fun currentUserName(authentication: Authentication): String {
+        println(authentication)
+        return authentication.toString()
     }
 
     @ApiOperation("""

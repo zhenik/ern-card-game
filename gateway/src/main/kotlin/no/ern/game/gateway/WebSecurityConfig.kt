@@ -41,6 +41,7 @@ class WebSecurityConfig(
                 .antMatchers(HttpMethod.GET,"/match-server/**").permitAll()
                 .antMatchers("/user").authenticated()
                 .antMatchers("/signIn").permitAll()
+                .antMatchers("/user-service/**").authenticated()
 //                .antMatchers("/user-service/usersInfoCount").permitAll()
 
 //                .antMatchers("/greetings/**").authenticated()

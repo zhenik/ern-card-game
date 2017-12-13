@@ -1,0 +1,56 @@
+version: '3.3'
+
+services:
+
+  eureka:
+    build:
+      context: ../eureka
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+
+  postgres-user:
+    image: "postgres:10"
+  postgres-player:
+    image: "postgres:10"
+
+  redis:
+    image: "redis:latest"
+
+  rabbitmq:
+    image: "rabbitmq:3"
+
+  gateway:
+    build:
+      context: ../gateway
+      dockerfile: Dockerfile
+    ports:
+      - "10000:8080"
+    depends_on:
+      - redis
+      - eureka
+      - postgres-user
+
+  user-service:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "10001:8080"
+    depends_on:
+      - redis
+      - eureka
+      - gateway
+      - player_0
+      - rabbitmq
+
+  player_0:
+    build:
+      context: ../player
+      dockerfile: Dockerfile
+    ports:
+      - "9001:8080"
+    depends_on:
+      - postgres-player
+      - eureka
+      - rabbitmq

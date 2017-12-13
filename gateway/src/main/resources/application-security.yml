@@ -20,6 +20,15 @@ zuul:
       sensitive-headers:
     gamelogic:
       path: /play/**
+      url: http://gamelogic-server:8080/
+      sensitive-headers:
+    user-service:
+      path: /user-service/**
+      url: http://user-service:8080/
+      # Cookies are sensitive data. So, by default,
+      # Zool removes them when proxying.
+      # But here we need the cookies for authentication,
+      # so we need to allow them.
       sensitive-headers:
 
 server:
