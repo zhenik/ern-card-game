@@ -6,31 +6,31 @@ MASTER
 
 
 
-
-### Minimum requirements for grade C are fulfilled
-
-### SWAGER
+### SWAGGER
 HOST:PORT/${path}/swagger-ui.html
 
 ### Gateway
 GET & POST  
 `localhost:8080/entities`  
-Jaeger UI  
-`localhost:16686`  
 Swagger UI  
 `http://localhost:8080/game/api/swagger-ui.html`  
 
-### Tracing with [Opentracing](http://opentracing.io/) & [Jaeger](http://jaeger.readthedocs.io/en/latest/) 
-`docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp   -p5778:5778 -p16686:16686 -p14268:14268 jaegertracing/all-in-one:latest`
+## How to test the application
 
-### How to up
-0. `mvn package`
-1. run tracing docker img
-2. run spring app
+1. Run `mvn package`
+2. Run Docker-compose in main folder(Be sure to also read Docker section further down this document)
+3. Use the included Postman collection for testing, or manually test the endpoints.
 
+### Documentation for API's (SWAGGER)
+First make sure to start docker-compose:
 
-### Test coverage
-`mvn clean install -Pcov-cobertura`
+- All API's should be available under: localhost:10000/api/v1/
+- For getting the Swagger's auto-generated documentation, go to localhost:10000/api/v1/swagger-ui.html
+
+It is also possible to manually start some endpoints by running them from IntelliJ. 
+In that case all endpoints will have different ports, which is configured inside application.yml for each
+API.
+ 
 
 
 ## Different emails inside the git log:
@@ -53,9 +53,6 @@ Having so many images packaged as FatJAR's will of course have a huge memory fot
 
 If some of the nodes crash, try to increase memory if you're using a MAC.
 For Nikita 4GB on his MAC was too low, so we suggest increasing to higher than this. (8 GB perhaps)
- 
-### Remove all images 
-docker rmi $(docker images -a -q)
  
 ### Remove all images 
 docker rmi $(docker images -a -q)
