@@ -2,27 +2,21 @@ version: '3.3'
 
 services:
 
-# discovery
-  eureka:
-    build:
-      context: ./eureka
-      dockerfile: Dockerfile
-    ports:
-      - "8761:8761"
+  postgres-user:
+    image: "postgres:10"
+#  postgres-player:
+#    image: "postgres:10"
+#  postgres-item:
+#    image: "postgres:10"
+#  postgres-match:
+#    image: "postgres:10"
 
-# dbs
-  postgres-match:
-    image: "postgres:10"
-  postgres-item:
-    image: "postgres:10"
-  postgres-player:
-    image: "postgres:10"
+  redis:
+    image: "redis:latest"
 
-# ampq
   rabbitmq:
     image: "rabbitmq:3"
 
-# zuul
   gateway:
     build:
       context: ./gateway
@@ -30,58 +24,59 @@ services:
     ports:
       - "10000:8080"
     depends_on:
+      - redis
       - eureka
+      - postgres-user
 
-# nodes
-  gamelogic_0:
-     build:
-        context: ./gamelogic
-        dockerfile: Dockerfile
-     ports:
-        - "9004:8080"
-     depends_on:
-        - eureka
-        - rabbitmq
-
-  match_0:
+  eureka:
     build:
-      context: ./match
+      context: ./eureka
       dockerfile: Dockerfile
     ports:
-      - "9002:8080"
-    depends_on:
-      - eureka
-      - postgres-match
-      - rabbitmq
+      - "8761:8761"
 
-  item_0:
-    build:
-      context: ./item
-      dockerfile: Dockerfile
-    ports:
-      - "9003:8080"
-    depends_on:
-      - postgres-item
-      - eureka
+#  player_0:
+#    build:
+#      context: ./player
+#      dockerfile: Dockerfile
+#    ports:
+#      - "9001:8080"
+#    depends_on:
+#      - postgres-player
+#      - eureka
+#      - rabbitmq
 
-  item_1:
-    build:
-      context: ./item
-      dockerfile: Dockerfile
-    ports:
-      - "9033:8080"
-    depends_on:
-      - postgres-item
-      - eureka
-      - item_0
-      - gateway
+#  match_0:
+#    build:
+#      context: ./match
+#      dockerfile: Dockerfile
+#    ports:
+#      - "9002:8080"
+#    depends_on:
+#      - eureka
+#      - postgres-match
+#      - rabbitmq
+#
+#  item_0:
+#    build:
+#      context: ./item
+#      dockerfile: Dockerfile
+#    ports:
+#      - "9003:8080"
+#    depends_on:
+#      - postgres-item
+#      - eureka
 
-  player_0:
-    build:
-      context: ./player
-      dockerfile: Dockerfile
-    ports:
-      - "9001:8080"
-    depends_on:
-      - postgres-player
-      - eureka
+#  gamelogic-server:
+#    build:
+#      context: ./gamelogic
+#      dockerfile: Dockerfile
+#    ports:
+#      - "9004:8080"
+#    depends_on:
+#      - eureka
+#      - rabbitmq
+#      - gateway
+#      - redis
+#      - player_0
+#      - match_0

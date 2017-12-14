@@ -16,6 +16,7 @@
     <module>schema</module>
     <module>gamelogic</module>
     <module>gateway</module>
+      <module>e2etests</module>
   </modules>
 
   <contributors>
@@ -74,6 +75,8 @@
     <version.logback-classic>1.2.3</version.logback-classic>
     <version.jcl-over-slf4j>1.7.25</version.jcl-over-slf4j>
     <version.testcontainers>1.4.3</version.testcontainers>
+    <version.awaitility>3.0.0</version.awaitility>
+    <version.junit>4.12</version.junit>
   </properties>
   <dependencyManagement>
 
@@ -213,7 +216,7 @@
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <!-- JUnit 5 is out, but still not in a stable / widely supported state -->
-        <version>4.12</version>
+        <version>${version.junit}</version>
         <scope>test</scope>
       </dependency>
       <!-- To use Docker from tests -->
@@ -223,6 +226,16 @@
         <version>${version.testcontainers}</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <!-- For handling waiting of asynchronous events -->
+        <groupId>org.awaitility</groupId>
+        <artifactId>awaitility</artifactId>
+        <version>${version.awaitility}</version>
+        <scope>test</scope>
+      </dependency>
+
+
+
       <dependency>
         <!-- to mock web services -->
         <groupId>com.github.tomakehurst</groupId>
