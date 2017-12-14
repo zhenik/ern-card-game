@@ -13,8 +13,9 @@ zuul:
       path: /player-server/**
       url: http://player-server:8080/
       sensitive-headers:
-    item:
-      path: /items/**
+    item-server:
+      path: /item-server/**
+      url: http://item-server:8080/
       sensitive-headers:
     match-server:
       path: /match-server/**

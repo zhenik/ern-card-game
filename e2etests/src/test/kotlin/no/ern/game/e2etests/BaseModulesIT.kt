@@ -90,6 +90,14 @@ class BaseModulesIT {
         val cookies = registerUser(id, pwd)
 
         // no access
+        RestAssured.given().get("/api/v1/item-server/items").then().statusCode(401)
+        //with acces
+        RestAssured.given().cookie("SESSION", cookies.session)
+                .get("/api/v1/item-server/items")
+                .then()
+                .statusCode(200)
+
+        // no access
         RestAssured.given().get("/api/v1/player-server/players").then().statusCode(401)
         //with acces
         RestAssured.given().cookie("SESSION", cookies.session)
