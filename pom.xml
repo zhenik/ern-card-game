@@ -16,6 +16,7 @@
     <module>schema</module>
     <module>gamelogic</module>
     <module>gateway</module>
+    <module>e2e-tests</module>
   </modules>
 
   <contributors>
@@ -230,6 +231,14 @@
         <version>${version.wiremock}</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <!-- For handling waiting of asynchronous events -->
+        <groupId>org.awaitility</groupId>
+        <artifactId>awaitility</artifactId>
+        <version>3.0.0</version>
+        <scope>test</scope>
+      </dependency>
+
       <!--Netflix stack: Ribbon, Zuul, Eureka-->
       <dependency>
         <groupId>org.springframework.cloud</groupId>

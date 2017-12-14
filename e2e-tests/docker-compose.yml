@@ -1,0 +1,23 @@
+version: '3.3'
+
+services:
+
+  redis:
+    image: "redis:latest"
+
+  gateway:
+    build:
+      context: ../gateway
+      dockerfile: Dockerfile
+    ports:
+      - "3456:8080"
+    depends_on:
+      - redis
+
+
+  gamelogic-service:
+    build:
+      context: ../gamelogic
+      dockerfile: Dockerfile
+    depends_on:
+      - redis
