@@ -8,8 +8,8 @@ services:
     image: "postgres:10"
 #  postgres-item:
 #    image: "postgres:10"
-#  postgres-match:
-#    image: "postgres:10"
+  postgres-match:
+    image: "postgres:10"
 
   redis:
     image: "redis:latest"
@@ -46,7 +46,7 @@ services:
       - rabbitmq
       - redis
       - player-server
-#      - match_0
+      - match-server
 
   gateway:
     build:
@@ -60,19 +60,18 @@ services:
       - postgres-user
       - gamelogic-server
       - player-server
+      - match-server
 
-
-
-#  match_0:
-#    build:
-#      context: ./match
-#      dockerfile: Dockerfile
+  match-server:
+    build:
+      context: ./match
+      dockerfile: Dockerfile
 #    ports:
 #      - "9002:8080"
-#    depends_on:
-#      - eureka
-#      - postgres-match
-#      - rabbitmq
+    depends_on:
+      - eureka
+      - postgres-match
+      - rabbitmq
 #
 #  item_0:
 #    build:

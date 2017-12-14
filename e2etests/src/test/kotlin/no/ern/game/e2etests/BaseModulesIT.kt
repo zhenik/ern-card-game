@@ -91,10 +91,17 @@ class BaseModulesIT {
 
         // no access
         RestAssured.given().get("/api/v1/player-server/players").then().statusCode(401)
-
-        //note the difference in cookie name
+        //with acces
         RestAssured.given().cookie("SESSION", cookies.session)
                 .get("/api/v1/player-server/players")
+                .then()
+                .statusCode(200)
+
+        // no access
+        RestAssured.given().get("/api/v1/match-server/matches").then().statusCode(401)
+        //with acces
+        RestAssured.given().cookie("SESSION", cookies.session)
+                .get("/api/v1/match-server/matches")
                 .then()
                 .statusCode(200)
     }

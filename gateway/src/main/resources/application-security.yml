@@ -16,8 +16,9 @@ zuul:
     item:
       path: /items/**
       sensitive-headers:
-    match:
-      path: /matches/**
+    match-server:
+      path: /match-server/**
+      url: http://match-server:8080/
       sensitive-headers:
     gamelogic-server:
       path: /gamelogic-server/**
