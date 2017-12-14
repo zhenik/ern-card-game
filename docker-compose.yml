@@ -20,23 +20,55 @@ services:
     build:
       context: ./eureka
       dockerfile: Dockerfile
-#    ports:
-#      - "20000:8761"
+    ports:
+      - "8761:8761"
 
   player-server:
     build:
       context: ./player
       dockerfile: Dockerfile
-#    ports:
-#      - "9001:8080"
     depends_on:
-      - postgres-player
       - eureka
+      - postgres-player
       - rabbitmq
       - redis
-      - item-server
+#      - item-server
+
+#  player-server:
+#    build:
+#      context: ./player
+#      dockerfile: Dockerfile
+##    ports:
+##      - "9001:8080"
+#    depends_on:
+#      - postgres-player
+#      - eureka
+#      - rabbitmq
+#      - redis
+#      - item-server
+
+  match-server:
+    build:
+      context: ./match
+      dockerfile: Dockerfile
+#    ports:
+#      - "9002:8080"
+    depends_on:
+      - eureka
+      - postgres-match
+      - rabbitmq
 
   item-server:
+    build:
+      context: ./item
+      dockerfile: Dockerfile
+#    ports:
+#      - "9003:8080"
+    depends_on:
+      - postgres-item
+      - eureka
+
+  item-server-2:
     build:
       context: ./item
       dockerfile: Dockerfile
@@ -72,16 +104,3 @@ services:
       - gamelogic-server
       - player-server
       - match-server
-
-  match-server:
-    build:
-      context: ./match
-      dockerfile: Dockerfile
-#    ports:
-#      - "9002:8080"
-    depends_on:
-      - eureka
-      - postgres-match
-      - rabbitmq
-
-

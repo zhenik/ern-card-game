@@ -17,6 +17,9 @@ services:
   postgres-item:
     image: "postgres:10"
 
+  rabbitmq:
+    image: "rabbitmq:3"
+
   player_0:
      build:
         context: ./
@@ -26,6 +29,7 @@ services:
      depends_on:
         - postgres-player
         - eureka
+        - rabbitmq
 
   item_0:
     build:

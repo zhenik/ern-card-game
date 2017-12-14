@@ -45,6 +45,9 @@ class GameLogicIT {
                     .ignoreExceptions()
                     .until({
                         // check GATEWAY is available
+
+                        given().get("http://localhost:10000/api/v1/user").then().statusCode(401)
+
 //                        RestAssured.given().get("http://localhost:10000/api/v1/user").then().statusCode(401)
 //                        // check GAMELOGIC is available
 //                        RestAssured.given().get("/api/v1/gamelogic-server/play/enemy")
@@ -55,61 +58,61 @@ class GameLogicIT {
 //                                .then()
 //                                .statusCode(401)
 
-                        RestAssured.given().get("/api/v1/player-server/players")
-                                .then()
-                                .statusCode(200)
+//                        RestAssured.given().get("/api/v1/player-server/players")
+//                                .then()
+//                                .statusCode(200)
 
                         true
                     })
         }
     }
 
-    @Before
-    fun checkEureka(){
-        await().atMost(60, TimeUnit.SECONDS)
-                .ignoreExceptions()
-                .until({
-                    given()
-                            .get("http://localhost:8761/eureka/apps")
-                            .then()
-                            .statusCode(200)
-                            .body("applications.application.instance.size()", equalTo(3))
-                    true
-                })
-    }
-
-    @Test
-    fun checkThatWoman(){
-        await().atMost(60, TimeUnit.SECONDS)
-                .ignoreExceptions()
-                .until({
-                    given()
-                            .get("http://localhost:8761/eureka/apps")
-                            .then()
-                            .statusCode(200)
-                            .body("applications.application.instance.size()", equalTo(3))
-                    true
-                })
-    }
-
-    @Test
-    fun test(){
-        RestAssured.given().get("/api/v1/player-server/players")
-                .then()
-                .statusCode(200)
-    }
-//
-//
-//    @Test
-//    fun testUnauthorizedAccess() {
-//        RestAssured.given().get("/api/v1/gamelogic-server/play/enemy")
-//                .then()
-//                .statusCode(401)
-//
-//        RestAssured.given().get("/api/v1/gamelogic-server/play/fight")
-//                .then()
-//                .statusCode(401)
+//    @Before
+//    fun checkEureka(){
+//        await().atMost(60, TimeUnit.SECONDS)
+//                .ignoreExceptions()
+//                .until({
+//                    given()
+//                            .get("http://localhost:8761/eureka/apps")
+//                            .then()
+//                            .statusCode(200)
+//                            .body("applications.application.instance.size()", equalTo(3))
+//                    true
+//                })
 //    }
+
+//    @Test
+//    fun checkThatWoman(){
+//        await().atMost(60, TimeUnit.SECONDS)
+//                .ignoreExceptions()
+//                .until({
+//                    given()
+//                            .get("http://localhost:8761/eureka/apps")
+//                            .then()
+//                            .statusCode(200)
+//                            .body("applications.application.instance.size()", equalTo(3))
+//                    true
+//                })
+//    }
+
+//    @Test
+//    fun test(){
+//        RestAssured.given().get("/api/v1/player-server/players")
+//                .then()
+//                .statusCode(200)
+//    }
+//
+//
+    @Test
+    fun testUnauthorizedAccess() {
+        RestAssured.given().get("/api/v1/gamelogic-server/play/enemy")
+                .then()
+                .statusCode(401)
+
+        RestAssured.given().get("/api/v1/gamelogic-server/play/fight")
+                .then()
+                .statusCode(401)
+    }
 
 //    TODO: test /gamelogic/username 200OK
     @Test
