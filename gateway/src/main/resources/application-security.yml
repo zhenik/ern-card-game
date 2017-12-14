@@ -9,8 +9,9 @@ eureka:
 
 zuul:
   routes:
-    player:
-      path: /players/**
+    player-server:
+      path: /player-server/**
+      url: http://player-server:8080/
       sensitive-headers:
     item:
       path: /items/**

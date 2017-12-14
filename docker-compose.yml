@@ -4,8 +4,8 @@ services:
 
   postgres-user:
     image: "postgres:10"
-#  postgres-player:
-#    image: "postgres:10"
+  postgres-player:
+    image: "postgres:10"
 #  postgres-item:
 #    image: "postgres:10"
 #  postgres-match:
@@ -13,9 +13,40 @@ services:
 
   redis:
     image: "redis:latest"
-
   rabbitmq:
     image: "rabbitmq:3"
+
+  eureka:
+    build:
+      context: ./eureka
+      dockerfile: Dockerfile
+#    ports:
+#      - "20000:8761"
+
+  player-server:
+    build:
+      context: ./player
+      dockerfile: Dockerfile
+#    ports:
+#      - "9001:8080"
+    depends_on:
+      - postgres-player
+      - eureka
+      - rabbitmq
+      - redis
+
+  gamelogic-server:
+    build:
+      context: ./gamelogic
+      dockerfile: Dockerfile
+#    ports:
+#      - "9004:8080"
+    depends_on:
+      - eureka
+      - rabbitmq
+      - redis
+      - player-server
+#      - match_0
 
   gateway:
     build:
@@ -27,24 +58,10 @@ services:
       - redis
       - eureka
       - postgres-user
+      - gamelogic-server
+      - player-server
 
-  eureka:
-    build:
-      context: ./eureka
-      dockerfile: Dockerfile
-    ports:
-      - "8761:8761"
 
-#  player_0:
-#    build:
-#      context: ./player
-#      dockerfile: Dockerfile
-#    ports:
-#      - "9001:8080"
-#    depends_on:
-#      - postgres-player
-#      - eureka
-#      - rabbitmq
 
 #  match_0:
 #    build:
@@ -67,16 +84,3 @@ services:
 #      - postgres-item
 #      - eureka
 
-#  gamelogic-server:
-#    build:
-#      context: ./gamelogic
-#      dockerfile: Dockerfile
-#    ports:
-#      - "9004:8080"
-#    depends_on:
-#      - eureka
-#      - rabbitmq
-#      - gateway
-#      - redis
-#      - player_0
-#      - match_0

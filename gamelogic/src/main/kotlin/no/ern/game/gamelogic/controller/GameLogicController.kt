@@ -64,11 +64,17 @@ class GameLogicController {
 //        amqpService.sendMatchResultCreated(resultDto)
 //        return ResponseEntity.status(204).build()
 //    }
-//    // TODO: remove in prod
-//    @GetMapping(path = arrayOf("/test"))
-//    fun testMe():String {
-//        return "A"
-//    }
+    // TODO: remove in prod
+    @GetMapping(path = arrayOf("/test"))
+    fun testMe() : String {
+        try {
+            val url = "$playersPath/players"
+            val response1 = restTemplate.getForEntity(url, Array<PlayerDto>::class.java)
+            return response1.body.toList().toString()
+        } catch (e: HttpClientErrorException) {
+            return "fucked"
+        }
+    }
 
     // TODO: remove in prod
     @GetMapping(path = arrayOf("/username"))
@@ -90,6 +96,7 @@ class GameLogicController {
         // 1 make request to player module.
         val response : ResponseEntity<Array<PlayerDto>> = try {
             val url = "$playersPath/players"
+            println("HERE =======> "+url)
             restTemplate.getForEntity(url, Array<PlayerDto>::class.java)
         } catch (e: HttpClientErrorException) {
             return ResponseEntity.status(e.statusCode.value()).build()

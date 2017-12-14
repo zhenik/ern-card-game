@@ -37,14 +37,10 @@ class WebSecurityConfig(
                 .antMatchers("/gamelogic-server/**").authenticated()
                 .antMatchers(HttpMethod.GET,"/entities").permitAll()
                 .antMatchers(HttpMethod.GET,"/player-server/**").permitAll()
-                .antMatchers(HttpMethod.GET,"/item-server/**").permitAll()
-                .antMatchers(HttpMethod.GET,"/match-server/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/item-server/**").authenticated()
+                .antMatchers(HttpMethod.GET,"/match-server/**").authenticated()
                 .antMatchers("/user").authenticated()
                 .antMatchers("/signIn").permitAll()
-                .antMatchers("/user-service/**").authenticated()
-//                .antMatchers("/user-service/usersInfoCount").permitAll()
-
-//                .antMatchers("/greetings/**").authenticated()
                 .anyRequest().denyAll()
                 .and()
                 /*

@@ -3,11 +3,13 @@ package no.ern.game.e2etests
 import io.restassured.RestAssured
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
+import no.ern.game.schema.dto.gamelogic.PlayerSearchDto
 import org.awaitility.Awaitility.await
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.Matchers.contains
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.ClassRule
 import org.junit.Test
@@ -39,63 +41,186 @@ class GameLogicIT {
             RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
 
-            await().atMost(60, TimeUnit.SECONDS)
+            await().atMost(180, TimeUnit.SECONDS)
                     .ignoreExceptions()
                     .until({
+                        // check GATEWAY is available
+//                        RestAssured.given().get("http://localhost:10000/api/v1/user").then().statusCode(401)
+//                        // check GAMELOGIC is available
+//                        RestAssured.given().get("/api/v1/gamelogic-server/play/enemy")
+//                                .then()
+//                                .statusCode(401)
 
-                        //                        given().get("http://localhost:80/user").then().statusCode(401)
-//                        given().get("http://localhost:10000/api/v1/signIn").then().statusCode(403)
-                        RestAssured.given().get("http://localhost:10000/api/v1/user").then().statusCode(401)
+//                        RestAssured.given().get("/api/v1/player-server/players")
+//                                .then()
+//                                .statusCode(401)
 
-//                        given().get("http://localhost:80/user-service/usersInfo")
-//                                .then().statusCode(401)
+                        RestAssured.given().get("/api/v1/player-server/players")
+                                .then()
+                                .statusCode(200)
 
                         true
                     })
         }
     }
 
-
-    @Test
-    fun testUnauthorizedAccess() {
-        RestAssured.given().get("/api/v1/gamelogic-server/play/enemy")
-                .then()
-                .statusCode(401)
-
-        RestAssured.given().get("/api/v1/gamelogic-server/play/fight")
-                .then()
-                .statusCode(401)
+    @Before
+    fun checkEureka(){
+        await().atMost(60, TimeUnit.SECONDS)
+                .ignoreExceptions()
+                .until({
+                    given()
+                            .get("http://localhost:8761/eureka/apps")
+                            .then()
+                            .statusCode(200)
+                            .body("applications.application.instance.size()", equalTo(3))
+                    true
+                })
     }
 
-//    class NeededCookies(val session:String, val csrf: String)
+    @Test
+    fun checkThatWoman(){
+        await().atMost(60, TimeUnit.SECONDS)
+                .ignoreExceptions()
+                .until({
+                    given()
+                            .get("http://localhost:8761/eureka/apps")
+                            .then()
+                            .statusCode(200)
+                            .body("applications.application.instance.size()", equalTo(3))
+                    true
+                })
+    }
+
+    @Test
+    fun test(){
+        RestAssured.given().get("/api/v1/player-server/players")
+                .then()
+                .statusCode(200)
+    }
 //
-//    private fun registerUser(id: String, password: String): NeededCookies {
 //
-//        val xsrfToken = RestAssured.given().contentType(ContentType.URLENC)
-//                .formParam("the_user", id)
-//                .formParam("the_password", password)
-//                .post("/api/v1/signIn")
+//    @Test
+//    fun testUnauthorizedAccess() {
+//        RestAssured.given().get("/api/v1/gamelogic-server/play/enemy")
 //                .then()
-//                .statusCode(403)
-//                .extract().cookie("XSRF-TOKEN")
+//                .statusCode(401)
 //
-//        val session =  RestAssured.given().contentType(ContentType.URLENC)
-//                .formParam("the_user", id)
-//                .formParam("the_password", password)
-//                .header("X-XSRF-TOKEN", xsrfToken)
-//                .cookie("XSRF-TOKEN", xsrfToken)
-//                .post("/api/v1/signIn")
+//        RestAssured.given().get("/api/v1/gamelogic-server/play/fight")
 //                .then()
-//                .statusCode(204)
-//                .extract().cookie("SESSION")
-//
-//        return NeededCookies(session, xsrfToken)
+//                .statusCode(401)
 //    }
+
+//    TODO: test /gamelogic/username 200OK
+    @Test
+    fun findEnemyAndFight() {
+        // Arrange
+        val id = "guy"
+        val cookie1 = registerUser(id, "password")
+
+
+
+        // Act
+//        given().cookie("SESSION", cookie1.session)
+//                .get("/api/v1/gamelogic-server/play/enemy")
+//                .then()
+//                .statusCode(404)
+
+//        RestAssured.given()
+//                .cookie("SESSION", cookie1.session)
+//                .get("/api/v1/gamelogic-server/play/test")
+//                .then()
+//                .statusCode(200)
+
+
+        await().atMost(30, TimeUnit.SECONDS)
+                .ignoreExceptions()
+                .until({
+                    RestAssured.given()
+                        .cookie("SESSION", cookie1.session)
+                        .get("/api/v1/gamelogic-server/play/test")
+                        .then()
+                        .statusCode(200)
+                    true
+                })
+
+
+
+//        assertTrue(true)
+
+
+
+//        RestAssured.given()
+//                .cookie("SESSION", cookie1.session)
+////                .header("X-XSRF-TOKEN", cookie1.csrf)
+////                .cookie("XSRF-TOKEN", cookie1.csrf)
+//                .get("/api/v1/gamelogic-server/play/test")
+//                .then()
+//                .statusCode(200)
+
+        val fakeEnemy = PlayerSearchDto("134","oda",1)
+        val fakeEnemyUrself = PlayerSearchDto("1","guy",1)
+
+        // send empty body
+//        given().cookie("SESSION", cookie1.session)
+//                .header("X-XSRF-TOKEN", cookie1.csrf)
+//                .cookie("XSRF-TOKEN", cookie1.csrf)
+//                .body(PlayerSearchDto())
+//                .post("/api/v1/gamelogic-server/play/fight")
+//                .then()
+//                .statusCode(400)
+
+        // send enemy which is not exist
+//        given().cookie("SESSION", cookie1.session)
+//                .header("X-XSRF-TOKEN", cookie1.csrf)
+//                .cookie("XSRF-TOKEN", cookie1.csrf)
+//                .body(fakeEnemy)
+//                .post("/api/v1/gamelogic-server/play/fight")
+//                .then()
+//                .statusCode(404)
+
+        // try to fight urself
+//        given().cookie("SESSION", cookie1.session)
+//                .header("X-XSRF-TOKEN", cookie1.csrf)
+//                .cookie("XSRF-TOKEN", cookie1.csrf)
+//                .body(fakeEnemyUrself)
+//                .post("/api/v1/gamelogic-server/play/fight")
+//                .then()
+//                .statusCode(404)
 //
-//    private fun createUniqueId(): String {
-//        counter++
-//        return "foo_$counter"
-//    }
+////                .body("name", equalTo(id))
+////                .body("roles", contains("ROLE_USER"))
+    }
+
+    class NeededCookies(val session:String, val csrf: String)
+
+    private fun registerUser(id: String, password: String): NeededCookies {
+
+        val xsrfToken = RestAssured.given().contentType(ContentType.URLENC)
+                .formParam("the_user", id)
+                .formParam("the_password", password)
+                .post("/api/v1/signIn")
+                .then()
+                .statusCode(403)
+                .extract().cookie("XSRF-TOKEN")
+
+        val session =  RestAssured.given().contentType(ContentType.URLENC)
+                .formParam("the_user", id)
+                .formParam("the_password", password)
+                .header("X-XSRF-TOKEN", xsrfToken)
+                .cookie("XSRF-TOKEN", xsrfToken)
+                .post("/api/v1/signIn")
+                .then()
+                .statusCode(204)
+                .extract().cookie("SESSION")
+
+        return NeededCookies(session, xsrfToken)
+    }
+
+    private fun createUniqueId(): String {
+        counter++
+        return "foo_$counter"
+    }
 //
 //
 //    @Test
