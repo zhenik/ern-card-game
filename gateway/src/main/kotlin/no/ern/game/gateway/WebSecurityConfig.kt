@@ -36,7 +36,7 @@ class WebSecurityConfig(
 //                .antMatchers(HttpMethod.POST,"/entities").authenticated()
                 .antMatchers("/gamelogic-server/**").authenticated()
                 .antMatchers(HttpMethod.GET,"/entities").permitAll()
-                .antMatchers(HttpMethod.GET,"/player-server/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/player-server/**").authenticated()
                 .antMatchers(HttpMethod.GET,"/item-server/**").authenticated()
                 .antMatchers(HttpMethod.GET,"/match-server/**").authenticated()
                 .antMatchers("/user").authenticated()
