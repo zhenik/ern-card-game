@@ -58,36 +58,35 @@ class CardGameDockerIT {
 
     @Test
     fun testUnauthorizedAccess() {
-
         given().get("/api/v1/user")
                 .then()
                 .statusCode(401)
     }
 
-//    class NeededCookies(val session:String, val csrf: String)
-//
-//    private fun registerUser(id: String, password: String): NeededCookies {
-//
-//        val xsrfToken = given().contentType(ContentType.URLENC)
-//                .formParam("the_user", id)
-//                .formParam("the_password", password)
-//                .post("/signIn")
-//                .then()
-//                .statusCode(403)
-//                .extract().cookie("XSRF-TOKEN")
-//
-//        val session=  given().contentType(ContentType.URLENC)
-//                .formParam("the_user", id)
-//                .formParam("the_password", password)
-//                .header("X-XSRF-TOKEN", xsrfToken)
-//                .cookie("XSRF-TOKEN", xsrfToken)
-//                .post("/signIn")
-//                .then()
-//                .statusCode(204)
-//                .extract().cookie("SESSION")
-//
-//        return NeededCookies(session, xsrfToken)
-//    }
+    class NeededCookies(val session:String, val csrf: String)
+
+    private fun registerUser(id: String, password: String): NeededCookies {
+
+        val xsrfToken = given().contentType(ContentType.URLENC)
+                .formParam("the_user", id)
+                .formParam("the_password", password)
+                .post("/api/v1/signIn")
+                .then()
+                .statusCode(403)
+                .extract().cookie("XSRF-TOKEN")
+
+        val session =  given().contentType(ContentType.URLENC)
+                .formParam("the_user", id)
+                .formParam("the_password", password)
+                .header("X-XSRF-TOKEN", xsrfToken)
+                .cookie("XSRF-TOKEN", xsrfToken)
+                .post("/api/v1/signIn")
+                .then()
+                .statusCode(204)
+                .extract().cookie("SESSION")
+
+        return NeededCookies(session, xsrfToken)
+    }
 //
 //    private fun createUniqueId(): String {
 //        counter++
