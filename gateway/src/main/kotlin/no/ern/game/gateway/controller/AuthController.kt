@@ -44,6 +44,7 @@ class AuthController(
                @ModelAttribute(name = "the_password") password: String)
             : ResponseEntity<Void> {
 
+        val username = username.toLowerCase()
         val registered = service.createUserWithHashedPassword(username, password, setOf("USER"))
 
         if (!registered) {
