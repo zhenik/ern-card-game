@@ -41,6 +41,9 @@ The Item API was developed and is responsibility of Robert. Items are used for c
 Player API was developed and and is responsibility of Eirik. The Player has a collection of Items. 
 The API contains fields about player that is useful for fights, but not sensitive information like password(This is located inside Gateway module)
 
+In addition there is another module called Schema. Here we expose Dto that each person created.(PlayerDto, ItemDto, etc..)
+The reason for this is to avoid dependencies whenever possible, because no other module should use entity, just Dto's. 
+This in turn makes it easier if one of us decide to change our API.
 
 ### Further improvments
 
