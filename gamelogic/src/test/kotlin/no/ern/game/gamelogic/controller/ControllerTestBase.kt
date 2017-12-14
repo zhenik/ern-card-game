@@ -28,8 +28,8 @@ abstract class ControllerTestBase {
         fun initClass() {
             RestAssured.baseURI = "http://localhost"
             RestAssured.port = 9084
-//            RestAssured.basePath = "/play"
-            RestAssured.basePath = "/"
+            RestAssured.basePath = "/play"
+//            RestAssured.basePath = "/"
             RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
             wiremockServerMatch = WireMockServer(WireMockConfiguration.wireMockConfig().port(8082).notifier(ConsoleNotifier(true)))
@@ -52,21 +52,84 @@ abstract class ControllerTestBase {
     }
 
 
-    fun getMockedJson_PlayerSearch(): String {
+//    fun getMockedJson_PlayerSearch(): String {
+//        var json = """
+//            [
+//                {
+//                    "userId": "1",
+//                    "username": "foo",
+//                    "id": "1",
+//                    "health": 100,
+//                    "damage": 10,
+//                    "currency": 100,
+//                    "experience": 0,
+//                    "level": 1,
+//                    "items": []
+//                }
+//            ]
+//        """
+//    }
+
+    fun getMockedJson_FooByUsername(): String {
         var json = """
-            [
-                {
-                    "userId": "1",
-                    "username": "name",
-                    "id": "1",
-                    "health": 100,
-                    "damage": 10,
-                    "currency": 100,
-                    "experience": 0,
-                    "level": 1,
-                    "items": []
-                }
-            ]
+        [
+            {
+                "username": "foo",
+                "id": "1",
+                "health": 100,
+                "damage": 5,
+                "currency": 20,
+                "experience": 20,
+                "level": 1,
+                "items": []
+            }
+        ]
+        """
+        return json
+    }
+
+    fun getMockedJson_FooAndBar(): String {
+        var json = """
+        [
+            {
+                "username": "foo",
+                "id": "1",
+                "health": 100,
+                "damage": 5,
+                "currency": 20,
+                "experience": 20,
+                "level": 1,
+                "items": []
+            },
+            {
+                "username": "bar",
+                "id": "2",
+                "health": 209,
+                "damage": 10,
+                "currency": 20,
+                "experience": 20,
+                "level": 1,
+                "items": []
+            }
+        ]
+        """
+        return json
+    }
+
+    fun getMockedJson_BarById(): String {
+        var json = """
+
+            {
+                "username": "bar",
+                "id": "2",
+                "health": 209,
+                "damage": 10,
+                "currency": 20,
+                "experience": 20,
+                "level": 1,
+                "items": []
+            }
+
         """
         return json
     }
