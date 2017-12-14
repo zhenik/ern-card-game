@@ -6,15 +6,13 @@ MASTER
 
 
 ## About the game:
-Our game can be described as an turn based dice game. The main functioniality is finding other players, and initiating fights
-with them. The fight is executed by both players throwing two dice.(This is done by the computer) The player with the highest score
-will attack the other one. If both dice from one player is equal, it will be a "critical hit." 
-(Meaning the damage is increased)
+The game can be described as a turn based dice game. The main functionality is to fight other players. The fight is executed by both players throwing two dice (this is done by the computer). The player with the highest score
+will attack the other one. If both dices from one player are equal, it will be a "critical hit." (meaning the damage is doubled).
 After the match is over, a log will be returned.
 
 ### How is the game implemented?
 The main part of the game, the logic and execution for it is defined in the "Gamelogic" API. This API has two endpoints, one for finding 
-and opponent and one for starting the fight. 
+an opponent and one for starting the fight.
 
 GET /enemy is the endpoint for finding opponent:
 It does this by querying the Player API for all players, and filters out itself. It then returns a "PlayerSearchDTO", which is an Dto
