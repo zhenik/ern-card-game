@@ -33,7 +33,7 @@ class BaseModulesIT {
             RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
 
-            Awaitility.await().atMost(180, TimeUnit.SECONDS)
+            Awaitility.await().atMost(240, TimeUnit.SECONDS)
                     .ignoreExceptions()
                     .until({
                         RestAssured.given().get("http://localhost:10000/api/v1/user").then().statusCode(401)

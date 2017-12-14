@@ -38,7 +38,7 @@ class AuthFeatureIT {
             RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
 
-            await().atMost(180, TimeUnit.SECONDS)
+            await().atMost(240, TimeUnit.SECONDS)
                     .ignoreExceptions()
                     .until({
                         given().get("http://localhost:10000/api/v1/user").then().statusCode(401)
