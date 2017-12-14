@@ -16,7 +16,7 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 
 
-class CardGameDockerIT {
+class GameLogicIT {
 
     companion object {
 
@@ -43,9 +43,9 @@ class CardGameDockerIT {
                     .ignoreExceptions()
                     .until({
 
-//                        given().get("http://localhost:80/user").then().statusCode(401)
+                        //                        given().get("http://localhost:80/user").then().statusCode(401)
 //                        given().get("http://localhost:10000/api/v1/signIn").then().statusCode(403)
-                        given().get("http://localhost:10000/api/v1/user").then().statusCode(401)
+                        RestAssured.given().get("http://localhost:10000/api/v1/user").then().statusCode(401)
 
 //                        given().get("http://localhost:80/user-service/usersInfo")
 //                                .then().statusCode(401)
@@ -58,71 +58,78 @@ class CardGameDockerIT {
 
     @Test
     fun testUnauthorizedAccess() {
-        given().get("/api/v1/user")
+        RestAssured.given().get("/api/v1/gamelogic-server/play/enemy")
+                .then()
+                .statusCode(401)
+
+        RestAssured.given().get("/api/v1/gamelogic-server/play/fight")
                 .then()
                 .statusCode(401)
     }
 
-    class NeededCookies(val session:String, val csrf: String)
+//    class NeededCookies(val session:String, val csrf: String)
+//
+//    private fun registerUser(id: String, password: String): NeededCookies {
+//
+//        val xsrfToken = RestAssured.given().contentType(ContentType.URLENC)
+//                .formParam("the_user", id)
+//                .formParam("the_password", password)
+//                .post("/api/v1/signIn")
+//                .then()
+//                .statusCode(403)
+//                .extract().cookie("XSRF-TOKEN")
+//
+//        val session =  RestAssured.given().contentType(ContentType.URLENC)
+//                .formParam("the_user", id)
+//                .formParam("the_password", password)
+//                .header("X-XSRF-TOKEN", xsrfToken)
+//                .cookie("XSRF-TOKEN", xsrfToken)
+//                .post("/api/v1/signIn")
+//                .then()
+//                .statusCode(204)
+//                .extract().cookie("SESSION")
+//
+//        return NeededCookies(session, xsrfToken)
+//    }
+//
+//    private fun createUniqueId(): String {
+//        counter++
+//        return "foo_$counter"
+//    }
+//
+//
+//    @Test
+//    fun testLogin() {
+//
+//        val id = createUniqueId()
+//        val pwd = "bar"
+//
+//        val cookies = registerUser(id, pwd)
+//
+//        RestAssured.given().get("/api/v1/user")
+//                .then()
+//                .statusCode(401)
+//
+//        //note the difference in cookie name
+//        RestAssured.given().cookie("SESSION", cookies.session)
+//                .get("/api/v1/user")
+//                .then()
+//                .statusCode(200)
+//                .body("name", CoreMatchers.equalTo(id))
+//                .body("roles", Matchers.contains("ROLE_USER"))
+//
+//
+//        RestAssured.given().auth().basic(id, pwd)
+//                .get("/api/v1/user")
+//                .then()
+//                .statusCode(200)
+//                .cookie("SESSION")
+//                .body("name", CoreMatchers.equalTo(id))
+//                .body("roles", Matchers.contains("ROLE_USER"))
+//    }
 
-    private fun registerUser(id: String, password: String): NeededCookies {
-
-        val xsrfToken = given().contentType(ContentType.URLENC)
-                .formParam("the_user", id)
-                .formParam("the_password", password)
-                .post("/api/v1/signIn")
-                .then()
-                .statusCode(403)
-                .extract().cookie("XSRF-TOKEN")
-
-        val session =  given().contentType(ContentType.URLENC)
-                .formParam("the_user", id)
-                .formParam("the_password", password)
-                .header("X-XSRF-TOKEN", xsrfToken)
-                .cookie("XSRF-TOKEN", xsrfToken)
-                .post("/api/v1/signIn")
-                .then()
-                .statusCode(204)
-                .extract().cookie("SESSION")
-
-        return NeededCookies(session, xsrfToken)
-    }
-
-    private fun createUniqueId(): String {
-        counter++
-        return "foo_$counter"
-    }
-
-
-    @Test
-    fun testLogin() {
-
-        val id = createUniqueId()
-        val pwd = "bar"
-
-        val cookies = registerUser(id, pwd)
-
-        given().get("/api/v1/user")
-                .then()
-                .statusCode(401)
-
-        //note the difference in cookie name
-        given().cookie("SESSION", cookies.session)
-                .get("/api/v1/user")
-                .then()
-                .statusCode(200)
-                .body("name", equalTo(id))
-                .body("roles", contains("ROLE_USER"))
-
-
-        given().auth().basic(id, pwd)
-                .get("/api/v1/user")
-                .then()
-                .statusCode(200)
-                .cookie("SESSION")
-                .body("name", equalTo(id))
-                .body("roles", contains("ROLE_USER"))
-    }
+//    @Test
+//    fun
 //
 //    @Test
 //    fun testOpenCount(){
