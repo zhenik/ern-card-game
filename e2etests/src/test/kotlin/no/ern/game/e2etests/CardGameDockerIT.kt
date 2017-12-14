@@ -87,42 +87,42 @@ class CardGameDockerIT {
 
         return NeededCookies(session, xsrfToken)
     }
-//
-//    private fun createUniqueId(): String {
-//        counter++
-//        return "foo_$counter"
-//    }
-//
-//
-//    @Test
-//    fun testLogin() {
-//
-//        val id = createUniqueId()
-//        val pwd = "bar"
-//
-//        val cookies = registerUser(id, pwd)
-//
-//        given().get("/user")
-//                .then()
-//                .statusCode(401)
-//
-//        //note the difference in cookie name
-//        given().cookie("SESSION", cookies.session)
-//                .get("/user")
-//                .then()
-//                .statusCode(200)
-//                .body("name", equalTo(id))
-//                .body("roles", contains("ROLE_USER"))
-//
-//
-//        given().auth().basic(id, pwd)
-//                .get("/user")
-//                .then()
-//                .statusCode(200)
-//                .cookie("SESSION")
-//                .body("name", equalTo(id))
-//                .body("roles", contains("ROLE_USER"))
-//    }
+
+    private fun createUniqueId(): String {
+        counter++
+        return "foo_$counter"
+    }
+
+
+    @Test
+    fun testLogin() {
+
+        val id = createUniqueId()
+        val pwd = "bar"
+
+        val cookies = registerUser(id, pwd)
+
+        given().get("/api/v1/user")
+                .then()
+                .statusCode(401)
+
+        //note the difference in cookie name
+        given().cookie("SESSION", cookies.session)
+                .get("/api/v1/user")
+                .then()
+                .statusCode(200)
+                .body("name", equalTo(id))
+                .body("roles", contains("ROLE_USER"))
+
+
+        given().auth().basic(id, pwd)
+                .get("/api/v1/user")
+                .then()
+                .statusCode(200)
+                .cookie("SESSION")
+                .body("name", equalTo(id))
+                .body("roles", contains("ROLE_USER"))
+    }
 //
 //    @Test
 //    fun testOpenCount(){
