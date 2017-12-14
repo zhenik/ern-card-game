@@ -11,6 +11,8 @@ will attack the other one. If both dices from one player are equal, it will be a
 After the match is over, a log will be returned.
 
 ### How is the game implemented?
+
+#### Gamelogic
 The main part of the game, the logic and execution for it is defined in the "Gamelogic" API. This API has two endpoints, one for finding 
 an opponent and one for starting the fight.
 
@@ -25,6 +27,22 @@ from the GET /enemy endpoint. This endpoint then starts the game, executes all t
 the match is over. After this, the method will persists a log of the match, to a seperate API, the MatchService. This is done using AMQP(RabbitMQ).
 When everything else is done, the endpoint returns a "FightResultLogDto" containing the result of the match.
 
+#### "Entity-repositories"
+There are also three other APIs that are required for the game to work: Match, Player and Item. 
+Each of these APIs are the responsibility of one member on our group.
+All of these APIs provide POST, PUT, PATCH, GET and DELETE methods to modify Entities.
+
+The Match API was developed and is the responsibility of Nikita. The purpose of this API is to store result from matches.
+
+The Item API was developed and is responsibility of Robert. Items are used for changing the damage and health of the Players. 
+
+Player API was developed and and is responsibility of Eirik. The Player has a collection of Items. 
+The API contains fields about player that is useful for fights, but not sensitive information like password(This is located inside Gateway module)
+
+In addition there is another module called Schema. Here we expose Dto that each person created.(PlayerDto, ItemDto, etc..)
+The reason for this is to avoid dependencies whenever possible, because no other module should use entity, just Dto's. 
+This in turn makes it easier if one of us decide to change our API.
+
 ### Further improvments
 
 Further improvements would be to create a shop for the player to buy items. The items could increase the player's
@@ -36,12 +54,31 @@ to implement this was by using AMQP to notify the ExperienceService when a match
 would then increase the experience- or level- field on PlayerEntity, based on the MatchResult.
 
 
+## Work process
 
+### Git
+Later in the project, (from tuesday onwards) we started encountering a lot of problems of security.
+Therefore we started working all together to try to solve problems. Later on we decided to do this
+also for gamelogic. 
+
+Therefore almost all commits are from Nikita on this point onwards. We decided this was the best 
+way to work, instead of everyone trying to commit the same file and causing conflicts.
+
+#### Branches
+In our git repo we used branches a few times. Mostly we used branches for changes we suspect
+might cause problems with existing implementations. That way everyone was able to commit without
+fear of causing problem with another student's implementation.
+
+Sometimes we used pull requests for adding code back to develop branch, but most of the time we manually implemented the changes, just to be sure.
 
 ## How to test the application
-1. Run `mvn package`
+1. Run `mvn package` (add -DskipTests if you do not want to run tests)
 2. Run Docker-compose in main folder(Be sure to also read Docker section further down this document)
 3. Use the included Postman collection for testing, or manually test the endpoints.
+
+4. Integration tests are disabled by default. In order to run them you need to a special parameter, which is
+`-DskipIntegrationTests=false`
+Example command: `mvn clean install -DskipIntegrationTests=false`
 
 ### Documentation for API's (SWAGGER)
 First make sure to start docker-compose:
