@@ -112,5 +112,15 @@ class BaseModulesIT {
                 .get("/api/v1/match-server/matches")
                 .then()
                 .statusCode(200)
+
+        // Trying to make post request to matches
+        RestAssured.given()
+                .cookie("SESSION", cookies.session)
+                .contentType(ContentType.JSON)
+                .header("X-XSRF-TOKEN", cookies.csrf)
+                .cookie("XSRF-TOKEN", cookies.csrf)
+                .post("/api/v1/match-server/matches")
+                .then()
+                .statusCode(403)
     }
 }
