@@ -56,12 +56,31 @@ to implement this was by using AMQP to notify the ExperienceService when a match
 would then increase the experience- or level- field on PlayerEntity, based on the MatchResult.
 
 
+## Work process
 
+### Git
+Later in the project, (from tuesday onwards) we started encountering a lot of problems of security.
+Therefore we started working all together to try to solve problems. Later on we decided to do this
+also for gamelogic. 
+
+Therefore almost all commits are from Nikita on this point onwards. We decided this was the best 
+way to work, instead of everyone trying to commit the same file and causing conflicts.
+
+#### Branches
+In our git repo we used branches a few times. Mostly we used branches for changes we suspect
+might cause problems with existing implementations. That way everyone was able to commit without
+fear of causing problem with another student's implementation.
+
+Sometimes we used pull requests for adding code back to develop branch, but most of the time we manually implemented the changes, just to be sure.
 
 ## How to test the application
-1. Run `mvn package`
+1. Run `mvn package` (add -DskipTests if you do not want to run tests)
 2. Run Docker-compose in main folder(Be sure to also read Docker section further down this document)
 3. Use the included Postman collection for testing, or manually test the endpoints.
+
+4. Integration tests are disabled by default. In order to run them you need to a special parameter, which is
+`-DskipIntegrationTests=false`
+Example command: `mvn clean install -DskipIntegrationTests=false`
 
 ### Documentation for API's (SWAGGER)
 First make sure to start docker-compose:
