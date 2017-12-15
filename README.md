@@ -1,5 +1,8 @@
 # ERN card game application
-[Repository](https://github.com/NikitaZhevnitskiy/ern-card-game)   
+[Repository](https://github.com/NikitaZhevnitskiy/ern-card-game)  
+POSTMAN collection to import [https://www.getpostman.com/collections/4861fc79ed63396ab79f](https://www.getpostman.com/collections/4861fc79ed63396ab79f)  
+Make sure to check the description of postman requests   
+
 
 ### Travis
 DEVELOP  
@@ -71,10 +74,8 @@ in the player module.
 The log showed that Eureka returned no instances for player-server. It was a transitive call to PlayerModule, via Gateway and Gamelogic,
 using Eureka twice.(ie. Gateway asks Eureka for Gamelogic, and Gamelogic asks Eureka for Player.) 
 
-We ran this Docker-Compose locally, and all modules registered themselves properly in Eureka, and the functionality worked as it should. 
-We also tried increasing the timeout inside the e2e-tests, but it fails with the same error.
-
-The example for this test can be found in e2etest-module(GameLogicDockerIT)
+In the end however, we managed to fix end-to-end tests for Gamelogic. The problem turned out to be that the timeout
+was too short. Also not all modules were registered in Eureka, within the given timeout.
 
 #### Responsibilities of group members
 There are also three other APIs that are required for the game to work: Match, Player and Item. 

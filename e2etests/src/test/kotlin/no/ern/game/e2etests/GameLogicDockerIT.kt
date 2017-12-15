@@ -94,15 +94,31 @@ class GameLogicDockerIT {
         println(responseFindEnemy.body.print())
         val playerSearchDto = responseFindEnemy.`as`(PlayerSearchDto::class.java)
 
-        val responseFigth = RestAssured.given().contentType(ContentType.URLENC)
+        // fight
+        val responseFigth = RestAssured.given().contentType(ContentType.JSON)
+                .cookie("SESSION", cookie2.session)
                 .header("X-XSRF-TOKEN", cookie2.csrf)
                 .cookie("XSRF-TOKEN", cookie2.csrf)
                 .body(playerSearchDto)
                 .post("/api/v1/gamelogic-server/play/fight")
 
         assertEquals(200, responseFigth.statusCode)
+        // check that username of player is present in fight log
         assertTrue(responseFigth.body.print().contains(id2))
 
+
+        // match result persisted (checking rabbitMQ) that match was persisted
+        await().atMost(20, TimeUnit.SECONDS)
+                .ignoreExceptions()
+                .until({
+                    RestAssured.given().cookie("SESSION", cookie2.session)
+                            .get("/api/v1/player-server/players")
+                            .then()
+                            .statusCode(200)
+                            .and()
+                            .body("username", CoreMatchers.hasItem(id2))
+                    true
+                })
     }
 
     private fun createUniqueId(): String {
