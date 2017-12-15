@@ -15,8 +15,6 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/play/**").authenticated()
-//                .antMatchers("/play/**").permitAll()
-                .antMatchers("/play/username").authenticated()
                 .anyRequest().denyAll()
                 .and()
                 .csrf().disable()

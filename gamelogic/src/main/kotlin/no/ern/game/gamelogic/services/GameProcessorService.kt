@@ -76,28 +76,3 @@ class GameProcessorService {
         return (Math.random()*6).toInt()+1
     }
 }
-
-
-
-
-
-//fun main(args: Array<String>) {
-////    2.1 Users
-//    val attackerUserDtoMock = PlayerDto("1","attackerName",null,null,100,10,null,null,1,null)
-//    val defenderUserDtoMock = PlayerDto("2","defenderName",null,null,120,12,null,null,2,null)
-//    //2.2 Items
-//    val randomItems1: List<ItemDto> = listOf(
-//            ItemDto(null,null,null,(Math.random()*15).toLong(),0),
-//            ItemDto(null,null,null,0,(Math.random()*15).toLong())
-//    )
-//    val randomItems2: List<ItemDto> = listOf(
-//            ItemDto(null,null,null,(Math.random()*15).toLong(),0),
-//            ItemDto(null,null,null,0,(Math.random()*15).toLong())
-//    )
-//
-//    val attacker: Character = PlayerFightConverter.transform(attackerUserDtoMock,randomItems1)
-//    val defender: Character = PlayerFightConverter.transform(defenderUserDtoMock,randomItems2)
-
-//    val service = GameProcessorService()
-//    service.fight(attacker,defender)
-//}

@@ -12,7 +12,6 @@ import no.ern.game.schema.dto.PlayerResultDto
 import no.ern.game.schema.dto.PlayerDto
 import no.ern.game.schema.dto.gamelogic.FightResultLogDto
 import no.ern.game.schema.dto.gamelogic.PlayerSearchDto
-//import no.ern.game.schema.dto.gamelogic.PlayersFightIdsDto
 
 import org.springframework.security.core.Authentication
 
@@ -34,7 +33,6 @@ import java.util.*
 @Api(value = "/play", description = "API for game logic processes.")
 @RequestMapping(
         path = arrayOf("/play")
-//        produces = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE)
 )
 @RestController
 @Validated
@@ -53,39 +51,10 @@ class GameLogicController {
     private lateinit var playersPath: String
     @Value("\${itemServerName}")
     private lateinit var itemsPath: String
-    @Value("\${matchServerName}")
-    private lateinit var matchesPath: String
 
 
-//    @PostMapping(path = arrayOf("/match"))
-//    fun testEnd(@ApiParam("The match result model")
-//                @RequestBody resultDto: MatchResultDto
-//    ) : ResponseEntity<Any>{
-//        amqpService.sendMatchResultCreated(resultDto)
-//        return ResponseEntity.status(204).build()
-//    }
-    // TODO: remove in prod
-    @GetMapping(path = arrayOf("/test"))
-    fun testMe() : String {
-        try {
-            val url = "$playersPath/players"
-            val response1 = restTemplate.getForEntity(url, Array<PlayerDto>::class.java)
-            return response1.body.toList().toString()
-        } catch (e: HttpClientErrorException) {
-            return "fucked"
-        }
-    }
 
-    // TODO: remove in prod
-    @GetMapping(path = arrayOf("/username"))
-    fun currentUserName(authentication: Authentication): String {
-//        println(authentication)
-        return authentication.toString()
-    }
-
-    @ApiOperation("""
-        Find opponent, which is closest to hunter level (+/- 1 level).
-        If level not defined, find opponent in limit from 0 to 2 level""")
+    @ApiOperation("Find opponent (random enemy)")
     @ApiResponses(
             ApiResponse(code = 200, message = "The opponent found"),
             ApiResponse(code = 404, message = "No opponent found")
@@ -96,7 +65,7 @@ class GameLogicController {
         // 1 make request to player module.
         val response : ResponseEntity<Array<PlayerDto>> = try {
             val url = "$playersPath/players"
-            println("HERE =======> "+url)
+
             restTemplate.getForEntity(url, Array<PlayerDto>::class.java)
         } catch (e: HttpClientErrorException) {
             return ResponseEntity.status(e.statusCode.value()).build()
@@ -111,7 +80,7 @@ class GameLogicController {
 
         val callerUsername = authentication.name
         val playersFiltered = excludeFromListByUsername(players,callerUsername)
-//        val playersFiltered = players
+
 
         // 4 get random from list
         if(playersFiltered.isNotEmpty()){
@@ -121,12 +90,12 @@ class GameLogicController {
         }
     }
 
-    @ApiOperation("Initiate match")
+    @ApiOperation("Initiate fight")
     @PostMapping(path = arrayOf("/fight"),consumes = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
     @ApiResponses(
-            ApiResponse(code = 200, message = "The fight log of match, represents as FightResultLogDto"),
+            ApiResponse(code = 200, message = "The fight is over and returns match-log, represented as FightResultLogDto"),
             ApiResponse(code = 404, message = "Opponent(s) not found"),
-            ApiResponse(code = 400, message = "Given payload is invalid, check request body")
+            ApiResponse(code = 400, message = "Given payload is invalid, check request body (Example: trying fight with yourself)")
     )
     fun startFight(
             authentication: Authentication,
@@ -137,33 +106,24 @@ class GameLogicController {
 
 
         if(!isPlayersFightDtoIdValid(playerSearchDto)){
-            println("1 HERE -------> 1 dtos not valid")
+
             return ResponseEntity.status(400).build()
         }
-        // 1 validate that all fields are present (PlayersFightIdsDto) and ids are Long and ids are different
-//        if( ! isPlayersFightIdsDtoValid(resultIdsDto)) {
-//            println("1 HERE -------> 1 dtos not valid")
-//            return ResponseEntity.status(400).build()
-//        }
-
 
         val callerUsername = authentication.name
+
         /** 2 fetch players*/
         var attackerPlayerDto : PlayerDto
         var defenderPlayerDto : PlayerDto
         try{
-            println("2 HERE -------> $callerUsername")
-//            val urlAttacker = "$playersPath/players/${resultIdsDto.attackerId!!.toLong()}"
-            val urlAttacker = "$playersPath/players?username=${authentication.name}"
-            println("3 HERE -------> ${urlAttacker}")
 
+            val urlAttacker = "$playersPath/players?username=${authentication.name}"
             val urlDefender = "$playersPath/players/${playerSearchDto.id!!.toLong()}"
 
-//            val responseAttacker : ResponseEntity<PlayerDto> = restTemplate.getForEntity(urlAttacker, PlayerDto::class.java)
             val responseAttacker: ResponseEntity<Array<PlayerDto>> = restTemplate.getForEntity(urlAttacker, Array<PlayerDto>::class.java)
-            println("4 HERE -------> ${responseAttacker.body.toList()}")
+
             if(responseAttacker.body.toList().size != 1){
-                println("5 HERE -------> 400")
+
                 return ResponseEntity.status(400).build()
             } else {
                 attackerPlayerDto = responseAttacker.body.toList().first()
@@ -174,7 +134,7 @@ class GameLogicController {
 
             // player(s) not found
             if (responseAttacker.statusCodeValue!=200 || responseDefender.statusCodeValue!=200){
-                println("6 HERE -------> 404")
+
                 return ResponseEntity.status(404).build()
             }
 
@@ -182,16 +142,13 @@ class GameLogicController {
             defenderPlayerDto = responseDefender.body
 
             // 0 validate this attacker initiate request (possible only with Security)
-            println("6.5 HERE ------->|${callerUsername.toLowerCase()}|${attackerPlayerDto.username!!.toLowerCase()}|")
             if( callerUsername.toLowerCase() != (attackerPlayerDto.username!!.toLowerCase()) ) {
-                println("7 HERE -------> 400")
+
                 return ResponseEntity.status(400).build()
             }
-            println("9 HERE ------->|${callerUsername.toLowerCase()}|${attackerPlayerDto.username!!.toLowerCase()}|")
 
-            // validate that
+            // validate that caller cant fight himself
             if(callerUsername.toLowerCase() == defenderPlayerDto.username!!.toLowerCase()){
-                println("10 HERE -------> 400")
                 return ResponseEntity.status(400).build()
             }
 
@@ -246,24 +203,7 @@ class GameLogicController {
         }
         catch (e: Exception){}
 
-
-//        /** 5 send matchResult to MatchResult processor HTTP call */
-//        val matchUrl = "$matchesPath/matches"
-//        // its work in local env without specifying headers, but doesnt in distributed env with docker
-//        // so I had to specify header for payload
-//        val headers = LinkedMultiValueMap<String, String>()
-//        headers.add("Content-Type", "application/json")
-//        restTemplate.messageConverters.add(MappingJackson2HttpMessageConverter())
-//        val request = HttpEntity<MatchResultDto>(matchResult, headers)
-//        val responseMatchApi : ResponseEntity<Long> = restTemplate.postForEntity(matchUrl, request, Long::class.java)
-//        if (responseMatchApi.statusCode.value()!=201){
-//            return ResponseEntity.status(responseMatchApi.statusCode.value()).build()
-//        }
-
-
-
         /** 6 Improvements todo: generate experience for player(s) and persist it (if use rabbitMq || persist directly via HTTP) */
-        // How to rollback if this fail (? delete on responseMatch ?)
 
         /** 7 return FightResultLogDto */
         return ResponseEntity.ok(fightResultGameLog)
@@ -292,16 +232,6 @@ class GameLogicController {
     }
 
 
-//    private fun isPlayersFightIdsDtoValid(dto: PlayersFightIdsDto):Boolean{
-//        try {
-//            val attackerId = dto.attackerId!!.toLong()
-//            val defenderId = dto.defenderId!!.toLong()
-//            if (attackerId!=defenderId){
-//                return true
-//            }
-//        }catch (e: Exception){}
-//        return false
-//    }
 
     private fun isPlayersFightDtoIdValid(dto: PlayerSearchDto):Boolean{
         try {
