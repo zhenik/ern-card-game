@@ -41,7 +41,7 @@ Example command: `mvn clean install -DskipIntegrationTests=false`
 - Eureka is used for service discovery.
 
 #### Gamelogic
-The main part of the game, the logic and execution for it is defined in the "Gamelogic" API. This API has two endpoints, one for finding 
+The main part of the game, the logic and execution is defined in the "Gamelogic" API. This API has two endpoints, one for finding 
 an opponent and one for starting the fight.
 
 GET /enemy is the endpoint for finding opponent:
@@ -83,28 +83,33 @@ would then increase the experience- or level- field on PlayerEntity, based on th
 
 
 ## Work process
+### Git & Pair programming
+After we finished implementation of ours separate modules, we used pair-programming for further development (gamelogic, security and e2e tests).
+We have several reasons for it: charger issues with one machine, e2e test on windows with test containers. 
+It was also very beneficial for finding bugs and typos.  
+Therefore most of the commits in the project, are from Nikita's account.  
+But we have several branches with features which did not make it to production. Examples of this are branches
+for implementing Hystrix, Experience feature, and e2e tests for Gamelogic.
 
-### Git
-Later in the project, (from tuesday onwards) we started encountering a lot of problems of security.
-Therefore we started working all together to try to solve problems. Later on we decided to do this
-also for gamelogic. 
-
-Therefore almost all commits are from Nikita on this point onwards. We decided this was the best 
-way to work, instead of everyone trying to commit the same file and causing conflicts.
+Git accounts:  
+* [NikitaZhevnitskiy](https://github.com/NikitaZhevnitskiy)
+* [EirikSkogstad](https://github.com/EirikSkogstad)
+* [RobertEikeland](https://github.com/RobertEikeland)
 
 #### Branches
+
 In our git repo we used branches a few times. Mostly we used branches for changes we suspect
 might cause problems with existing implementations. That way everyone was able to commit without
 fear of causing problem with another student's implementation.
 
-Sometimes we used pull requests for adding code back to develop branch, but most of the time we manually implemented the changes, just to be sure.
-
+The main branch for our project was the Development branch. We also had a branch called Master, which was dedicated to
+production code.
 
 ### Documentation for API's (SWAGGER)
 First make sure to start docker-compose:
 
-- All API's should be available under: localhost:10000/api/v1/
-- For getting the Swagger's auto-generated documentation, go to localhost:10000/api/v1/swagger-ui.html
+Swagger documentation is available under localhost:10000/api/v1/${name of the module}/swagger-ui.html for authenticated users.
+To authenticate you can use Postman to create credentials, and use them in browser later.
 
 It is also possible to manually start some endpoints by running them from IntelliJ. 
 In that case all endpoints will have different ports, which is configured inside application.yml for each
@@ -132,6 +137,6 @@ Having so many images packaged as FatJAR's will of course have a huge memory fot
 
 If some of the nodes crash, try to increase memory if you're using a MAC.
 For Nikita 4GB on his MAC was too low, so we suggest increasing to higher than this. (8 GB perhaps)
- 
+![Diagram](./docker_setup.png)   
 ### Remove all images 
 docker rmi $(docker images -a -q)
