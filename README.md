@@ -62,6 +62,20 @@ from the GET /enemy endpoint. This endpoint then starts the game, executes all t
 the match is over. After this, the method will persists a log of the match, to a seperate API, the MatchService. This is done using AMQP(RabbitMQ).
 When everything else is done, the endpoint returns a "FightResultLogDto" containing the result of the match.
 
+### End-to-tests
+For e2e tests we tested the authentication of our module, and RabbitMQ. We also tested access via Gateway to all modules.
+
+For testing Gamelogic we encountered a lot of problems, regarding the connection to Eureka. For example when we sent request
+to find enemy(GET /enemy endpoint), the request went through the Gateway to Gamelogic, but failed to reach the GET /players endpoint,
+in the player module. 
+The log showed that Eureka returned no instances for player-server. It was a transitive call to PlayerModule, via Gateway and Gamelogic,
+using Eureka twice.(ie. Gateway asks Eureka for Gamelogic, and Gamelogic asks Eureka for Player.) 
+
+We ran this Docker-Compose locally, and all modules registered themselves properly in Eureka, and the functionality worked as it should. 
+We also tried increasing the timeout inside the e2e-tests, but it fails with the same error.
+
+The example for this test can be found in e2etest-module(GameLogicDockerIT)
+
 #### Responsibilities of group members
 There are also three other APIs that are required for the game to work: Match, Player and Item. 
 Each of these APIs are the responsibility of one member on our group.
