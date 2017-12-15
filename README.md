@@ -40,6 +40,13 @@ Example command: `mvn clean install -DskipIntegrationTests=false`
 - Gateway uses Zuul for load balancing and proxying. The gateway also stores user credentials and is used for authentication, via Redis.
 - Eureka is used for service discovery.
 
+### Technology-stack:
+For our project we used the Spring framework, alongside Kotlin. In addition we also used some other libraries for production and testing.
+For production we used Docker, Docker-compose and a lot of the Netflix-stack(Zuul, Eureka, Ribbon), in addition to RabbitMQ, Redis and Postgres databases.
+
+For the testing we used TestContainers library for running Docker and Docker-Compose in end-to-end tests.
+Also Wiremock and RestAssured for isolated tests where we needed to mock other modules.
+
 #### Gamelogic
 The main part of the game, the logic and execution is defined in the "Gamelogic" API. This API has two endpoints, one for finding 
 an opponent and one for starting the fight.
@@ -105,8 +112,6 @@ To authenticate you can use Postman to create credentials, and use them in brows
 It is also possible to manually start some endpoints by running them from IntelliJ. 
 In that case all endpoints will have different ports, which is configured inside application.yml for each
 API.
- 
-
 
 ## Different emails inside the git log:
 During the project, one of the members(Eirik) made a mistake when commiting. He forgot to properly set the Git config
