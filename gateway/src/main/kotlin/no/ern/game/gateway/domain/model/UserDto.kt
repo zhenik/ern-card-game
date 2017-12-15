@@ -2,6 +2,7 @@ package no.ern.game.gateway.domain.model
 
 import java.io.Serializable
 
+// Only gateway module should have access to UserDto
 class UserDto(
         var username: String?=null,
         var password: String?=null,

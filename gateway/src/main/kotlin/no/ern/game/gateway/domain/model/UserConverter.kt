@@ -6,7 +6,6 @@ class UserConverter {
         fun transform(entity: UserEntity): UserDto {
             return UserDto(
                     username = entity.username,
-//                    id = entity.id,
                     password = entity.password,
                     roles = entity.roles,
                     enabled = entity.enabled

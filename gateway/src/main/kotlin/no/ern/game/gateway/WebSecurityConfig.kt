@@ -33,9 +33,7 @@ class WebSecurityConfig(
                 .and()
                 //
                 .authorizeRequests()
-//                .antMatchers(HttpMethod.POST,"/entities").authenticated()
                 .antMatchers("/gamelogic-server/**").authenticated()
-                .antMatchers(HttpMethod.GET,"/entities").permitAll()
                 .antMatchers(HttpMethod.GET,"/player-server/**").authenticated()
                 .antMatchers(HttpMethod.GET,"/item-server/**").authenticated()
                 .antMatchers(HttpMethod.GET,"/match-server/**").authenticated()
@@ -43,14 +41,6 @@ class WebSecurityConfig(
                 .antMatchers("/signIn").permitAll()
                 .anyRequest().denyAll()
                 .and()
-                /*
-                    CSRF would be on by default.
-                    Here we configure it.
-                    The CSRF token can be sent in different ways.
-                    Here we send it as a cookie readable from JS.
-                    This is secure, and greatly simplify the handling
-                    of it in the browser.
-                 */
                 .csrf()
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
     }
@@ -71,7 +61,5 @@ class WebSecurityConfig(
                      WHERE x.username=? and y.user_entity_username=x.username
                      """)
                 .passwordEncoder(passwordEncoder)
-
-//        "SELECT x.username, y.roles FROM users x, user_entity_roles y WHERE x.username=? and y.user_entity_username=x.username")
     }
 }

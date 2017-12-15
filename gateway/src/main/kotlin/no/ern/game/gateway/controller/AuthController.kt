@@ -1,5 +1,9 @@
 package no.ern.game.gateway.controller
 
+import io.swagger.annotations.Api
+import io.swagger.annotations.ApiOperation
+import io.swagger.annotations.ApiResponse
+import io.swagger.annotations.ApiResponses
 import no.ern.game.gateway.service.AmqpService
 import no.ern.game.gateway.service.UserService
 import no.ern.game.schema.dto.PlayerDto
@@ -19,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.security.Principal
 
-
+@Api(description = "API for authentication.")
 @RestController
 @Validated
 class AuthController(
@@ -30,6 +34,10 @@ class AuthController(
     @Autowired
     private lateinit var amqpService: AmqpService
 
+    @ApiOperation("Get info about current logged user")
+    @ApiResponses(
+            ApiResponse(code = 200, message = "Information about logged user")
+    )
     @RequestMapping("/user")
     fun user(user: Principal): ResponseEntity<Map<String, Any>> {
         val map = mutableMapOf<String,Any>()
@@ -38,6 +46,11 @@ class AuthController(
         return ResponseEntity.ok(map)
     }
 
+    @ApiOperation("Register new user")
+    @ApiResponses(
+            ApiResponse(code = 204, message = "User is registered"),
+            ApiResponse(code = 400, message = "Registration failed due to wrong payload")
+    )
     @PostMapping(path = arrayOf("/signIn"),
             consumes = arrayOf(MediaType.APPLICATION_FORM_URLENCODED_VALUE))
     fun signIn(@ModelAttribute(name = "the_user") username: String,
@@ -64,7 +77,6 @@ class AuthController(
                 )
                 amqpService.sendPlayer(playerDto)
             } catch (e: Exception) {
-                println("!!! IT'S FUCKED UP !!!")
             }
         }
 
