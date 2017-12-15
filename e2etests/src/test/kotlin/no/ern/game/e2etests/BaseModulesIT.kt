@@ -45,12 +45,6 @@ class BaseModulesIT {
     }
 
 
-    @Test
-    fun testUnauthorizedAccess() {
-        RestAssured.given().get("/api/v1/user")
-                .then()
-                .statusCode(401)
-    }
 
     class NeededCookies(val session:String, val csrf: String)
 
@@ -84,7 +78,7 @@ class BaseModulesIT {
 
 
     @Test
-    fun testLogin() {
+    fun testAccessToBaseModulesAndRabbitMq() {
         val id = createUniqueId()
         val pwd = "bar"
 

@@ -34,20 +34,16 @@ class UserRepositoryTest {
     @Test
     fun createUser_Custom() {
         // Act
-//        val id = repo.createUser("name","password")
         val user0 = UserEntity("name","password")
         repo.save(user0)
 
         // Assert
-//        assertTrue(id>0)
         assertEquals(1, repo.count())
     }
 
     @Test
     fun findUserByUserName(){
         // Arrange
-//        val id = repo.createUser("name","password")
-//        assertTrue(id>0)
         val user0 = UserEntity("name","password")
         repo.save(user0)
 
@@ -55,7 +51,6 @@ class UserRepositoryTest {
         val user = repo.findUserByUsername("name")
         // note: do not throw exception
         val user1 = repo.findUserByUsername("notExist")
-
 
         // Assert
         assertNull(user1)
