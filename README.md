@@ -33,7 +33,12 @@ Example command: `mvn clean install -DskipIntegrationTests=false`
 ### How is the game implemented?
 ![Diagram](./diagram.png)  
 
-- Dotted lines are showing the service discovery with Eureka. Redis used to store distributed session.   
+- Dotted lines are showing the service discovery with Eureka. 
+- Redis used to store distributed session.  
+- Ribbon used for load balancing intercommunication between modules
+- RabbitMQ used for message delivery: create player when user created and match result persistence
+- Gateway uses Zuul for load balancing and proxying. The gateway also stores user credentials and is used for authentication, via Redis.
+- Eureka is used for service discovery.
 
 #### Gamelogic
 The main part of the game, the logic and execution for it is defined in the "Gamelogic" API. This API has two endpoints, one for finding 
