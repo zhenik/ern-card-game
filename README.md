@@ -5,10 +5,8 @@ Make sure to check the description of postman requests
 
 
 ### Travis
-DEVELOP  
-[![Build Status](https://travis-ci.com/NikitaZhevnitskiy/ern-card-game.svg?token=6FYqXrfAk2ZHo34Tq8Gp&branch=develop)](https://travis-ci.com/NikitaZhevnitskiy/ern-card-game)  
-MASTER  
-[![Build Status](https://travis-ci.com/NikitaZhevnitskiy/ern-card-game.svg?token=6FYqXrfAk2ZHo34Tq8Gp&branch=master)](https://travis-ci.com/NikitaZhevnitskiy/ern-card-game)  
+DEVELOP branch  is a main branch  
+[![Build Status](https://travis-ci.com/NikitaZhevnitskiy/ern-card-game.svg?token=6FYqXrfAk2ZHo34Tq8Gp&branch=develop)](https://travis-ci.com/NikitaZhevnitskiy/ern-card-game)    
 
 
 ## About the game:
@@ -115,8 +113,7 @@ In our git repo we used branches a few times. Mostly we used branches for change
 might cause problems with existing implementations. That way everyone was able to commit without
 fear of causing problem with another student's implementation.
 
-The main branch for our project was the Development branch. We also had a branch called Master, which was dedicated to
-production code.
+The main branch for our project was the Development branch.
 
 ### Documentation for API's (SWAGGER)
 First make sure to start docker-compose:

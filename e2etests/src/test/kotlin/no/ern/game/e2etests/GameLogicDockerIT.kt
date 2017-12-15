@@ -69,7 +69,7 @@ class GameLogicDockerIT {
         val cookie1 = registerUser(id1, "password")
 
         //try to find when there are only u in player db (its exclude urself from enemy list and return not found)
-        await().atMost(60, TimeUnit.SECONDS)
+        await().atMost(120, TimeUnit.SECONDS)
                 .ignoreExceptions()
                 .until({
                     RestAssured.given()
