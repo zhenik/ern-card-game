@@ -3,6 +3,7 @@ package no.ern.game.e2etests
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import org.awaitility.Awaitility
+import org.awaitility.Awaitility.await
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers
 import org.junit.BeforeClass
@@ -122,5 +123,18 @@ class BaseModulesIT {
                 .post("/api/v1/match-server/matches")
                 .then()
                 .statusCode(403)
+
+        // test RabbitMq(when create user -> send message to player module and create player for that user)
+        await().atMost(10, TimeUnit.SECONDS)
+                .ignoreExceptions()
+                .until({
+                    RestAssured.given().cookie("SESSION", cookies.session)
+                            .get("/api/v1/player-server/players")
+                            .then()
+                            .statusCode(200)
+                            .and()
+                            .body("username", CoreMatchers.hasItem(id))
+                    true
+                })
     }
 }
