@@ -9,7 +9,6 @@ import org.springframework.cloud.netflix.ribbon.RibbonClient
 
 @SpringBootApplication(scanBasePackages = arrayOf("no.ern.game.item"))
 @EnableEurekaClient
-@RibbonClient(name = "item-server")
 class Application : WebMvcConfigurerAdapter() {}
 
 fun main(args: Array<String>) {
