@@ -55,32 +55,23 @@ from the GET /enemy endpoint. This endpoint then starts the game, executes all t
 the match is over. After this, the method will persists a log of the match, to a seperate API, the MatchService. This is done using AMQP(RabbitMQ).
 When everything else is done, the endpoint returns a "FightResultLogDto" containing the result of the match.
 
-#### "Entity-repositories"
+#### Responsibilities of group members
 There are also three other APIs that are required for the game to work: Match, Player and Item. 
 Each of these APIs are the responsibility of one member on our group.
 All of these APIs provide POST, PUT, PATCH, GET and DELETE methods to modify Entities.
 
 The Match API was developed and is the responsibility of Nikita. The purpose of this API is to store result from matches.
 
-The Item API was developed and is responsibility of Robert. Items are used for changing the damage and health of the Players. 
+The Item API was developed and is responsibility of Robert. Items are used for changing the statistics of the Players(Like health and damage). 
 
-Player API was developed and and is responsibility of Eirik. The Player has a collection of Items. 
-The API contains fields about player that is useful for fights, but not sensitive information like password(This is located inside Gateway module)
+Player API was developed and is responsibility of Eirik. The Player has a collection of Items. 
+The API contains fields about player that is useful for fights, but not sensitive information like password(This is located inside Gateway/user module)
 
 In addition there is another module called Schema. Here we expose Dto that each person created.(PlayerDto, ItemDto, etc..)
 The reason for this is to avoid dependencies whenever possible, because no other module should use entity, just Dto's. 
 This in turn makes it easier if one of us decide to change our API.
 
-### Further improvments
-
-Further improvements would be to create a shop for the player to buy items. The items could increase the player's
-health, or boost his damage. Items could also in the future be implemented to have more exciting effects different damage 
-types and resistances.
-
-Another improvement would be to implement another service for handling experience and level up for player. One way we considered
-to implement this was by using AMQP to notify the ExperienceService when a match is over, and send the logs. The service
-would then increase the experience- or level- field on PlayerEntity, based on the MatchResult.
-
+The Gamelogic, Gateway and e2etest modules were developed by all members of our group, using mostly pair-programming.
 
 ## Work process
 ### Git & Pair programming
@@ -140,3 +131,13 @@ For Nikita 4GB on his MAC was too low, so we suggest increasing to higher than t
 ![Diagram](./docker_setup.png)   
 ### Remove all images 
 docker rmi $(docker images -a -q)
+
+### Further improvements
+
+Further improvements would be to create a shop for the player to buy items. The items could increase the player's
+health, or boost his damage. Items could also in the future be implemented to have more exciting effects different damage 
+types and resistances.
+
+Another improvement would be to implement another service for handling experience and level up for player. One way we considered
+to implement this was by using AMQP to notify the ExperienceService when a match is over, and send the logs. The service
+would then increase the experience- or level- field on PlayerEntity, based on the MatchResult.
