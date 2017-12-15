@@ -4,10 +4,12 @@ import org.testcontainers.containers.DockerComposeContainer
 import io.restassured.RestAssured
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
+import no.ern.game.schema.dto.gamelogic.PlayerSearchDto
 import org.awaitility.Awaitility.await
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.Matchers.contains
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.BeforeClass
 import org.junit.ClassRule
@@ -63,9 +65,10 @@ class GameLogicDockerIT {
     @Test
     fun findEnemyAndFight() {
         // Arrange
-        val id = "guy"
-        val cookie1 = registerUser(id, "password")
+        val id1 = createUniqueId()
+        val cookie1 = registerUser(id1, "password")
 
+        //try to find when there are only u in player db (its exclude urself from enemy list and return not found)
         await().atMost(60, TimeUnit.SECONDS)
                 .ignoreExceptions()
                 .until({
@@ -77,8 +80,34 @@ class GameLogicDockerIT {
                     true
                 })
 
+        // create a new user
+        val id2 = createUniqueId()
+        val cookie2 = registerUser(id2, "password")
 
+        // find enemy return enemy and 200OK
+        val responseFindEnemy = RestAssured.given()
+                .cookie("SESSION", cookie2.session)
+                .accept(ContentType.JSON)
+                .get("/api/v1/gamelogic-server/play/enemy")
+        assertEquals(200, responseFindEnemy.statusCode)
 
+        println(responseFindEnemy.body.print())
+        val playerSearchDto = responseFindEnemy.`as`(PlayerSearchDto::class.java)
+
+        val responseFigth = RestAssured.given().contentType(ContentType.URLENC)
+                .header("X-XSRF-TOKEN", cookie2.csrf)
+                .cookie("XSRF-TOKEN", cookie2.csrf)
+                .body(playerSearchDto)
+                .post("/api/v1/gamelogic-server/play/fight")
+
+        assertEquals(200, responseFigth.statusCode)
+        assertTrue(responseFigth.body.print().contains(id2))
+
+    }
+
+    private fun createUniqueId(): String {
+        counter++
+        return "foo_${counter}"
     }
 
     class NeededCookies(val session:String, val csrf: String)
