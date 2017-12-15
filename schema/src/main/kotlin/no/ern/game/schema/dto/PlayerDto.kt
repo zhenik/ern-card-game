@@ -7,9 +7,6 @@ import java.io.Serializable
 @ApiModel("DTO representing Player")
 data class PlayerDto(
 
-//        @ApiModelProperty("Id pointing to user entity")
-//        var userId: String? = null,
-
         @ApiModelProperty("Username of the player")
         var username: String? = null,
 
@@ -22,10 +19,10 @@ data class PlayerDto(
         @ApiModelProperty("Player's damage")
         var damage: Int? = 1,
 
-        @ApiModelProperty("Amount of money the user has")
+        @ApiModelProperty("Amount of money the player has")
         var currency: Int? = null,
 
-        @ApiModelProperty("Player's experience level")
+        @ApiModelProperty("Player's experience")
         var experience: Int? = null,
 
         @ApiModelProperty("Player's current level")
@@ -39,7 +36,6 @@ data class PlayerDto(
 /**
  * example
     {
-        "userId": "1",
         "username": "name",
         "id": "1",
         "health": 100,

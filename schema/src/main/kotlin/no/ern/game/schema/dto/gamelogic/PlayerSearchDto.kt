@@ -3,7 +3,7 @@ package no.ern.game.schema.dto.gamelogic
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 
-@ApiModel("DTO representing player. It uses for searching(hunting) opponent")
+@ApiModel("DTO representing player. It uses for searching opponent (find enemy)")
 data class PlayerSearchDto(
 
         @ApiModelProperty("The id of the Player")

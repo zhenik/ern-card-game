@@ -4,8 +4,6 @@ import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import java.io.Serializable
 
-//TODO: Go through swagger comments
-//TODO: Change DTO to represent model
 
 @ApiModel("DTO for item. It represent an item entity")
 data class ItemDto(

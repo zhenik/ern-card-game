@@ -12,7 +12,7 @@ import no.ern.game.schema.dto.PlayerResultDto
 import no.ern.game.schema.dto.PlayerDto
 import no.ern.game.schema.dto.gamelogic.FightResultLogDto
 import no.ern.game.schema.dto.gamelogic.PlayerSearchDto
-import no.ern.game.schema.dto.gamelogic.PlayersFightIdsDto
+//import no.ern.game.schema.dto.gamelogic.PlayersFightIdsDto
 
 import org.springframework.security.core.Authentication
 
@@ -292,16 +292,16 @@ class GameLogicController {
     }
 
 
-    private fun isPlayersFightIdsDtoValid(dto: PlayersFightIdsDto):Boolean{
-        try {
-            val attackerId = dto.attackerId!!.toLong()
-            val defenderId = dto.defenderId!!.toLong()
-            if (attackerId!=defenderId){
-                return true
-            }
-        }catch (e: Exception){}
-        return false
-    }
+//    private fun isPlayersFightIdsDtoValid(dto: PlayersFightIdsDto):Boolean{
+//        try {
+//            val attackerId = dto.attackerId!!.toLong()
+//            val defenderId = dto.defenderId!!.toLong()
+//            if (attackerId!=defenderId){
+//                return true
+//            }
+//        }catch (e: Exception){}
+//        return false
+//    }
 
     private fun isPlayersFightDtoIdValid(dto: PlayerSearchDto):Boolean{
         try {

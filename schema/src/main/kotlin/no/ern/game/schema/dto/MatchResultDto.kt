@@ -25,9 +25,9 @@ data class MatchResultDto(
 ): Serializable
 
 data class PlayerResultDto(
-        @ApiModelProperty("Id")
+        @ApiModelProperty("Player id")
         var id: String?=null,
-        @ApiModelProperty("Username")
+        @ApiModelProperty("Player username")
         var username: String?=null,
         @ApiModelProperty("Total health")
         var health: Int?=null,
