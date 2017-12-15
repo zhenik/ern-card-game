@@ -91,12 +91,6 @@ class MatchResultController {
             @ApiParam(ID_PARAM)
             @PathVariable("id") pathId: Long
     ) : ResponseEntity<MatchResultDto> {
-//        val id: Long
-//        try {
-//            id = pathId!!.toLong()
-//        } catch (e: Exception) {
-//            return ResponseEntity.status(400).build()
-//        }
         val dto = crud.findOne(pathId) ?: return ResponseEntity.status(404).build()
         return ResponseEntity.ok(MatchResultConverter.transform(dto))
     }
