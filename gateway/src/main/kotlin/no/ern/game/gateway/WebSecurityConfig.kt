@@ -33,6 +33,7 @@ class WebSecurityConfig(
                 .and()
                 //
                 .authorizeRequests()
+                .antMatchers("/swagger-ui.html").permitAll()
                 .antMatchers("/gamelogic-server/**").authenticated()
                 .antMatchers(HttpMethod.GET,"/player-server/**").authenticated()
                 .antMatchers(HttpMethod.GET,"/item-server/**").authenticated()

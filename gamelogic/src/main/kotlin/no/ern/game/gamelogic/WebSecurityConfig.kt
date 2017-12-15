@@ -14,6 +14,7 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
         http.httpBasic()
                 .and()
                 .authorizeRequests()
+                .antMatchers("/swagger-ui.html").permitAll()
                 .antMatchers("/play/**").authenticated()
                 .anyRequest().denyAll()
                 .and()
